@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package com.googlecode.flashgamesplayer.games;
+package com.googlecode.flashgamesplayer.games.tree;
 
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
@@ -16,7 +16,8 @@ public class GamesTreeModel extends DefaultTreeModel {
 
    public GamesTreeModel(TreeNode root) {
      super(root);
-    
   }
+
+
 
 }

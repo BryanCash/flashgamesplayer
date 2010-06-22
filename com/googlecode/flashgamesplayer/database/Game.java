@@ -22,20 +22,28 @@ public class Game extends Record {
   private String filename;
   private int played;
   private double rate = 0.0;
+  private int internet;
+
+  public static int NO_INTERNET = 0;
+  public static int INTERNET = 1;
 
   public Game() {
     super();
   }
 
- public int save() throws SQLException {
+  public int save() throws SQLException {
     String sql;
     if (this.getId() != 0) {
-      sql = "UPDATE games SET genre_id = " + this.getGenre_id() + ", title = '" + this.getTitle()
-          + "', filename = '" + this.getFilename() + "' WHERE id = " + this.getId();
+      sql = "UPDATE games SET "
+          + "genre_id = " + this.getGenre_id()
+          + ", title = '" + this.getTitle()
+          + "', filename = '" + this.getFilename()
+          + "', internet = " + this.isInternet()
+          + " WHERE id = " + this.getId();
     } else {
-      sql = "INSERT INTO games (genre_id, title, filename ) "
+      sql = "INSERT INTO games (genre_id, title, filename, internet ) "
           + "VALUES(" + this.getGenre_id() + ", '" + this.getTitle() + "', '"
-          + this.getFilename() + "')";
+          + this.getFilename() + "'," + this.isInternet() + " )";
     }
     return queryUpdate(sql);
   }
@@ -52,6 +60,7 @@ public class Game extends Record {
         game.setTitle(rs.getString("title"));
         game.setPlayed(rs.getInt("played"));
         game.setRate(rs.getDouble("rate"));
+        game.setInternet(rs.getInt("internet"));
         return game;
       }
       return null;
@@ -60,6 +69,7 @@ public class Game extends Record {
       return null;
     }
   }
+
   public static int updatePlayed(int id) throws SQLException {
     String sql = "UPDATE games SET played = played + 1 WHERE id = " + id;
     return queryUpdate(sql);
@@ -177,5 +187,19 @@ public class Game extends Record {
    */
   public void setRate(double rate) {
     this.rate = rate;
+  }
+
+  /**
+   * @return the internet
+   */
+  public int isInternet() {
+    return internet;
+  }
+
+  /**
+   * @param internet the internet to set
+   */
+  public void setInternet(int internet) {
+    this.internet = internet;
   }
 }

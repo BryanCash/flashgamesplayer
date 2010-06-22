@@ -50,10 +50,13 @@ public class Database {
   private void createDatabase() {
     try {
       FlashGamesPlayer.logger.log(Level.INFO, "Creating table games");
-      getStmt().executeUpdate("CREATE TABLE `games` (`id` INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , " +
-          "`genre_id` INTEGER," +
-          " `title` VARCHAR, " +
-          "`filename` VARCHAR,`played` INTEGER DEFAULT 0 ,`rate` DOUBLE DEFAULT 0)");
+      getStmt().executeUpdate("CREATE TABLE `games` "
+          + "(`id` INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , "
+          + "`genre_id` INTEGER, "
+          + "`title` VARCHAR, "
+          + "`filename` VARCHAR,`played` INTEGER DEFAULT 0, "
+          + "`rate` DOUBLE DEFAULT 0, "
+          + "`internet` INTEGER DEFAULT 0)");
       FlashGamesPlayer.logger.log(Level.INFO, "Creating table genres");
       getStmt().executeUpdate("CREATE TABLE `genres` (`id` INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , " + "`genre` VARCHAR NOT NULL  UNIQUE)");
       addDefaultGenres();

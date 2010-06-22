@@ -8,7 +8,7 @@
  *
  * Created on 21 Ιουν 2010, 10:56:02 πμ
  */
-package com.googlecode.flashgamesplayer.games;
+package com.googlecode.flashgamesplayer.games.tree;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,6 +21,7 @@ import com.googlecode.flashgamesplayer.FlashGamesPlayer;
 import com.googlecode.flashgamesplayer.database.Database;
 import com.googlecode.flashgamesplayer.database.Game;
 import com.googlecode.flashgamesplayer.database.Genre;
+import com.googlecode.flashgamesplayer.games.GameForm;
 import com.googlecode.flashgamesplayer.tools.GamesChangeListener;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -44,8 +45,10 @@ public class GamesTree extends javax.swing.JPanel {
   /** Creates new form Tree */
   public GamesTree() {
     initComponents();
-    setVisible(true);
+    tree.setCellRenderer(new GamesCellRenderer());
     addPropertyChangeListener(new GamesChangeListener());
+    setVisible(true);
+
   }
 
   /** This method is called from within the constructor to
@@ -121,7 +124,9 @@ public class GamesTree extends javax.swing.JPanel {
         if (node.isLeaf()) {
           if (node.getUserObject() instanceof Game) {
             Game game = (Game) node.getUserObject();
-            firePropertyChange(GamesChangeListener.GAME_SELECTED, FlashGamesPlayer.gamePanel.getGame(), game);
+            if (FlashGamesPlayer.isInternet || game.isInternet() == Game.NO_INTERNET) {
+              firePropertyChange(GamesChangeListener.GAME_SELECTED, FlashGamesPlayer.gamePanel.getGame(), game);
+            }
           }
         }
       }
@@ -191,7 +196,7 @@ public class GamesTree extends javax.swing.JPanel {
   public void populateTree(int sort) {
     setSort(sort);
     ArrayList<GameNode> list = new ArrayList<GameNode>();
-    String groupAndOrder="";
+    String groupAndOrder = "";
     switch (sort) {
       case GENRE:
         groupAndOrder = "GROUP BY gen.id, g.id ORDER BY gen.id";
@@ -204,16 +209,16 @@ public class GamesTree extends javax.swing.JPanel {
         break;
     }
     String sql = "SELECT g.id AS id FROM games  g "
-        + "INNER JOIN genres gen ON g.genre_id = gen.id "+groupAndOrder;
+        + "INNER JOIN genres gen ON g.genre_id = gen.id " + groupAndOrder;
     try {
       ResultSet rs = new Database().getStmt().executeQuery(sql);
       while (rs.next()) {
         Game game = Game.getGameById(rs.getInt("id"));
         Object category = null;
-        switch (sort){
+        switch (sort) {
           case GENRE:
-           category = Genre.getGenreById(game.getGenre_id()).getGenre();
-           break;
+            category = Genre.getGenreById(game.getGenre_id()).getGenre();
+            break;
           case PLAYED:
             category = game.getPlayed();
             break;
@@ -221,7 +226,7 @@ public class GamesTree extends javax.swing.JPanel {
             category = game.getRate();
             break;
         }
-        
+
         list.add(new GameNode(category, game));
       }
       DefaultMutableTreeNode root = createTree(list);
