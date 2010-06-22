@@ -45,7 +45,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
 
   /** Creates new form flashplayer */
   public FlashGamesPlayer() {
-    isInternet = MyFunctions.hasInternetConnection("www.google.com");
+    isInternet = MyFunctions.hasInternetConnection("http://www.google.com");
     createLogger();
     createDatabase();
     createFolder(Options.USER_DIR + Options.GAMES_DIR);
@@ -53,6 +53,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
     initComponents();
     rating.addPropertyChangeListener(new PropertyChangeListener() {
 
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals(StarRating.RATE_CHANGED)) {
           double rate = (Double) evt.getNewValue();
@@ -97,6 +98,8 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
     gamesMenu = new javax.swing.JMenu();
     menuItem_addGame = new javax.swing.JMenuItem();
     menuItem_exit = new javax.swing.JMenuItem();
+    toolsMenu = new javax.swing.JMenu();
+    menuItem_options = new javax.swing.JMenuItem();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     setTitle("Flash games player v0.1");
@@ -238,6 +241,13 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
 
     menuBar.add(gamesMenu);
 
+    toolsMenu.setText("jMenu1");
+
+    menuItem_options.setText("Options");
+    toolsMenu.add(menuItem_options);
+
+    menuBar.add(toolsMenu);
+
     setJMenuBar(menuBar);
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -293,12 +303,14 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
   private javax.swing.JMenuBar menuBar;
   private javax.swing.JMenuItem menuItem_addGame;
   private javax.swing.JMenuItem menuItem_exit;
+  private javax.swing.JMenuItem menuItem_options;
   private javax.swing.JPanel panelMain;
   private javax.swing.JPanel panel_header;
   public static com.googlecode.starrating.StarRating rating;
   private javax.swing.JPanel right;
   private javax.swing.JSplitPane splitpane;
   public static javax.swing.JTextField tf_plays;
+  private javax.swing.JMenu toolsMenu;
   // End of variables declaration//GEN-END:variables
 
   private void createDatabase() {

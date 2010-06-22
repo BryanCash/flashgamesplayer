@@ -36,7 +36,8 @@ public class GamesTree extends javax.swing.JPanel {
   public static final int GENRE = 0;
   public static final int PLAYED = 1;
   public static final int RATE = 2;
-  public static final String[] SORTS = {"Genre", "Played", "Rate"};
+  public static final int INTERNET = 3;
+  public static final String[] SORTS = {"Genre", "Played", "Rate", "Internet"};
   private static final long serialVersionUID = 345345636456L;
   DefaultTreeModel model = new GamesTreeModel(null);
   private boolean isSelected;
@@ -158,9 +159,14 @@ public class GamesTree extends javax.swing.JPanel {
           Game game = (Game) node.getUserObject();
           delete.setText("Delete " + game.getTitle());
         } else {
-          Genre genre = (Genre) node.getUserObject();
-          if (node.isLeaf()) {
-            delete.setText("Delete " + node);
+          if (node.getUserObject() instanceof Genre) {
+            Genre genre = (Genre) node.getUserObject();
+            if (node.isLeaf()) {
+              delete.setText("Delete " + node);
+            } else {
+              delete.setText("Delete");
+              delete.setEnabled(false);
+            }
           } else {
             delete.setText("Delete");
             delete.setEnabled(false);
@@ -182,7 +188,11 @@ public class GamesTree extends javax.swing.JPanel {
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
     Object obj = node.getUserObject();
     if (obj instanceof Game) {
+      Game game = (Game)obj;
+      System.out.println(game.getId());
     } else if (obj instanceof Genre) {
+      Genre genre = (Genre)obj;
+      System.out.println(genre.getId());
     }
   }//GEN-LAST:event_deleteActionPerformed
   // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -207,6 +217,9 @@ public class GamesTree extends javax.swing.JPanel {
       case RATE:
         groupAndOrder = "GROUP BY g.rate, g.id ORDER BY g.rate DESC";
         break;
+      case INTERNET:
+        groupAndOrder = "GROUP BY g.internet, g.id ORDER BY g.internet DESC";
+        break;
     }
     String sql = "SELECT g.id AS id FROM games  g "
         + "INNER JOIN genres gen ON g.genre_id = gen.id " + groupAndOrder;
@@ -224,6 +237,9 @@ public class GamesTree extends javax.swing.JPanel {
             break;
           case RATE:
             category = game.getRate();
+            break;
+          case INTERNET:
+            category = game.isInternet() == Game.INTERNET ? "Internet" : "No Internet";
             break;
         }
 
