@@ -27,7 +27,7 @@ public class GamesChangeListener implements PropertyChangeListener {
       FlashGamesPlayer.rating.setRate(game.getRate());
       FlashGamesPlayer.rating.setRatingEnabled(true);
       FlashGamesPlayer.tf_plays.setText(String.valueOf(game.getPlayed()));
-
+      FlashGamesPlayer.gamePanel.setGame(game);
     }
   }
 }

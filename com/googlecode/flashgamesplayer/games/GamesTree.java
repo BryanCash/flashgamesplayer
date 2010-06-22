@@ -20,7 +20,13 @@ import javax.swing.tree.DefaultTreeModel;
 import com.googlecode.flashgamesplayer.FlashGamesPlayer;
 import com.googlecode.flashgamesplayer.database.Database;
 import com.googlecode.flashgamesplayer.database.Game;
+import com.googlecode.flashgamesplayer.database.Genre;
 import com.googlecode.flashgamesplayer.tools.GamesChangeListener;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+import javax.swing.tree.TreePath;
 
 /**
  *
@@ -29,14 +35,14 @@ import com.googlecode.flashgamesplayer.tools.GamesChangeListener;
 public class GamesTree extends javax.swing.JPanel {
 
   private static final long serialVersionUID = 345345636456L;
-  private DefaultMutableTreeNode root = new DefaultMutableTreeNode("Games");
-  private ArrayList<GameNode> list;
+  DefaultTreeModel model = new GamesTreeModel(null);
+  private boolean isSelected;
 
   /** Creates new form Tree */
   public GamesTree() {
     initComponents();
-    addPropertyChangeListener(new GamesChangeListener());
     setVisible(true);
+    addPropertyChangeListener(new GamesChangeListener());
   }
 
   /** This method is called from within the constructor to
@@ -48,101 +54,182 @@ public class GamesTree extends javax.swing.JPanel {
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
 
-    jScrollPane1 = new javax.swing.JScrollPane();
+    popup = new javax.swing.JPopupMenu();
+    addGame = new javax.swing.JMenuItem();
+    delete = new javax.swing.JMenuItem();
+    scrollpane = new javax.swing.JScrollPane();
     tree = new javax.swing.JTree();
 
-    javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
-    tree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
+    popup.setComponentPopupMenu(popup);
+    popup.setInvoker(scrollpane);
+
+    addGame.setText("Add Game");
+    addGame.setToolTipText("Add a new Game");
+    addGame.setPreferredSize(new java.awt.Dimension(140, 22));
+    addGame.setRolloverEnabled(true);
+    addGame.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        addGameActionPerformed(evt);
+      }
+    });
+    popup.add(addGame);
+
+    delete.setText("Delete");
+    delete.setToolTipText("Delete");
+    delete.setPreferredSize(new java.awt.Dimension(140, 22));
+    delete.setRolloverEnabled(true);
+    delete.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        deleteActionPerformed(evt);
+      }
+    });
+    popup.add(delete);
+
+    tree.setModel(model);
+    tree.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseReleased(java.awt.event.MouseEvent evt) {
+        treeMouseReleased(evt);
+      }
+    });
     tree.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
       public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
         treeValueChanged(evt);
       }
     });
-    jScrollPane1.setViewportView(tree);
+    scrollpane.setViewportView(tree);
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
     this.setLayout(layout);
     layout.setHorizontalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
+      .addComponent(scrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+      .addComponent(scrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
     );
   }// </editor-fold>//GEN-END:initComponents
 
   private void treeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_treeValueChanged
-    DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-    if (node != null) {
-      if (node.isLeaf()) {
-        if (node.getUserObject() instanceof Game) {
-          Game game = (Game) node.getUserObject();
-          firePropertyChange(GamesChangeListener.GAME_SELECTED, FlashGamesPlayer.gamePanel.getGame(), game);
-          FlashGamesPlayer.gamePanel.setGame(game);
+    if (isSelected) {
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+      if (node != null) {
+        if (node.isLeaf()) {
+          if (node.getUserObject() instanceof Game) {
+            Game game = (Game) node.getUserObject();
+            firePropertyChange(GamesChangeListener.GAME_SELECTED, FlashGamesPlayer.gamePanel.getGame(), game);
+          }
         }
       }
     }
   }//GEN-LAST:event_treeValueChanged
+
+  private void treeMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treeMouseReleased
+    if (evt.getButton() == MouseEvent.BUTTON1) {
+      isSelected = true;
+      Point p = evt.getPoint();
+      TreePath path = tree.getClosestPathForLocation(p.x, p.y);
+      if (tree.getPathBounds(path).contains(p)) {
+        tree.setSelectionPath(path);
+        treeValueChanged(null);
+      }
+    } else if (evt.getButton() == MouseEvent.BUTTON3) {
+      Point p = evt.getPoint();
+      popup.show(scrollpane, p.x, p.y);
+      TreePath path = tree.getClosestPathForLocation(p.x, p.y);
+      if (tree.getPathBounds(path).contains(p)) {
+        isSelected = false;
+        tree.setSelectionPath(path);
+      }
+      DefaultMutableTreeNode node = null;
+      if (tree.getSelectionCount() > 0) {
+        node = (DefaultMutableTreeNode) path.getLastPathComponent();
+        delete.setEnabled(true);
+        if (tree.getModel().isLeaf(node)) {
+          Game game = (Game) node.getUserObject();
+          delete.setText("Delete " + game.getTitle());
+        } else {
+          Genre genre = (Genre) node.getUserObject();
+          if (node.isLeaf()) {
+            delete.setText("Delete " + node);
+          } else {
+            delete.setText("Delete");
+            delete.setEnabled(false);
+          }
+        }
+      } else {
+        delete.setText("Delete");
+        delete.setEnabled(false);
+      }
+    }
+  }//GEN-LAST:event_treeMouseReleased
+
+  private void addGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addGameActionPerformed
+    new GameForm();
+  }//GEN-LAST:event_addGameActionPerformed
+
+  private void deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteActionPerformed
+    TreePath path = tree.getSelectionPath();
+    DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+    Object obj = node.getUserObject();
+    if (obj instanceof Game) {
+    } else if (obj instanceof Genre) {
+    }
+  }//GEN-LAST:event_deleteActionPerformed
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private javax.swing.JScrollPane jScrollPane1;
+  private javax.swing.JMenuItem addGame;
+  private javax.swing.JMenuItem delete;
+  private javax.swing.JPopupMenu popup;
+  private javax.swing.JScrollPane scrollpane;
   private javax.swing.JTree tree;
   // End of variables declaration//GEN-END:variables
 
   public void populateTree() {
-    list = new ArrayList<GameNode>();
+    ArrayList<GameNode> list = new ArrayList<GameNode>();
+
     //GameNode gNode = new GameNode("Games",null);
     //list.add(gNode);
     String sql = "SELECT g.id AS id , gen.genre AS genre FROM games  g INNER JOIN genres gen ON g.genre_id = gen.id GROUP BY gen.id ORDER BY gen.id";
     try {
       ResultSet rs = new Database().getStmt().executeQuery(sql);
       while (rs.next()) {
-        Game g = Game.getGameById(rs.getInt("id"));
-        String genre = rs.getString("genre");
-        list.add(new GameNode(genre, g));
+        Game game = Game.getGameById(rs.getInt("id"));
+        Genre genre = Genre.getGenreById(game.getGenre_id());
+        list.add(new GameNode(genre, game));
       }
-      createTree(list);
-      tree.setModel(new DefaultTreeModel(root));
+      DefaultMutableTreeNode root = createTree(list);
+      model = new DefaultTreeModel(root);
+      tree.setModel(model);
     } catch (SQLException ex) {
       FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
     }
   }
 
-  private void createTree(ArrayList<GameNode> list) {
+  private DefaultMutableTreeNode createTree(ArrayList<GameNode> list) {
+    DefaultMutableTreeNode root = new DefaultMutableTreeNode("Games");
     String prevNodeGenre = "";
     DefaultMutableTreeNode curNode = null;
     for (Iterator<GameNode> it = list.iterator(); it.hasNext();) {
       GameNode gameNode = it.next();
-      if (!gameNode.genre.equals(prevNodeGenre)) {
+      if (!gameNode.genre.getGenre().equals(prevNodeGenre)) {
         curNode = new DefaultMutableTreeNode(gameNode.genre);
-        getRoot().add(curNode);
+        root.add(curNode);
         curNode.add(new DefaultMutableTreeNode(gameNode.game));
+        prevNodeGenre = gameNode.genre.getGenre();
       } else {
         curNode.add(new DefaultMutableTreeNode(gameNode.game));
       }
     }
-  }
-
-  /**
-   * @return the root
-   */
-  public DefaultMutableTreeNode getRoot() {
     return root;
-  }
 
-  /**
-   * @param root the root to set
-   */
-  public void setRoot(DefaultMutableTreeNode root) {
-    this.root = root;
   }
 
   class GameNode {
 
-    private final String genre;
+    private final Genre genre;
     private final Game game;
 
-    public GameNode(String genre, Game g) {
+    public GameNode(Genre genre, Game g) {
       this.genre = genre;
       this.game = g;
     }

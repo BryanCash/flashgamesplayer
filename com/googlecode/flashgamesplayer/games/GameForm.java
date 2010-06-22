@@ -54,6 +54,7 @@ public class GameForm extends MyDraggable {
     components.add(tf_file);
     components.add(combo_genre);
     components.add(tf_title);
+    addPropertyChangeListener(new GamesChangeListener());
     setLocationRelativeTo(null);
     setVisible(true);
   }
@@ -236,7 +237,7 @@ public class GameForm extends MyDraggable {
           if(game.save() >-1){
             MyMessages.message("Game added", "The game was added");
             firePropertyChange(GamesChangeListener.GAME_ADDED, null, null);
-          };
+          }
         } catch (SQLException ex) {
           new File(Options.USER_DIR + Options.GAMES_DIR + filename).delete();
           FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
@@ -249,12 +250,13 @@ public class GameForm extends MyDraggable {
       JFileChooser fc = new JFileChooser(Options.USER_DIR);
       fc.setApproveButtonText("Import");
       fc.setDialogTitle("Import a flash game");
+      fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
       fc.setDialogType(JFileChooser.OPEN_DIALOG);
       fc.setFileFilter(new FileFilter() {
 
         @Override
         public boolean accept(File f) {
-          if (f.getName().endsWith(".swf")) {
+          if (f.getName().endsWith(".swf") || f.isDirectory()) {
             return true;
           }
           return false;

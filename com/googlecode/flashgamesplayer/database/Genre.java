@@ -35,6 +35,23 @@ public class Genre extends Record {
     return queryUpdate(sql);
   }
 
+  public static Genre getGenreById(int id) {
+    try {
+      String sql = "SELECT * FROM genres WHERE id =" + id;
+      ResultSet rs = FlashGamesPlayer.database.getStmt().executeQuery(sql);
+      while (rs.next()) {
+        Genre g = new Genre();
+        g.setId(rs.getInt("id"));
+        g.setGenre(rs.getString("genre"));
+        return g;
+      }
+      return null;
+    } catch (SQLException ex) {
+      FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
+      return null;
+    }
+  }
+
   public static Vector<Genre> getAll() {
     Vector<Genre> genres = new Vector<Genre>();
     try {

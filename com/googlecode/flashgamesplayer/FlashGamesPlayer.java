@@ -26,7 +26,7 @@ import com.googlecode.flashgamesplayer.database.Game;
 import com.googlecode.flashgamesplayer.games.GameForm;
 import com.googlecode.flashgamesplayer.tools.GamesChangeListener;
 import com.googlecode.flashgamesplayer.tools.Options;
-import com.googlecode.flashgamesplayer.tools.myLogger;
+import com.googlecode.flashgamesplayer.tools.GamesLogger;
 
 /**
  *
@@ -64,7 +64,6 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
     panelMain.add(gamePanel);
     setSize(800, 600);
     setLocationRelativeTo(null);
-    
     setVisible(true);
   }
 
@@ -279,7 +278,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
   }
 
   private void createLogger() {
-    logger = myLogger.createHtmlLogger("FLASHGAMESPLAYER", Options.USER_DIR + "FlashGamesPlayer", 262144, true, 1);
+    logger = GamesLogger.createHtmlLogger("FLASHGAMESPLAYER", Options.USER_DIR + "FlashGamesPlayer", 262144, true, 1);
     logger.setLevel(Level.ALL);
   }
 
