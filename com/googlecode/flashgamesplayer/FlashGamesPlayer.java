@@ -24,9 +24,11 @@ import javax.swing.plaf.basic.BasicComboBoxUI.PropertyChangeHandler;
 import com.googlecode.flashgamesplayer.database.Database;
 import com.googlecode.flashgamesplayer.database.Game;
 import com.googlecode.flashgamesplayer.games.GameForm;
+import com.googlecode.flashgamesplayer.games.GamesTree;
 import com.googlecode.flashgamesplayer.tools.GamesChangeListener;
 import com.googlecode.flashgamesplayer.tools.Options;
 import com.googlecode.flashgamesplayer.tools.GamesLogger;
+import javax.swing.DefaultComboBoxModel;
 
 /**
  *
@@ -79,6 +81,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
     splitpane = new javax.swing.JSplitPane();
     left = new javax.swing.JPanel();
     gamesTree = new com.googlecode.flashgamesplayer.games.GamesTree();
+    combo_sort = new javax.swing.JComboBox();
     right = new javax.swing.JPanel();
     panelMain = new javax.swing.JPanel();
     jPanel1 = new javax.swing.JPanel();
@@ -98,20 +101,31 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
 
     splitpane.setDividerLocation(200);
 
+    combo_sort.setModel(new DefaultComboBoxModel(GamesTree.SORTS));
+    combo_sort.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        combo_sortActionPerformed(evt);
+      }
+    });
+
     javax.swing.GroupLayout leftLayout = new javax.swing.GroupLayout(left);
     left.setLayout(leftLayout);
     leftLayout.setHorizontalGroup(
       leftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGroup(leftLayout.createSequentialGroup()
+      .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, leftLayout.createSequentialGroup()
         .addContainerGap()
-        .addComponent(gamesTree, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
+        .addGroup(leftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+          .addComponent(combo_sort, javax.swing.GroupLayout.Alignment.LEADING, 0, 179, Short.MAX_VALUE)
+          .addComponent(gamesTree, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE))
         .addContainerGap())
     );
     leftLayout.setVerticalGroup(
       leftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGroup(leftLayout.createSequentialGroup()
-        .addContainerGap()
-        .addComponent(gamesTree, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
+      .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, leftLayout.createSequentialGroup()
+        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .addComponent(combo_sort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+        .addComponent(gamesTree, javax.swing.GroupLayout.PREFERRED_SIZE, 528, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addContainerGap())
     );
 
@@ -190,7 +204,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
         .addContainerGap()
         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(panelMain, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
+        .addComponent(panelMain, javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
         .addContainerGap())
     );
 
@@ -226,7 +240,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addComponent(splitpane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 576, Short.MAX_VALUE)
+      .addComponent(splitpane, javax.swing.GroupLayout.Alignment.TRAILING)
     );
 
     pack();
@@ -239,6 +253,11 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
   private void menuItem_exitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItem_exitActionPerformed
     System.exit(0);
   }//GEN-LAST:event_menuItem_exitActionPerformed
+
+  private void combo_sortActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combo_sortActionPerformed
+    int sort = combo_sort.getSelectedIndex();
+    gamesTree.populateTree(sort);
+  }//GEN-LAST:event_combo_sortActionPerformed
 
   /**
    * @param args the command line arguments
@@ -256,6 +275,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
 
   }
   // Variables declaration - do not modify//GEN-BEGIN:variables
+  private javax.swing.JComboBox combo_sort;
   private javax.swing.JMenu gamesMenu;
   public static com.googlecode.flashgamesplayer.games.GamesTree gamesTree;
   private javax.swing.JLabel jLabel1;

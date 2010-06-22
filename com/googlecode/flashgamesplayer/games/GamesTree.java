@@ -24,8 +24,6 @@ import com.googlecode.flashgamesplayer.database.Genre;
 import com.googlecode.flashgamesplayer.tools.GamesChangeListener;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-import javax.swing.JTree;
-import javax.swing.SwingUtilities;
 import javax.swing.tree.TreePath;
 
 /**
@@ -34,9 +32,14 @@ import javax.swing.tree.TreePath;
  */
 public class GamesTree extends javax.swing.JPanel {
 
+  public static final int GENRE = 0;
+  public static final int PLAYED = 1;
+  public static final int RATE = 2;
+  public static final String[] SORTS = {"Genre", "Played", "Rate"};
   private static final long serialVersionUID = 345345636456L;
   DefaultTreeModel model = new GamesTreeModel(null);
   private boolean isSelected;
+  private int sort = GENRE;
 
   /** Creates new form Tree */
   public GamesTree() {
@@ -85,6 +88,7 @@ public class GamesTree extends javax.swing.JPanel {
     });
     popup.add(delete);
 
+    tree.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
     tree.setModel(model);
     tree.addMouseListener(new java.awt.event.MouseAdapter() {
       public void mouseReleased(java.awt.event.MouseEvent evt) {
@@ -102,11 +106,11 @@ public class GamesTree extends javax.swing.JPanel {
     this.setLayout(layout);
     layout.setHorizontalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addComponent(scrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
+      .addComponent(scrollpane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addComponent(scrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+      .addComponent(scrollpane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
     );
   }// </editor-fold>//GEN-END:initComponents
 
@@ -184,18 +188,41 @@ public class GamesTree extends javax.swing.JPanel {
   private javax.swing.JTree tree;
   // End of variables declaration//GEN-END:variables
 
-  public void populateTree() {
+  public void populateTree(int sort) {
+    setSort(sort);
     ArrayList<GameNode> list = new ArrayList<GameNode>();
-
-    //GameNode gNode = new GameNode("Games",null);
-    //list.add(gNode);
-    String sql = "SELECT g.id AS id , gen.genre AS genre FROM games  g INNER JOIN genres gen ON g.genre_id = gen.id GROUP BY gen.id ORDER BY gen.id";
+    String groupAndOrder="";
+    switch (sort) {
+      case GENRE:
+        groupAndOrder = "GROUP BY gen.id, g.id ORDER BY gen.id";
+        break;
+      case PLAYED:
+        groupAndOrder = "ORDER BY g.played DESC";
+        break;
+      case RATE:
+        groupAndOrder = "GROUP BY g.rate, g.id ORDER BY g.rate DESC";
+        break;
+    }
+    String sql = "SELECT g.id AS id FROM games  g "
+        + "INNER JOIN genres gen ON g.genre_id = gen.id "+groupAndOrder;
     try {
       ResultSet rs = new Database().getStmt().executeQuery(sql);
       while (rs.next()) {
         Game game = Game.getGameById(rs.getInt("id"));
-        Genre genre = Genre.getGenreById(game.getGenre_id());
-        list.add(new GameNode(genre, game));
+        Object category = null;
+        switch (sort){
+          case GENRE:
+           category = Genre.getGenreById(game.getGenre_id()).getGenre();
+           break;
+          case PLAYED:
+            category = game.getPlayed();
+            break;
+          case RATE:
+            category = game.getRate();
+            break;
+        }
+        
+        list.add(new GameNode(category, game));
       }
       DefaultMutableTreeNode root = createTree(list);
       model = new DefaultTreeModel(root);
@@ -207,15 +234,15 @@ public class GamesTree extends javax.swing.JPanel {
 
   private DefaultMutableTreeNode createTree(ArrayList<GameNode> list) {
     DefaultMutableTreeNode root = new DefaultMutableTreeNode("Games");
-    String prevNodeGenre = "";
+    Object prevNodeCategory = "";
     DefaultMutableTreeNode curNode = null;
     for (Iterator<GameNode> it = list.iterator(); it.hasNext();) {
       GameNode gameNode = it.next();
-      if (!gameNode.genre.getGenre().equals(prevNodeGenre)) {
-        curNode = new DefaultMutableTreeNode(gameNode.genre);
+      if (!gameNode.category.equals(prevNodeCategory)) {
+        curNode = new DefaultMutableTreeNode(gameNode.category);
         root.add(curNode);
         curNode.add(new DefaultMutableTreeNode(gameNode.game));
-        prevNodeGenre = gameNode.genre.getGenre();
+        prevNodeCategory = gameNode.category;
       } else {
         curNode.add(new DefaultMutableTreeNode(gameNode.game));
       }
@@ -224,13 +251,31 @@ public class GamesTree extends javax.swing.JPanel {
 
   }
 
+  public void populateTree() {
+    populateTree(getSort());
+  }
+
+  /**
+   * @return the sort
+   */
+  public int getSort() {
+    return sort;
+  }
+
+  /**
+   * @param sort the sort to set
+   */
+  public void setSort(int sort) {
+    this.sort = sort;
+  }
+
   class GameNode {
 
-    private final Genre genre;
+    private final Object category;
     private final Game game;
 
-    public GameNode(Genre genre, Game g) {
-      this.genre = genre;
+    public GameNode(Object category, Game g) {
+      this.category = category;
       this.game = g;
     }
   }

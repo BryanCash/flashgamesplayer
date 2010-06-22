@@ -23,11 +23,11 @@ public class GamesChangeListener implements PropertyChangeListener {
       FlashGamesPlayer.gamesTree.populateTree();
     } else if (evt.getPropertyName().equals(GAME_SELECTED)) {
       Game game = (Game) evt.getNewValue();
+      FlashGamesPlayer.gamePanel.setGame(game);
       FlashGamesPlayer.label_gameTitle.setText(game.getTitle());
       FlashGamesPlayer.rating.setRate(game.getRate());
       FlashGamesPlayer.rating.setRatingEnabled(true);
       FlashGamesPlayer.tf_plays.setText(String.valueOf(game.getPlayed()));
-      FlashGamesPlayer.gamePanel.setGame(game);
     }
   }
 }
