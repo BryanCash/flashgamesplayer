@@ -1,4 +1,4 @@
-<?xml version="1.1" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
   <Properties>
@@ -130,12 +130,16 @@
               </FontInfo>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
-            <Property name="text" type="java.lang.String" value="Add new Game"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="game.isNewGame() ? &quot;Add new game&quot; : &quot;Edit game&quot;" type="code"/>
+            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="bt_add">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Add"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="game.isNewGame() ? &quot;Add&quot; : &quot;Edit&quot;" type="code"/>
+            </Property>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bt_addActionPerformed"/>
@@ -190,7 +194,7 @@
               <Connection code="game.getId() == 0" type="code"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="game.getFilename()" type="code"/>
+              <Connection code="game.isNewGame() ? &quot;&quot; :Options.USER_DIR + Options.GAMES_DIR +game.getFilename()" type="code"/>
             </Property>
             <Property name="name" type="java.lang.String" value="Swf file" noResource="true"/>
           </Properties>

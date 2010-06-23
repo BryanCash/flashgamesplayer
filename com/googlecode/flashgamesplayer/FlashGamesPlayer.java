@@ -85,6 +85,9 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
 
+    toolbar = new javax.swing.JToolBar();
+    bt_addGame = new javax.swing.JButton();
+    bt_delete = new javax.swing.JButton();
     splitpane = new javax.swing.JSplitPane();
     left = new javax.swing.JPanel();
     gamesTree = new com.googlecode.flashgamesplayer.games.tree.GamesTree();
@@ -107,6 +110,34 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     setTitle("Flash games player v0.1");
     setMinimumSize(new java.awt.Dimension(780, 580));
+
+    toolbar.setFloatable(false);
+    toolbar.setRollover(true);
+
+    bt_addGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/addGame.png"))); // NOI18N
+    bt_addGame.setToolTipText("Add Game");
+    bt_addGame.setFocusable(false);
+    bt_addGame.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    bt_addGame.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    bt_addGame.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        bt_addGameActionPerformed(evt);
+      }
+    });
+    toolbar.add(bt_addGame);
+
+    bt_delete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/delete.png"))); // NOI18N
+    bt_delete.setToolTipText("Delete Game");
+    bt_delete.setEnabled(false);
+    bt_delete.setFocusable(false);
+    bt_delete.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    bt_delete.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    bt_delete.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        bt_deleteActionPerformed(evt);
+      }
+    });
+    toolbar.add(bt_delete);
 
     splitpane.setDividerLocation(200);
     splitpane.setMinimumSize(new java.awt.Dimension(700, 500));
@@ -138,7 +169,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
         .addContainerGap()
         .addComponent(combo_sort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-        .addComponent(gamesTree, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+        .addComponent(gamesTree, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
         .addContainerGap())
     );
 
@@ -218,7 +249,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
         .addContainerGap()
         .addComponent(panel_header, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(panelMain, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
+        .addComponent(panelMain, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
         .addContainerGap())
     );
 
@@ -263,10 +294,16 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
     layout.setHorizontalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addComponent(splitpane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 789, Short.MAX_VALUE)
+      .addGroup(layout.createSequentialGroup()
+        .addComponent(toolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 779, Short.MAX_VALUE)
+        .addContainerGap())
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addComponent(splitpane, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE)
+      .addGroup(layout.createSequentialGroup()
+        .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(splitpane, javax.swing.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE))
     );
 
     pack();
@@ -289,6 +326,14 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
     OptionsForm.main(null);
   }//GEN-LAST:event_menuItem_optionsActionPerformed
 
+  private void bt_addGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_addGameActionPerformed
+    new GameForm();
+  }//GEN-LAST:event_bt_addGameActionPerformed
+
+  private void bt_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_deleteActionPerformed
+    gamesTree.deleteGame(gamesTree.getSelectedGame());
+  }//GEN-LAST:event_bt_deleteActionPerformed
+
   /**
    * @param args the command line arguments
    */
@@ -305,6 +350,8 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
 
   }
   // Variables declaration - do not modify//GEN-BEGIN:variables
+  private javax.swing.JButton bt_addGame;
+  public static javax.swing.JButton bt_delete;
   private javax.swing.JComboBox combo_sort;
   private javax.swing.JMenu gamesMenu;
   public static com.googlecode.flashgamesplayer.games.tree.GamesTree gamesTree;
@@ -322,6 +369,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
   private javax.swing.JPanel right;
   private javax.swing.JSplitPane splitpane;
   public static javax.swing.JTextField tf_plays;
+  private javax.swing.JToolBar toolbar;
   private javax.swing.JMenu toolsMenu;
   // End of variables declaration//GEN-END:variables
 

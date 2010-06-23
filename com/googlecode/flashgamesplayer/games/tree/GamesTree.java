@@ -22,13 +22,14 @@ import com.googlecode.flashgamesplayer.database.Database;
 import com.googlecode.flashgamesplayer.database.Game;
 import com.googlecode.flashgamesplayer.database.Genre;
 import com.googlecode.flashgamesplayer.games.GameForm;
-import com.googlecode.flashgamesplayer.games.GamePanel;
 import com.googlecode.flashgamesplayer.tools.GamesChangeListener;
 import com.googlecode.flashgamesplayer.tools.MyMessages;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 /**
@@ -48,6 +49,7 @@ public class GamesTree extends javax.swing.JPanel {
   private int sort = GENRE;
   private Game selectedGame;
   private Genre selectedGenre;
+  private TreePath selectedPath;
 
   /** Creates new form Tree */
   public GamesTree() {
@@ -132,14 +134,21 @@ public class GamesTree extends javax.swing.JPanel {
   private void treeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_treeValueChanged
     if (isSelected) {
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+      setSelectedGame(null);
       if (node != null) {
         if (node.isLeaf()) {
           if (node.getUserObject() instanceof Game) {
-            selectedGame = (Game) node.getUserObject();
-            if (FlashGamesPlayer.isInternet || selectedGame.isInternet() == Game.NO_INTERNET) {
-              firePropertyChange(GamesChangeListener.GAME_SELECTED, FlashGamesPlayer.gamePanel.getGame(), selectedGame);
+            setSelectedGame((Game) node.getUserObject());
+            if (!FlashGamesPlayer.isInternet && getSelectedGame().isInternet() == Game.INTERNET) {
+              return;
             }
+            firePropertyChange(GamesChangeListener.GAME_SELECTED, FlashGamesPlayer.gamePanel.getGame(), getSelectedGame());
           } else if (node.getUserObject() instanceof Genre) {
+            selectedGenre = (Genre) node.getUserObject();
+
+          }
+        } else {
+          if (node.getUserObject() instanceof Genre) {
             selectedGenre = (Genre) node.getUserObject();
           }
         }
@@ -151,15 +160,15 @@ public class GamesTree extends javax.swing.JPanel {
     DefaultMutableTreeNode node;
     if (evt.getButton() == MouseEvent.BUTTON1) {
       Point p = evt.getPoint();
-      TreePath path = tree.getClosestPathForLocation(p.x, p.y);
-      if (tree.getPathBounds(path).contains(p)) {
+      selectedPath = tree.getClosestPathForLocation(p.x, p.y);
+      if (tree.getPathBounds(selectedPath).contains(p)) {
         isSelected = true;
-        tree.setSelectionPath(path);
+        tree.setSelectionPath(selectedPath);
         treeValueChanged(null);
       }
     } else if (evt.getButton() == MouseEvent.BUTTON3) {
       Point p = evt.getPoint();
-      popup.show(scrollpane, p.x, p.y);
+      //popup.show(scrollpane, p.x, p.y);
       TreePath path = tree.getClosestPathForLocation(p.x, p.y);
       if (tree.getPathBounds(path).contains(p)) {
         isSelected = false;
@@ -210,6 +219,16 @@ public class GamesTree extends javax.swing.JPanel {
     }
   }//GEN-LAST:event_deleteActionPerformed
 
+  public void deleteGame(Game game) {
+    if (MyMessages.question("Delete Game", "Really delete the game : " + game.getTitle()) == JOptionPane.OK_OPTION) {
+      if (game.delete()) {
+        firePropertyChange(GamesChangeListener.GAME_DELETED, game, null);
+      } else {
+        MyMessages.error("Error", "Could not delete the game");
+      }
+    }
+  }
+
   private void treeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_treeKeyReleased
     TreePath path = tree.getSelectionPath();
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
@@ -219,13 +238,7 @@ public class GamesTree extends javax.swing.JPanel {
       if (evt.getKeyCode() == KeyEvent.VK_F2) {
         new GameForm(game);
       } else if (evt.getKeyCode() == KeyEvent.VK_DELETE) {
-        if (MyMessages.question("Delete Game", "Really delete the game : " + game.getTitle()) == JOptionPane.OK_OPTION) {
-          if (game.delete()) {
-            firePropertyChange(GamesChangeListener.GAME_DELETED, game, null);
-          } else {
-            MyMessages.error("Error", "Could not delete the game");
-          }
-        }
+        deleteGame(game);
       }
     }
   }//GEN-LAST:event_treeKeyReleased
@@ -243,20 +256,20 @@ public class GamesTree extends javax.swing.JPanel {
     String groupAndOrder = "";
     switch (sort) {
       case GENRE:
-        groupAndOrder = "GROUP BY gen.id, g.id ORDER BY gen.id";
+        groupAndOrder = "GROUP BY gen.id, g.id ORDER BY gen.id, g.title";
         break;
       case PLAYED:
-        groupAndOrder = "ORDER BY g.played DESC";
+        groupAndOrder = "ORDER BY g.played DESC, g.title";
         break;
       case RATE:
-        groupAndOrder = "GROUP BY g.rate, g.id ORDER BY g.rate DESC";
+        groupAndOrder = "GROUP BY g.rate, g.id ORDER BY g.rate DESC, g.title";
         break;
       case INTERNET:
-        groupAndOrder = "GROUP BY g.internet, g.id ORDER BY g.internet DESC";
+        groupAndOrder = "GROUP BY g.internet, g.id ORDER BY g.internet DESC, g.title";
         break;
     }
     String sql = "SELECT g.id AS id FROM games  g "
-        + "INNER JOIN genres gen ON g.genre_id = gen.id " + groupAndOrder;
+            + "INNER JOIN genres gen ON g.genre_id = gen.id " + groupAndOrder;
     try {
       ResultSet rs = new Database().getStmt().executeQuery(sql);
       while (rs.next()) {
@@ -282,11 +295,11 @@ public class GamesTree extends javax.swing.JPanel {
       DefaultMutableTreeNode root = createTree(list);
       model = new DefaultTreeModel(root);
       tree.setModel(model);
-      Object[] oba = new Object[2];
-      oba[0] = new DefaultMutableTreeNode("Games");
-      oba[1] = new DefaultMutableTreeNode(new String("Arcade"));
-      tree.expandPath(tree.getPathForRow(1));
-      tree.makeVisible(new TreePath(oba));
+      int row = 0;
+      while (row < tree.getRowCount()) {
+        tree.expandRow(row);
+        row++;
+      }
     } catch (SQLException ex) {
       FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
     }
@@ -327,6 +340,21 @@ public class GamesTree extends javax.swing.JPanel {
    */
   public void setSort(int sort) {
     this.sort = sort;
+  }
+
+  /**
+   * @return the selectedGame
+   */
+  public Game getSelectedGame() {
+    return selectedGame;
+  }
+
+  /**
+   * @param selectedGame the selectedGame to set
+   */
+  public void setSelectedGame(Game selectedGame) {
+    FlashGamesPlayer.bt_delete.setEnabled(selectedGame != null);
+    this.selectedGame = selectedGame;
   }
 
   class GameNode {

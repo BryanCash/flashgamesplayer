@@ -43,6 +43,7 @@ public class GameForm extends MyDraggable {
   DefaultComboBoxModel genresModel;
   Game game;
 
+
   /** Creates new form GameForm */
   public GameForm() {
     this(new Game());
@@ -92,9 +93,9 @@ public class GameForm extends MyDraggable {
 
     jLabel1.setFont(jLabel1.getFont().deriveFont(jLabel1.getFont().getStyle() | java.awt.Font.BOLD, jLabel1.getFont().getSize()+2));
     jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-    jLabel1.setText("Add new Game");
+    jLabel1.setText(game.isNewGame() ? "Add new game" : "Edit game");
 
-    bt_add.setText("Add");
+    bt_add.setText(game.isNewGame() ? "Add" : "Edit");
     bt_add.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         bt_addActionPerformed(evt);
@@ -125,7 +126,7 @@ public class GameForm extends MyDraggable {
     combo_genre.setName("Genre"); // NOI18N
 
     tf_file.setEditable(game.getId() == 0);
-    tf_file.setText(game.getFilename());
+    tf_file.setText(game.isNewGame() ? "" :Options.USER_DIR + Options.GAMES_DIR +game.getFilename());
     tf_file.setName("Swf file"); // NOI18N
 
     bt_browse.setText("Browse");
@@ -247,17 +248,19 @@ public class GameForm extends MyDraggable {
         String filename = new File(tf_file.getText().trim()).getName();
         game.setGenre_id(genreId);
         game.setTitle(title);
-        game.setFilename(filename);
+        if(game.isNewGame()){
+          game.setFilename(filename);
+        }
         game.setInternet(cb_internet.isSelected() ? 1 : 0);
-      try {
-        MyFunctions.copyfile(swfFile, Options.USER_DIR + Options.GAMES_DIR + filename);
-      } catch (FileNotFoundException ex) {
-        FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
-      } catch (IOException ex) {
-        FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
-      }
         try {
-          if(game.save() >-1){
+          MyFunctions.copyfile(swfFile, Options.USER_DIR + Options.GAMES_DIR + filename);
+        } catch (FileNotFoundException ex) {
+          FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+          FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
+        }
+        try {
+          if (game.save() > -1) {
             MyMessages.message("Game added", "The game was added");
             firePropertyChange(GamesChangeListener.GAME_ADDED, null, null);
           }
@@ -300,8 +303,6 @@ public class GameForm extends MyDraggable {
         }
       }
     }//GEN-LAST:event_bt_browseActionPerformed
-
- 
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JButton bt_add;
   private javax.swing.JButton bt_browse;

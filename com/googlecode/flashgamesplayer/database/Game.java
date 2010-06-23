@@ -25,12 +25,14 @@ public class Game extends Record {
   private int played;
   private double rate = 0.0;
   private int internet;
+  private boolean newGame;
 
   public static int NO_INTERNET = 0;
   public static int INTERNET = 1;
 
   public Game() {
     super();
+    setNewGame(true);
   }
 
   public int save() throws SQLException {
@@ -63,6 +65,7 @@ public class Game extends Record {
         game.setPlayed(rs.getInt("played"));
         game.setRate(rs.getDouble("rate"));
         game.setInternet(rs.getInt("internet"));
+        game.setNewGame(false);
         return game;
       }
       return null;
@@ -216,6 +219,20 @@ public class Game extends Record {
    */
   public void setInternet(int internet) {
     this.internet = internet;
+  }
+
+  /**
+   * @return the newGame
+   */
+  public boolean isNewGame() {
+    return newGame;
+  }
+
+  /**
+   * @param newGame the newGame to set
+   */
+  public void setNewGame(boolean newGame) {
+    this.newGame = newGame;
   }
 
 
