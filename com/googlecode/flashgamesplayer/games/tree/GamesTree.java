@@ -46,6 +46,8 @@ public class GamesTree extends javax.swing.JPanel {
   DefaultTreeModel model = new GamesTreeModel(null);
   private boolean isSelected;
   private int sort = GENRE;
+  private Game selectedGame;
+  private Genre selectedGenre;
 
   /** Creates new form Tree */
   public GamesTree() {
@@ -133,10 +135,12 @@ public class GamesTree extends javax.swing.JPanel {
       if (node != null) {
         if (node.isLeaf()) {
           if (node.getUserObject() instanceof Game) {
-            Game game = (Game) node.getUserObject();
-            if (FlashGamesPlayer.isInternet || game.isInternet() == Game.NO_INTERNET) {
-              firePropertyChange(GamesChangeListener.GAME_SELECTED, FlashGamesPlayer.gamePanel.getGame(), game);
+            selectedGame = (Game) node.getUserObject();
+            if (FlashGamesPlayer.isInternet || selectedGame.isInternet() == Game.NO_INTERNET) {
+              firePropertyChange(GamesChangeListener.GAME_SELECTED, FlashGamesPlayer.gamePanel.getGame(), selectedGame);
             }
+          } else if (node.getUserObject() instanceof Genre) {
+            selectedGenre = (Genre) node.getUserObject();
           }
         }
       }
@@ -235,10 +239,6 @@ public class GamesTree extends javax.swing.JPanel {
 
   public void populateTree(int sort) {
     setSort(sort);
-    TreePath selection = null;
-    if (tree.getSelectionPath() != null) {
-      selection = tree.getSelectionPath().getParentPath();
-    }
     ArrayList<GameNode> list = new ArrayList<GameNode>();
     String groupAndOrder = "";
     switch (sort) {
@@ -282,9 +282,11 @@ public class GamesTree extends javax.swing.JPanel {
       DefaultMutableTreeNode root = createTree(list);
       model = new DefaultTreeModel(root);
       tree.setModel(model);
-      if (selection != null) {
-        tree.expandPath(selection);
-      }
+      Object[] oba = new Object[2];
+      oba[0] = new DefaultMutableTreeNode("Games");
+      oba[1] = new DefaultMutableTreeNode(new String("Arcade"));
+      tree.expandPath(tree.getPathForRow(1));
+      tree.makeVisible(new TreePath(oba));
     } catch (SQLException ex) {
       FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
     }
@@ -329,8 +331,8 @@ public class GamesTree extends javax.swing.JPanel {
 
   class GameNode {
 
-    private final Object category;
-    private final Game game;
+    private Object category;
+    private Game game;
 
     public GameNode(Object category, Game g) {
       this.category = category;
