@@ -27,7 +27,7 @@ public class Genre extends Record {
   public int save() throws SQLException {
     String sql;
     if (this.getId() != 0) {
-      sql = "UPDATE genres SET genre = ;" + this.getGenre() + "' WHERE id = " + this.getId();
+      sql = "UPDATE genres SET genre = '" + this.getGenre() + "' WHERE id = " + this.getId();
     } else {
       sql = "INSERT INTO genres (genre) "
               + "VALUES('" + this.getGenre() + "')";

@@ -22,9 +22,13 @@ import com.googlecode.flashgamesplayer.database.Database;
 import com.googlecode.flashgamesplayer.database.Game;
 import com.googlecode.flashgamesplayer.database.Genre;
 import com.googlecode.flashgamesplayer.games.GameForm;
+import com.googlecode.flashgamesplayer.games.GamePanel;
 import com.googlecode.flashgamesplayer.tools.GamesChangeListener;
+import com.googlecode.flashgamesplayer.tools.MyMessages;
 import java.awt.Point;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import javax.swing.JOptionPane;
 import javax.swing.tree.TreePath;
 
 /**
@@ -104,6 +108,11 @@ public class GamesTree extends javax.swing.JPanel {
         treeValueChanged(evt);
       }
     });
+    tree.addKeyListener(new java.awt.event.KeyAdapter() {
+      public void keyReleased(java.awt.event.KeyEvent evt) {
+        treeKeyReleased(evt);
+      }
+    });
     scrollpane.setViewportView(tree);
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -135,11 +144,12 @@ public class GamesTree extends javax.swing.JPanel {
   }//GEN-LAST:event_treeValueChanged
 
   private void treeMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treeMouseReleased
+    DefaultMutableTreeNode node;
     if (evt.getButton() == MouseEvent.BUTTON1) {
-      isSelected = true;
       Point p = evt.getPoint();
       TreePath path = tree.getClosestPathForLocation(p.x, p.y);
       if (tree.getPathBounds(path).contains(p)) {
+        isSelected = true;
         tree.setSelectionPath(path);
         treeValueChanged(null);
       }
@@ -151,7 +161,7 @@ public class GamesTree extends javax.swing.JPanel {
         isSelected = false;
         tree.setSelectionPath(path);
       }
-      DefaultMutableTreeNode node = null;
+      node = null;
       if (tree.getSelectionCount() > 0) {
         node = (DefaultMutableTreeNode) path.getLastPathComponent();
         delete.setEnabled(true);
@@ -188,13 +198,33 @@ public class GamesTree extends javax.swing.JPanel {
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
     Object obj = node.getUserObject();
     if (obj instanceof Game) {
-      Game game = (Game)obj;
+      Game game = (Game) obj;
       System.out.println(game.getId());
     } else if (obj instanceof Genre) {
-      Genre genre = (Genre)obj;
+      Genre genre = (Genre) obj;
       System.out.println(genre.getId());
     }
   }//GEN-LAST:event_deleteActionPerformed
+
+  private void treeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_treeKeyReleased
+    TreePath path = tree.getSelectionPath();
+    DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+    Object obj = node.getUserObject();
+    if (obj instanceof Game) {
+      Game game = (Game) obj;
+      if (evt.getKeyCode() == KeyEvent.VK_F2) {
+        new GameForm(game);
+      } else if (evt.getKeyCode() == KeyEvent.VK_DELETE) {
+        if (MyMessages.question("Delete Game", "Really delete the game : " + game.getTitle()) == JOptionPane.OK_OPTION) {
+          if (game.delete()) {
+            firePropertyChange(GamesChangeListener.GAME_DELETED, game, null);
+          } else {
+            MyMessages.error("Error", "Could not delete the game");
+          }
+        }
+      }
+    }
+  }//GEN-LAST:event_treeKeyReleased
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JMenuItem addGame;
   private javax.swing.JMenuItem delete;
@@ -205,6 +235,10 @@ public class GamesTree extends javax.swing.JPanel {
 
   public void populateTree(int sort) {
     setSort(sort);
+    TreePath selection = null;
+    if (tree.getSelectionPath() != null) {
+      selection = tree.getSelectionPath().getParentPath();
+    }
     ArrayList<GameNode> list = new ArrayList<GameNode>();
     String groupAndOrder = "";
     switch (sort) {
@@ -248,6 +282,9 @@ public class GamesTree extends javax.swing.JPanel {
       DefaultMutableTreeNode root = createTree(list);
       model = new DefaultTreeModel(root);
       tree.setModel(model);
+      if (selection != null) {
+        tree.expandPath(selection);
+      }
     } catch (SQLException ex) {
       FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
     }

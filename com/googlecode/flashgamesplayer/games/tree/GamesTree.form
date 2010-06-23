@@ -91,6 +91,7 @@
           <Events>
             <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="treeMouseReleased"/>
             <EventHandler event="valueChanged" listener="javax.swing.event.TreeSelectionListener" parameters="javax.swing.event.TreeSelectionEvent" handler="treeValueChanged"/>
+            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="treeKeyReleased"/>
           </Events>
         </Component>
       </SubComponents>

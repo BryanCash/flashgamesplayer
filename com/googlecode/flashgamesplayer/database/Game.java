@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.googlecode.flashgamesplayer.FlashGamesPlayer;
+import com.googlecode.flashgamesplayer.tools.MyMessages;
+import java.io.File;
 
 /**
  *
@@ -78,6 +80,19 @@ public class Game extends Record {
   public static int updateRate(int id, double rate) throws SQLException {
     String sql = "UPDATE games SET rate = " + rate + " WHERE id = " + id;
     return queryUpdate(sql);
+  }
+
+   public boolean delete() {
+    try {
+      String sql = "DELETE FROM games WHERE id =" + this.getId();
+      queryUpdate(sql);
+      //new File(Options.USER_DIR + Options.GAMES_DIR + this.getFilename()).delete();
+      return true;
+    } catch (SQLException ex) {
+      FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
+      return false;
+    }
+    
   }
 
   public static Game getFirstGame(int genre) {
@@ -202,4 +217,6 @@ public class Game extends Record {
   public void setInternet(int internet) {
     this.internet = internet;
   }
+
+
 }

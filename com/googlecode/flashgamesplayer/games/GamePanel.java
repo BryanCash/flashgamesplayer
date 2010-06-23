@@ -14,12 +14,10 @@ import chrriis.dj.nativeswing.swtimpl.components.JFlashPlayer;
 import java.awt.BorderLayout;
 import java.sql.SQLException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import com.googlecode.flashgamesplayer.FlashGamesPlayer;
 import com.googlecode.flashgamesplayer.database.Game;
-import com.googlecode.flashgamesplayer.tools.GamesChangeListener;
-import com.googlecode.flashgamesplayer.tools.MyFunctions;
-import com.googlecode.flashgamesplayer.tools.Options;
+import com.googlecode.flashgamesplayer.database.Genre;
+import com.googlecode.flashgamesplayer.database.Options;
 
 /**
  *
@@ -29,6 +27,7 @@ public class GamePanel extends javax.swing.JPanel {
 
   private JFlashPlayer flashPlayer;
   private Game game;
+  private int genre_id;
 
   /** Creates new form flash */
   public GamePanel() {
@@ -36,6 +35,9 @@ public class GamePanel extends javax.swing.JPanel {
   }
 
   public void setGame(Game game) {
+    if (game == null) {
+      game = new Game();
+    }
     if (flashPlayer != null) {
       remove(flashPlayer);
     }
@@ -44,6 +46,11 @@ public class GamePanel extends javax.swing.JPanel {
     add(flashPlayer, BorderLayout.CENTER);
     validate();
     this.game = game;
+    this.genre_id = game.getGenre_id();
+    FlashGamesPlayer.label_gameTitle.setText(game.getTitle());
+    FlashGamesPlayer.rating.setRate(game.getRate());
+    FlashGamesPlayer.rating.setRatingEnabled(true);
+    FlashGamesPlayer.tf_plays.setText(String.valueOf(game.getPlayed()));
     try {
       Game.updatePlayed(game.getId());
     } catch (SQLException ex) {
@@ -53,6 +60,10 @@ public class GamePanel extends javax.swing.JPanel {
 
   public Game getGame() {
     return game;
+  }
+
+  public Genre getGenre(){
+    return Genre.getGenreById(this.genre_id);
   }
 
   /** This method is called from within the constructor to

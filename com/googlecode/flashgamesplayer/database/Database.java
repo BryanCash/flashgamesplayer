@@ -10,9 +10,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import com.googlecode.flashgamesplayer.FlashGamesPlayer;
-import com.googlecode.flashgamesplayer.tools.Options;
+import java.util.logging.Logger;
 
 /**
  *
@@ -58,8 +57,13 @@ public class Database {
           + "`rate` DOUBLE DEFAULT 0, "
           + "`internet` INTEGER DEFAULT 0)");
       FlashGamesPlayer.logger.log(Level.INFO, "Creating table genres");
-      getStmt().executeUpdate("CREATE TABLE `genres` (`id` INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , " + "`genre` VARCHAR NOT NULL  UNIQUE)");
+      getStmt().executeUpdate("CREATE TABLE `genres` "
+          + "(`id` INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , "
+          + "`genre` VARCHAR NOT NULL  UNIQUE)");
       addDefaultGenres();
+      getStmt().executeUpdate("CREATE TABLE `options` (`option` VARCHAR, "
+          + "`type` VARCHAR, `value` VARCHAR)");
+      addOptions();
     } catch (SQLException ex) {
       FlashGamesPlayer.logger.log(Level.SEVERE, "Could create the tables", ex);
     }
@@ -102,6 +106,16 @@ public class Database {
       Genre g = new Genre();
       g.setGenre(genre);
       g.save();
+    }
+  }
+
+  private void addOptions() {
+    try {
+      stmt.executeUpdate("INSERT INTO options (option, type, value ) VALUES " + "('proxy','string','')");
+      stmt.executeUpdate("INSERT INTO options (option, type, value ) VALUES " + "('port','int','80')");
+      stmt.executeUpdate("INSERT INTO options (option, type, value ) VALUES " + "('useProxy','boolean','true')");
+    } catch (SQLException ex) {
+      FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
     }
   }
 }

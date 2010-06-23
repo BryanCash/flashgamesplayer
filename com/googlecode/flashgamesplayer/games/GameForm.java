@@ -15,7 +15,6 @@ import com.googlecode.svalidators.validators.FileValidator;
 import com.googlecode.svalidators.validators.RequiredValidator;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -28,11 +27,11 @@ import javax.swing.filechooser.FileFilter;
 import com.googlecode.flashgamesplayer.FlashGamesPlayer;
 import com.googlecode.flashgamesplayer.database.Game;
 import com.googlecode.flashgamesplayer.database.Genre;
+import com.googlecode.flashgamesplayer.database.Options;
 import com.googlecode.flashgamesplayer.tools.GamesChangeListener;
 import com.googlecode.flashgamesplayer.tools.MyDraggable;
 import com.googlecode.flashgamesplayer.tools.MyFunctions;
 import com.googlecode.flashgamesplayer.tools.MyMessages;
-import com.googlecode.flashgamesplayer.tools.Options;
 
 /**
  *
@@ -42,12 +41,17 @@ public class GameForm extends MyDraggable {
 
   private ArrayList<JComponent> components = new ArrayList<JComponent>();
   DefaultComboBoxModel genresModel;
+  Game game;
 
   /** Creates new form GameForm */
   public GameForm() {
+    this(new Game());
+  }
+
+  public GameForm(Game game) {
+    this.game = game;
     genresModel = new DefaultComboBoxModel(Genre.getAll());
     initComponents();
-
     tf_file.addValidator(new FileValidator("", FileValidator.Type.FILE, false));
     tf_title.addValidator(new RequiredValidator());
     combo_genre.addValidator(new RequiredValidator());
@@ -79,6 +83,8 @@ public class GameForm extends MyDraggable {
     combo_genre = new com.googlecode.svalidators.formcomponents.SComboBox();
     tf_file = new com.googlecode.svalidators.formcomponents.STextField();
     bt_browse = new javax.swing.JButton();
+    jLabel2 = new javax.swing.JLabel();
+    cb_internet = new javax.swing.JCheckBox();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -111,20 +117,29 @@ public class GameForm extends MyDraggable {
     label_file.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
     label_file.setText("Swf File:");
 
+    tf_title.setText(game.getTitle());
     tf_title.setName("Title"); // NOI18N
 
     combo_genre.setEditable(true);
     combo_genre.setModel(genresModel);
     combo_genre.setName("Genre"); // NOI18N
 
+    tf_file.setEditable(game.getId() == 0);
+    tf_file.setText(game.getFilename());
     tf_file.setName("Swf file"); // NOI18N
 
     bt_browse.setText("Browse");
+    bt_browse.setEnabled(game.getId()==0);
     bt_browse.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         bt_browseActionPerformed(evt);
       }
     });
+
+    jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+    jLabel2.setText("Needs Internet :");
+
+    cb_internet.setSelected(game.isInternet() ==1);
 
     javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
     jPanel1.setLayout(jPanel1Layout);
@@ -141,17 +156,21 @@ public class GameForm extends MyDraggable {
           .addGroup(jPanel1Layout.createSequentialGroup()
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
               .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                .addComponent(label_file, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tf_file, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-              .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                 .addComponent(label_genre, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(combo_genre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
               .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                 .addComponent(label_title, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tf_title, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(tf_title, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE))
+              .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                  .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                  .addComponent(label_file, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addComponent(cb_internet)
+                  .addComponent(tf_file, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addComponent(bt_browse)))
         .addContainerGap())
@@ -174,7 +193,11 @@ public class GameForm extends MyDraggable {
           .addComponent(label_file)
           .addComponent(tf_file, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(bt_browse))
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+          .addComponent(jLabel2)
+          .addComponent(cb_internet))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(bt_add)
           .addComponent(bt_cancel))
@@ -189,7 +212,7 @@ public class GameForm extends MyDraggable {
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+      .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
     );
 
     pack();
@@ -222,10 +245,10 @@ public class GameForm extends MyDraggable {
         String title = tf_title.getText().trim();
         String swfFile = tf_file.getText().trim();
         String filename = new File(tf_file.getText().trim()).getName();
-        Game game = new Game();
         game.setGenre_id(genreId);
         game.setTitle(title);
         game.setFilename(filename);
+        game.setInternet(cb_internet.isSelected() ? 1 : 0);
       try {
         MyFunctions.copyfile(swfFile, Options.USER_DIR + Options.GAMES_DIR + filename);
       } catch (FileNotFoundException ex) {
@@ -278,23 +301,15 @@ public class GameForm extends MyDraggable {
       }
     }//GEN-LAST:event_bt_browseActionPerformed
 
-  /**
-   * @param args the command line arguments
-   */
-  public static void main(String args[]) {
-    java.awt.EventQueue.invokeLater(new Runnable() {
-
-      public void run() {
-        new GameForm().setVisible(true);
-      }
-    });
-  }
+ 
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JButton bt_add;
   private javax.swing.JButton bt_browse;
   private javax.swing.JButton bt_cancel;
+  private javax.swing.JCheckBox cb_internet;
   private com.googlecode.svalidators.formcomponents.SComboBox combo_genre;
   private javax.swing.JLabel jLabel1;
+  private javax.swing.JLabel jLabel2;
   private javax.swing.JPanel jPanel1;
   private javax.swing.JLabel label_file;
   private javax.swing.JLabel label_genre;

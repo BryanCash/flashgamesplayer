@@ -20,15 +20,15 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.plaf.basic.BasicComboBoxUI.PropertyChangeHandler;
 import com.googlecode.flashgamesplayer.database.Database;
 import com.googlecode.flashgamesplayer.database.Game;
+import com.googlecode.flashgamesplayer.database.Options;
 import com.googlecode.flashgamesplayer.games.GameForm;
 import com.googlecode.flashgamesplayer.games.tree.GamesTree;
-import com.googlecode.flashgamesplayer.tools.GamesChangeListener;
-import com.googlecode.flashgamesplayer.tools.Options;
 import com.googlecode.flashgamesplayer.tools.GamesLogger;
 import com.googlecode.flashgamesplayer.tools.MyFunctions;
+import com.googlecode.flashgamesplayer.tools.OptionsForm;
+import java.util.HashMap;
 import javax.swing.DefaultComboBoxModel;
 
 /**
@@ -42,14 +42,17 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
   public static Database database;
   public static GamePanel gamePanel;
   public static boolean isInternet = false;
+  public static HashMap<String,Object> options;
 
   /** Creates new form flashplayer */
   public FlashGamesPlayer() {
-    isInternet = MyFunctions.hasInternetConnection("http://www.google.com");
     createLogger();
     createDatabase();
     createFolder(Options.USER_DIR + Options.GAMES_DIR);
     logger.log(Level.INFO, "Creating the GUI");
+    options = Options.getOptions();
+    isInternet = MyFunctions.hasInternetConnection("http://www.google.com");
+    gamePanel = new GamePanel();
     initComponents();
     rating.addPropertyChangeListener(new PropertyChangeListener() {
 
@@ -66,7 +69,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
         }
       }
     });
-    gamePanel = new GamePanel();
+    
     panelMain.add(gamePanel);
     setSize(800, 600);
     setLocationRelativeTo(null);
@@ -241,9 +244,14 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
 
     menuBar.add(gamesMenu);
 
-    toolsMenu.setText("jMenu1");
+    toolsMenu.setText("Tools");
 
     menuItem_options.setText("Options");
+    menuItem_options.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        menuItem_optionsActionPerformed(evt);
+      }
+    });
     toolsMenu.add(menuItem_options);
 
     menuBar.add(toolsMenu);
@@ -276,6 +284,10 @@ public class FlashGamesPlayer extends javax.swing.JFrame{
     int sort = combo_sort.getSelectedIndex();
     gamesTree.populateTree(sort);
   }//GEN-LAST:event_combo_sortActionPerformed
+
+  private void menuItem_optionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItem_optionsActionPerformed
+    OptionsForm.main(null);
+  }//GEN-LAST:event_menuItem_optionsActionPerformed
 
   /**
    * @param args the command line arguments

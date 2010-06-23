@@ -4,6 +4,8 @@
  */
 package com.googlecode.flashgamesplayer.tools;
 
+import com.googlecode.flashgamesplayer.FlashGamesPlayer;
+import com.googlecode.flashgamesplayer.database.Options;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,6 +36,9 @@ public class MyFunctions {
 
     File f1 = new File(srFile);
     File f2 = new File(dtFile);
+    if(f1.equals(f2)){
+      return true;
+    }
     InputStream in = new FileInputStream(f1);
     OutputStream out = new FileOutputStream(f2);
     try {
@@ -53,17 +58,17 @@ public class MyFunctions {
    * Initializes internet connection settings
    */
   public static void initInternetConnection() {
-//    if (Options.toBoolean(Options.USE_PROXY)) {
-//      Properties props = System.getProperties();
-//      props.put("http.proxyHost", Options.toString(Options.PROXY_HOST));
-//      props.put("http.proxyPort", Options.toString(Options.PROXY_PORT));
-//      System.setProperties(props);
-//    } else {
-    Properties props = System.getProperties();
-    props.put("http.proxyHost", "192.168.6.191");
-    props.put("http.proxyPort", "8080");
-    System.setProperties(props);
-//    }
+    if ((Boolean) FlashGamesPlayer.options.get(Options.USE_PROXY)) {
+      Properties props = System.getProperties();
+      props.put("http.proxyHost", FlashGamesPlayer.options.get(Options.PROXY));
+      props.put("http.proxyPort", FlashGamesPlayer.options.get(Options.PORT));
+      System.setProperties(props);
+    } else {
+      Properties props = System.getProperties();
+      props.put("http.proxyHost", "");
+      props.put("http.proxyPort", "80");
+      System.setProperties(props);
+    }
   }
 
   public static boolean hasInternetConnection(String address) {

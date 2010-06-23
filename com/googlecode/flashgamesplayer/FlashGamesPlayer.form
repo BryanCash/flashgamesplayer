@@ -29,13 +29,16 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="toolsMenu">
           <Properties>
-            <Property name="text" type="java.lang.String" value="jMenu1"/>
+            <Property name="text" type="java.lang.String" value="Tools"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="menuItem_options">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Options"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuItem_optionsActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>

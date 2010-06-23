@@ -17,17 +17,22 @@ public class GamesChangeListener implements PropertyChangeListener {
 
   public static final String GAME_ADDED = "gameAdded";
   public static final String GAME_SELECTED = "gameSelected";
+  public static final String GAME_DELETED = "gameDeleted";
 
+  @Override
   public void propertyChange(PropertyChangeEvent evt) {
     if (evt.getPropertyName().equals(GAME_ADDED)) {
       FlashGamesPlayer.gamesTree.populateTree();
     } else if (evt.getPropertyName().equals(GAME_SELECTED)) {
       Game game = (Game) evt.getNewValue();
       FlashGamesPlayer.gamePanel.setGame(game);
-      FlashGamesPlayer.label_gameTitle.setText(game.getTitle());
-      FlashGamesPlayer.rating.setRate(game.getRate());
-      FlashGamesPlayer.rating.setRatingEnabled(true);
-      FlashGamesPlayer.tf_plays.setText(String.valueOf(game.getPlayed()));
+    } else if (evt.getPropertyName().equals(GAME_DELETED)) {
+      FlashGamesPlayer.gamePanel.setGame(null);
+      FlashGamesPlayer.label_gameTitle.setText("");
+      FlashGamesPlayer.rating.setRate(0.0);
+      FlashGamesPlayer.rating.setRatingEnabled(false);
+      FlashGamesPlayer.tf_plays.setText("0");
+      FlashGamesPlayer.gamesTree.populateTree();
     }
   }
 }
