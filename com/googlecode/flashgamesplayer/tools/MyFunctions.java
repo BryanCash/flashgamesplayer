@@ -61,7 +61,7 @@ public class MyFunctions {
     if ((Boolean) FlashGamesPlayer.options.get(Options.USE_PROXY)) {
       Properties props = System.getProperties();
       props.put("http.proxyHost", FlashGamesPlayer.options.get(Options.PROXY));
-      props.put("http.proxyPort", FlashGamesPlayer.options.get(Options.PORT));
+      props.put("http.proxyPort", FlashGamesPlayer.options.get(Options.PORT).toString());
       System.setProperties(props);
     } else {
       Properties props = System.getProperties();
@@ -77,8 +77,10 @@ public class MyFunctions {
     try {
       URL url = new URL(address);
       in = new BufferedReader(new InputStreamReader(url.openStream()));
+      FlashGamesPlayer.label_internet.setIcon(FlashGamesPlayer.label_internet.getIcon());
       return true;
     } catch (IOException ex) {
+      FlashGamesPlayer.label_internet.setIcon(FlashGamesPlayer.label_internet.getDisabledIcon());
       return false;
     }
   }
