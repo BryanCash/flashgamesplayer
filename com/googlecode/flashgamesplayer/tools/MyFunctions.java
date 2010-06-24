@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.Properties;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -36,7 +37,7 @@ public class MyFunctions {
 
     File f1 = new File(srFile);
     File f2 = new File(dtFile);
-    if(f1.equals(f2)){
+    if (f1.equals(f2)) {
       return true;
     }
     InputStream in = new FileInputStream(f1);
@@ -71,17 +72,17 @@ public class MyFunctions {
     }
   }
 
-  public static boolean hasInternetConnection(String address) {
+  public static void checkInternetConnection(final String address) {
     initInternetConnection();
     BufferedReader in = null;
     try {
       URL url = new URL(address);
       in = new BufferedReader(new InputStreamReader(url.openStream()));
       FlashGamesPlayer.label_internet.setIcon(FlashGamesPlayer.label_internet.getIcon());
-      return true;
+      FlashGamesPlayer.isInternet = false;
     } catch (IOException ex) {
       FlashGamesPlayer.label_internet.setIcon(FlashGamesPlayer.label_internet.getDisabledIcon());
-      return false;
+      FlashGamesPlayer.isInternet = false;
     }
   }
 }

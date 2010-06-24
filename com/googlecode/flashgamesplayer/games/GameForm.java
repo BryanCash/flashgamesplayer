@@ -59,6 +59,8 @@ public class GameForm extends MyDraggable {
     components.add(tf_file);
     components.add(combo_genre);
     components.add(tf_title);
+    Genre genre = Genre.getGenreById(game.getGenre_id());
+    combo_genre.setSelectedItem(genre);
     addPropertyChangeListener(new GamesChangeListener());
     setLocationRelativeTo(null);
     setVisible(true);
@@ -261,7 +263,7 @@ public class GameForm extends MyDraggable {
         }
         try {
           if (game.save() > -1) {
-            MyMessages.message("Game added", "The game was added");
+            MyMessages.message("Game "+ (game.isNewGame() ? " added " : " updated"), "The game was "+(game.isNewGame() ? " added " : " updated"));
             firePropertyChange(GamesChangeListener.GAME_ADDED, null, null);
           }
         } catch (SQLException ex) {

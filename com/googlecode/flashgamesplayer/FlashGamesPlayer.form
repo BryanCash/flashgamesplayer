@@ -1,4 +1,4 @@
-<?xml version="1.1" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
@@ -227,7 +227,7 @@
     </Container>
     <Container class="javax.swing.JSplitPane" name="splitpane">
       <Properties>
-        <Property name="dividerLocation" type="int" value="200"/>
+        <Property name="dividerLocation" type="int" value="300"/>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[700, 500]"/>
         </Property>
@@ -251,8 +251,8 @@
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="gamesTree" alignment="0" pref="179" max="32767" attributes="0"/>
-                          <Component id="combo_sort" alignment="0" pref="179" max="32767" attributes="0"/>
+                          <Component id="gamesTree" alignment="0" pref="279" max="32767" attributes="0"/>
+                          <Component id="combo_sort" alignment="0" pref="279" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -308,7 +308,7 @@
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="panelMain" alignment="0" pref="563" max="32767" attributes="0"/>
+                          <Component id="panelMain" alignment="0" pref="463" max="32767" attributes="0"/>
                           <Component id="panel_header" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -363,12 +363,12 @@
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="label_gameTitle" alignment="0" pref="541" max="32767" attributes="0"/>
+                              <Component id="label_gameTitle" alignment="0" pref="441" max="32767" attributes="0"/>
                               <Group type="102" alignment="1" attributes="0">
                                   <Component id="jLabel2" min="-2" pref="69" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="tf_plays" min="-2" pref="49" max="-2" attributes="0"/>
-                                  <EmptySpace pref="184" max="32767" attributes="0"/>
+                                  <EmptySpace pref="84" max="32767" attributes="0"/>
                                   <Component id="jLabel1" min="-2" pref="79" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="rating" min="-2" pref="152" max="-2" attributes="0"/>

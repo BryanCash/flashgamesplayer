@@ -44,23 +44,23 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
 
     if (obj instanceof Game) {
       Game game = (Game) obj;
+      ImageIcon gameIcon = new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/gameLeaf.png"));
+      File sc = new File(Options.USER_DIR + Options.SCREENSHOT_DIR + game.getId() + ".png");
+      if (sc.isFile()) {
+        int height = (Integer) FlashGamesPlayer.options.get(Options.TREE_ROW_HEIGHT);
+        gameIcon = new ImageIcon(new ImageIcon(sc.getAbsolutePath()).getImage().getScaledInstance(
+                height, height, Image.SCALE_SMOOTH));
+
+        setText("");
+      }
       if (!FlashGamesPlayer.isInternet && game.isInternet() == Game.INTERNET) {
-        setIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/gameLeafDisabled.png")));
+        gameIcon = new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/gameLeafDisabled.png"));
         setFont(getFont().deriveFont(Font.ITALIC));
         setForeground(Color.GRAY);
       } else {
-        File sc = new File(Options.USER_DIR + Options.SCREENSHOT_DIR + game.getId() + ".png");
-        if (sc.isFile()) {
-          int height = (Integer) FlashGamesPlayer.options.get(Options.TREE_ROW_HEIGHT);
-          Image imp = new ImageIcon(sc.getAbsolutePath()).getImage().getScaledInstance(
-              height, height, Image.SCALE_SMOOTH);
-          setIcon(new ImageIcon(imp));
-          setText("");
-        } else {
-          setIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/gameLeaf.png")));
-        }
         setToolTipText(game.getTitle());
       }
+      setIcon(gameIcon);
     } else if (obj instanceof String) {
     }
     setPreferredSize(new Dimension(200, tree.getRowHeight()));

@@ -59,7 +59,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
 
   public static void setOptions(HashMap<String, Object> op) {
     options = op;
-    isInternet = MyFunctions.hasInternetConnection("http://www.google.com");
+    MyFunctions.checkInternetConnection("http://www.google.com");
     //gamesTree.tree.setRowHeight((Integer)options.get(Options.TREE_ROW_HEIGHT));
     //gamesTree.populateTree();
   }
@@ -74,7 +74,8 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     options = Options.getOptions();
     gamePanel = new GamePanel();
     initComponents();
-    isInternet = MyFunctions.hasInternetConnection("http://www.google.com");
+    
+    MyFunctions.checkInternetConnection("http://www.google.com");
     rating.addPropertyChangeListener(new PropertyChangeListener() {
 
       @Override
@@ -203,7 +204,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     bt_exit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
     toolbar.add(bt_exit);
 
-    splitpane.setDividerLocation(200);
+    splitpane.setDividerLocation(300);
     splitpane.setMinimumSize(new java.awt.Dimension(700, 500));
     splitpane.setPreferredSize(new java.awt.Dimension(789, 544));
 
@@ -223,8 +224,8 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, leftLayout.createSequentialGroup()
         .addContainerGap()
         .addGroup(leftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-          .addComponent(gamesTree, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
-          .addComponent(combo_sort, javax.swing.GroupLayout.Alignment.LEADING, 0, 179, Short.MAX_VALUE))
+          .addComponent(gamesTree, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+          .addComponent(combo_sort, javax.swing.GroupLayout.Alignment.LEADING, 0, 279, Short.MAX_VALUE))
         .addContainerGap())
     );
     leftLayout.setVerticalGroup(
@@ -272,12 +273,12 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       .addGroup(panel_headerLayout.createSequentialGroup()
         .addContainerGap()
         .addGroup(panel_headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addComponent(label_gameTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 541, Short.MAX_VALUE)
+          .addComponent(label_gameTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 441, Short.MAX_VALUE)
           .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel_headerLayout.createSequentialGroup()
             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addComponent(tf_plays, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 184, Short.MAX_VALUE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addComponent(rating, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -303,7 +304,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightLayout.createSequentialGroup()
         .addContainerGap()
         .addGroup(rightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-          .addComponent(panelMain, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE)
+          .addComponent(panelMain, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
           .addComponent(panel_header, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         .addContainerGap())
     );
