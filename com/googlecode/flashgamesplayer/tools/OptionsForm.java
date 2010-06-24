@@ -32,6 +32,7 @@ public class OptionsForm extends MyDraggable {
         setLocationRelativeTo(null);
         tf_proxy.addValidator(new RequiredValidator(tf_proxy.getText()));
         tf_port.addValidator(new PositiveNumberValidator(tf_port.getText(), false, false));
+        tf_treeRowHeight.addValidator(new PositiveNumberValidator(tf_treeRowHeight.getText(), false, false));
     }
 
     /** This method is called from within the constructor to
@@ -52,6 +53,8 @@ public class OptionsForm extends MyDraggable {
     tf_port = new com.googlecode.svalidators.formcomponents.STextField();
     button_ok = new javax.swing.JButton();
     button_cancel = new javax.swing.JButton();
+    jLabel4 = new javax.swing.JLabel();
+    tf_treeRowHeight = new com.googlecode.svalidators.formcomponents.STextField();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -90,39 +93,47 @@ public class OptionsForm extends MyDraggable {
       }
     });
 
+    jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+    jLabel4.setText("Tree row height :");
+
+    tf_treeRowHeight.setText(String.valueOf(FlashGamesPlayer.options.get(Options.TREE_ROW_HEIGHT)));
+    tf_treeRowHeight.setName("Tree row height"); // NOI18N
+
     javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
     jPanel1.setLayout(jPanel1Layout);
     jPanel1Layout.setHorizontalGroup(
       jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(jPanel1Layout.createSequentialGroup()
-        .addGap(10, 10, 10)
-        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
-        .addContainerGap(10, Short.MAX_VALUE))
-      .addGroup(jPanel1Layout.createSequentialGroup()
         .addContainerGap()
-        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-          .addComponent(cb_useProxy)
-          .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE)))
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-          .addComponent(tf_port, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-          .addComponent(tf_proxy, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE))
-        .addGap(181, 181, 181))
-      .addGroup(jPanel1Layout.createSequentialGroup()
-        .addContainerGap()
-        .addComponent(button_ok)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(button_cancel)
-        .addContainerGap(258, Short.MAX_VALUE))
+        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
+          .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+              .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+              .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addComponent(cb_useProxy)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                  .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                  .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE))))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addComponent(tf_port, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(tf_proxy, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE))
+              .addComponent(tf_treeRowHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 114, Short.MAX_VALUE))
+          .addGroup(jPanel1Layout.createSequentialGroup()
+            .addComponent(button_ok)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(button_cancel)))
+        .addContainerGap())
     );
     jPanel1Layout.setVerticalGroup(
       jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(jPanel1Layout.createSequentialGroup()
         .addContainerGap()
         .addComponent(jLabel1)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
         .addComponent(cb_useProxy)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -132,7 +143,11 @@ public class OptionsForm extends MyDraggable {
         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(jLabel3)
           .addComponent(tf_port, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 162, Short.MAX_VALUE)
+        .addGap(18, 18, 18)
+        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(jLabel4)
+          .addComponent(tf_treeRowHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 124, Short.MAX_VALUE)
         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(button_ok)
           .addComponent(button_cancel))
@@ -143,7 +158,7 @@ public class OptionsForm extends MyDraggable {
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+      .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -162,6 +177,7 @@ public class OptionsForm extends MyDraggable {
         ValidationGroup group = new ValidationGroup();
         group.addComponent(tf_proxy);
         group.addComponent(tf_port);
+        group.addComponent(tf_treeRowHeight);
         if(!group.validate()){
           group.errorMessage(true);
           return;
@@ -171,7 +187,8 @@ public class OptionsForm extends MyDraggable {
       new Options(Options.USE_PROXY,Options.BOOLEAN,String.valueOf(cb_useProxy.isSelected())).save();
       new Options(Options.PROXY,Options.STRING,String.valueOf(tf_proxy.getText().trim())).save();
       new Options(Options.PORT,Options.INTEGER,String.valueOf(tf_port.getText().trim())).save();
-      FlashGamesPlayer.options = Options.getOptions();
+      new Options(Options.TREE_ROW_HEIGHT,Options.INTEGER,String.valueOf(tf_treeRowHeight.getText().trim())).save();
+      FlashGamesPlayer.setOptions(Options.getOptions());
     } catch (SQLException ex) {
       Logger.getLogger(OptionsForm.class.getName()).log(Level.SEVERE, null, ex);
     }
@@ -196,9 +213,11 @@ public class OptionsForm extends MyDraggable {
   private javax.swing.JLabel jLabel1;
   private javax.swing.JLabel jLabel2;
   private javax.swing.JLabel jLabel3;
+  private javax.swing.JLabel jLabel4;
   private javax.swing.JPanel jPanel1;
   private com.googlecode.svalidators.formcomponents.STextField tf_port;
   private com.googlecode.svalidators.formcomponents.STextField tf_proxy;
+  private com.googlecode.svalidators.formcomponents.STextField tf_treeRowHeight;
   // End of variables declaration//GEN-END:variables
 
 }

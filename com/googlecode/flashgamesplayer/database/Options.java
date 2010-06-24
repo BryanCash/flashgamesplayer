@@ -19,14 +19,17 @@ import java.util.logging.Logger;
  */
 public class Options extends Record{
 
-  public static String USER_DIR = "./";
-  public static String GAMES_DIR = "games/";
+  public static final String USER_DIR = "./";
+  public static final String GAMES_DIR = "games/";
+  public static final String SCREENSHOT_DIR = "screenshots/";
+  public static final int SCREENSHOT_SIZE = 64;
   public static final String STRING = "string";
   public static final String INTEGER = "int";
   public static final String BOOLEAN = "boolean";
   public static final String PROXY = "proxy";
   public static final String PORT = "port";
   public static final String USE_PROXY = "useProxy";
+  public static final String TREE_ROW_HEIGHT = "treeRowHeight";
 
   private String option;
   private String type;
@@ -68,6 +71,8 @@ public class Options extends Record{
       return options;
     }
   }
+
+  
 
   /**
    * @return the option

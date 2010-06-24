@@ -38,12 +38,12 @@ public class GamePanel extends javax.swing.JPanel {
     if (game == null) {
       game = new Game();
     }
-    if (flashPlayer != null) {
-      remove(flashPlayer);
+    if (getFlashPlayer() != null) {
+      remove(getFlashPlayer());
     }
     flashPlayer = new JFlashPlayer();
-    flashPlayer.load(Options.USER_DIR + Options.GAMES_DIR + game.getFilename());
-    add(flashPlayer, BorderLayout.CENTER);
+    getFlashPlayer().load(Options.USER_DIR + Options.GAMES_DIR + game.getFilename());
+    add(getFlashPlayer(), BorderLayout.CENTER);
     validate();
     this.game = game;
     this.genre_id = game.getGenre_id();
@@ -64,6 +64,10 @@ public class GamePanel extends javax.swing.JPanel {
 
   public Genre getGenre(){
     return Genre.getGenreById(this.genre_id);
+  }
+
+  public JFlashPlayer getFlashPlayer(){
+    return this.flashPlayer;
   }
 
   /** This method is called from within the constructor to
