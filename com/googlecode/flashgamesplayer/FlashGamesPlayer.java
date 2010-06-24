@@ -93,6 +93,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     });
 
     panelMain.add(gamePanel);
+    gamesTree.tree.setRowHeight((Integer) options.get(Options.TREE_ROW_HEIGHT) + 8);
     setSize(800, 600);
     setLocationRelativeTo(null);
     setVisible(true);

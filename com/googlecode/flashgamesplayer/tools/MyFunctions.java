@@ -79,7 +79,7 @@ public class MyFunctions {
       URL url = new URL(address);
       in = new BufferedReader(new InputStreamReader(url.openStream()));
       FlashGamesPlayer.label_internet.setIcon(FlashGamesPlayer.label_internet.getIcon());
-      FlashGamesPlayer.isInternet = false;
+      FlashGamesPlayer.isInternet = true;
     } catch (IOException ex) {
       FlashGamesPlayer.label_internet.setIcon(FlashGamesPlayer.label_internet.getDisabledIcon());
       FlashGamesPlayer.isInternet = false;
