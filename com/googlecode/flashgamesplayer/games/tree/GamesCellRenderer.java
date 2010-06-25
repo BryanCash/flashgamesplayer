@@ -53,6 +53,7 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
     if (selected) {
       setForeground(Color.BLACK);
     }
+    ImageIcon catIcon;
     if (obj instanceof Game) {
       Game game = (Game) obj;
       ImageIcon gameIcon = new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/gameLeaf.png"));
@@ -60,7 +61,7 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
       if (sc.isFile()) {
 
         gameIcon = new ImageIcon(new ImageIcon(sc.getAbsolutePath()).getImage().getScaledInstance(
-                treeHeight, treeHeight, Image.SCALE_SMOOTH));
+            treeHeight, treeHeight, Image.SCALE_SMOOTH));
 
         // setText("");
       }
@@ -79,9 +80,18 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
       setIcon(gameIcon);
       setFont(getFont().deriveFont(12F));
     } else if (obj instanceof String) {
+      File catFile = new File(Options.USER_DIR + Options.SCREENSHOT_DIR + obj + ".png");
+      if (catFile.isFile()) {
+        catIcon = new ImageIcon(new ImageIcon(catFile.getAbsolutePath()).getImage().getScaledInstance(
+            treeHeight, treeHeight, Image.SCALE_SMOOTH));
+        setIcon(catIcon);
+      }
       setFont(getFont().deriveFont(20F));
     }
     setPreferredSize(new Dimension(200, tree.getRowHeight()));
+    if (!(Boolean) FlashGamesPlayer.options.get(Options.DISPLAY_GAME_TITLE)) {
+      setText("");
+    }
     return this;
   }
 }

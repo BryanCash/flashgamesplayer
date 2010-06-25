@@ -30,6 +30,7 @@ public class Options extends Record{
   public static final String PORT = "port";
   public static final String USE_PROXY = "useProxy";
   public static final String TREE_ROW_HEIGHT = "treeRowHeight";
+  public static final String DISPLAY_GAME_TITLE = "displayGameTitle";
 
   private String option;
   private String type;
