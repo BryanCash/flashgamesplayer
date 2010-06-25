@@ -64,13 +64,27 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     //gamesTree.tree.setRowHeight((Integer)options.get(Options.TREE_ROW_HEIGHT));
     //gamesTree.populateTree();
   }
+  private final File tmpFile;
 
   /** Creates new form flashplayer */
   public FlashGamesPlayer() {
+    tmpFile = new File(Options.USER_DIR+".tmp");
+    if(tmpFile.exists()){
+      MyMessages.message("Application open", "The application is already open");
+      System.exit(0);
+    } else {
+      try {
+        tmpFile.createNewFile();
+        tmpFile.deleteOnExit();
+      } catch (IOException ex) {
+        logger.log(Level.SEVERE, null, ex);
+      }
+    }
+
     UIManager.put("Tree.expandedIcon",
-        new ImageIcon(""));
+            new ImageIcon(""));
     UIManager.put("Tree.collapsedIcon",
-        new ImageIcon(""));
+            new ImageIcon(""));
 
     createLogger();
     createDatabase();
@@ -80,7 +94,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     options = Options.getOptions();
     gamePanel = new GamePanel();
     initComponents();
-    
+
     MyFunctions.checkInternetConnection("http://www.google.com");
     rating.addPropertyChangeListener(new PropertyChangeListener() {
 
@@ -102,6 +116,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     gamesTree.tree.setRowHeight((Integer) options.get(Options.TREE_ROW_HEIGHT) + 8);
     setSize(800, 600);
     setLocationRelativeTo(null);
+    setExtendedState(MAXIMIZED_BOTH);
     setVisible(true);
   }
 
@@ -143,9 +158,14 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     menuItem_screenshot = new javax.swing.JMenuItem();
     menuItem_options = new javax.swing.JMenuItem();
 
-    setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+    setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
     setTitle("Flash games player v0.1");
     setMinimumSize(new java.awt.Dimension(780, 580));
+    addWindowListener(new java.awt.event.WindowAdapter() {
+      public void windowClosing(java.awt.event.WindowEvent evt) {
+        formWindowClosing(evt);
+      }
+    });
 
     toolbar.setFloatable(false);
     toolbar.setRollover(true);
@@ -209,6 +229,11 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     bt_exit.setFocusable(false);
     bt_exit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     bt_exit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    bt_exit.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        bt_exitActionPerformed(evt);
+      }
+    });
     toolbar.add(bt_exit);
 
     splitpane.setDividerLocation(300);
@@ -231,8 +256,8 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       .addGroup(leftLayout.createSequentialGroup()
         .addContainerGap()
         .addGroup(leftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addComponent(combo_sort, javax.swing.GroupLayout.Alignment.TRAILING, 0, 279, Short.MAX_VALUE)
-          .addComponent(gamesTree, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE))
+          .addComponent(gamesTree, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+          .addComponent(combo_sort, javax.swing.GroupLayout.Alignment.TRAILING, 0, 279, Short.MAX_VALUE))
         .addContainerGap())
     );
     leftLayout.setVerticalGroup(
@@ -241,8 +266,8 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
         .addContainerGap()
         .addComponent(combo_sort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(gamesTree, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
-        .addGap(16, 16, 16))
+        .addComponent(gamesTree, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
+        .addContainerGap())
     );
 
     gamesTree.populateTree();
@@ -270,7 +295,6 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
     jLabel2.setText("Plays:");
 
-    tf_plays.setBackground(new java.awt.Color(255, 255, 255));
     tf_plays.setEditable(false);
     tf_plays.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
     tf_plays.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
@@ -282,7 +306,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       panel_headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(panel_headerLayout.createSequentialGroup()
         .addContainerGap()
-        .addComponent(label_gameTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
+        .addComponent(label_gameTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -310,7 +334,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightLayout.createSequentialGroup()
         .addContainerGap()
         .addGroup(rightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-          .addComponent(panelMain, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
+          .addComponent(panelMain, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
           .addComponent(panel_header, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         .addContainerGap())
     );
@@ -320,7 +344,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
         .addContainerGap()
         .addComponent(panel_header, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(panelMain, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
+        .addComponent(panelMain, javax.swing.GroupLayout.DEFAULT_SIZE, 422, Short.MAX_VALUE)
         .addContainerGap())
     );
 
@@ -390,17 +414,17 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addComponent(splitpane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 789, Short.MAX_VALUE)
       .addGroup(layout.createSequentialGroup()
         .addComponent(toolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 779, Short.MAX_VALUE)
         .addContainerGap())
+      .addComponent(splitpane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 789, Short.MAX_VALUE)
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(layout.createSequentialGroup()
         .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(splitpane, javax.swing.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE))
+        .addComponent(splitpane, javax.swing.GroupLayout.PREFERRED_SIZE, 474, Short.MAX_VALUE))
     );
 
     pack();
@@ -447,7 +471,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       BufferedImage image = robot.createScreenCapture(captureSize);
       Image icon = image.getScaledInstance(Options.SCREENSHOT_SIZE, Options.SCREENSHOT_SIZE, Image.SCALE_SMOOTH);
       File file = new File(Options.USER_DIR + Options.SCREENSHOT_DIR
-          + gamesTree.getSelectedGame().getId() + ".png");
+              + gamesTree.getSelectedGame().getId() + ".png");
       BufferedImage bimg = new BufferedImage(Options.SCREENSHOT_SIZE, Options.SCREENSHOT_SIZE, BufferedImage.TYPE_INT_ARGB);
       bimg.getGraphics().drawImage(icon, 0, 0, this);
       ImageIO.write(bimg, "png", file);
@@ -466,6 +490,15 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
   private void bt_optionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_optionsActionPerformed
     menuItem_optionsActionPerformed(evt);
   }//GEN-LAST:event_bt_optionsActionPerformed
+
+  private void bt_exitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_exitActionPerformed
+    menuItem_exitActionPerformed(evt);
+  }//GEN-LAST:event_bt_exitActionPerformed
+
+  private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+   menuItem_exitActionPerformed(null);
+   
+  }//GEN-LAST:event_formWindowClosing
 
   /**
    * @param args the command line arguments

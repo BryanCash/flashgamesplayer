@@ -21,7 +21,6 @@ import com.googlecode.flashgamesplayer.FlashGamesPlayer;
 import com.googlecode.flashgamesplayer.database.Database;
 import com.googlecode.flashgamesplayer.database.Game;
 import com.googlecode.flashgamesplayer.database.Genre;
-import com.googlecode.flashgamesplayer.database.Options;
 import com.googlecode.flashgamesplayer.games.GameForm;
 import com.googlecode.flashgamesplayer.games.GamesChangeListener;
 import com.googlecode.flashgamesplayer.tools.MyMessages;
@@ -29,9 +28,6 @@ import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 /**
@@ -249,7 +245,6 @@ public class GamesTree extends javax.swing.JPanel {
       }
     }
   }//GEN-LAST:event_treeKeyReleased
-
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JMenuItem addGame;
   private javax.swing.JMenuItem delete;
@@ -368,7 +363,6 @@ public class GamesTree extends javax.swing.JPanel {
     this.selectedGame = selectedGame;
   }
 
-  
   class GameNode {
 
     private Object category;
