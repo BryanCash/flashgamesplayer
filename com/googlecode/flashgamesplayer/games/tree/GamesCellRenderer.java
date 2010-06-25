@@ -53,7 +53,7 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
     if (selected) {
       setForeground(Color.BLACK);
     }
-    ImageIcon catIcon;
+    ImageIcon catIcon = null;
     if (obj instanceof Game) {
       Game game = (Game) obj;
       ImageIcon gameIcon = new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/gameLeaf.png"));
@@ -84,8 +84,19 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
       if (catFile.isFile()) {
         catIcon = new ImageIcon(new ImageIcon(catFile.getAbsolutePath()).getImage().getScaledInstance(
             treeHeight, treeHeight, Image.SCALE_SMOOTH));
+        ImageIcon custom;
+        if (expanded) {
+          custom = new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/expanded.png"));
+        } else {
+          custom = new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/collapsed.png"));
+        }
+        buff = new BufferedImage(treeHeight, treeHeight, BufferedImage.TYPE_INT_ARGB);
+        buff.getGraphics().drawImage(catIcon.getImage(), 0, 0, this);
+        buff.getGraphics().drawImage(custom.getImage(), treeHeight/2,treeHeight/2,treeHeight - treeHeight/2,treeHeight - treeHeight/2, this);
+        catIcon = new ImageIcon(buff);
         setIcon(catIcon);
       }
+
       setFont(getFont().deriveFont(20F));
     }
     setPreferredSize(new Dimension(200, tree.getRowHeight()));

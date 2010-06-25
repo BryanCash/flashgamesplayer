@@ -43,6 +43,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 /**
  *
@@ -66,6 +67,11 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
 
   /** Creates new form flashplayer */
   public FlashGamesPlayer() {
+    UIManager.put("Tree.expandedIcon",
+        new ImageIcon(""));
+    UIManager.put("Tree.collapsedIcon",
+        new ImageIcon(""));
+
     createLogger();
     createDatabase();
     createFolder(Options.USER_DIR + Options.GAMES_DIR);
