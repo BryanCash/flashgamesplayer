@@ -40,7 +40,8 @@ public class GamesTree extends javax.swing.JPanel {
   public static final int PLAYED = 1;
   public static final int RATE = 2;
   public static final int INTERNET = 3;
-  public static final String[] SORTS = {"Genre", "Played", "Rate", "Internet"};
+  public static final int DATE = 4;
+  public static final String[] SORTS = {"Genre", "Played", "Rate", "Internet","Date Added"};
   private static final long serialVersionUID = 345345636456L;
   DefaultTreeModel model = new GamesTreeModel(null);
   private boolean isSelected;
@@ -52,7 +53,6 @@ public class GamesTree extends javax.swing.JPanel {
   /** Creates new form Tree */
   public GamesTree() {
     initComponents();
-    tree.setCellRenderer(new GamesCellRenderer());
     addPropertyChangeListener(new GamesChangeListener());
     setVisible(true);
 
@@ -135,72 +135,39 @@ public class GamesTree extends javax.swing.JPanel {
   }// </editor-fold>//GEN-END:initComponents
 
   private void treeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_treeValueChanged
-    if (isSelected) {
-      DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-      setSelectedGame(null);
-      if (node != null) {
-        if (node.isLeaf()) {
-          if (node.getUserObject() instanceof Game) {
-            setSelectedGame((Game) node.getUserObject());
-            if (!FlashGamesPlayer.isInternet && getSelectedGame().isInternet() == Game.INTERNET) {
-              return;
-            }
-            firePropertyChange(GamesChangeListener.GAME_SELECTED, FlashGamesPlayer.gamePanel.getGame(), getSelectedGame());
-          } else if (node.getUserObject() instanceof Genre) {
-            selectedGenre = (Genre) node.getUserObject();
+  }//GEN-LAST:event_treeValueChanged
 
+  private void playGame() {
+    DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+    setSelectedGame(null);
+    if (node != null) {
+      if (node.isLeaf()) {
+        if (node.getUserObject() instanceof Game) {
+          setSelectedGame((Game) node.getUserObject());
+          if (!FlashGamesPlayer.isInternet && getSelectedGame().isInternet() == Game.INTERNET) {
+            return;
           }
-        } else {
-          if (node.getUserObject() instanceof Genre) {
-            selectedGenre = (Genre) node.getUserObject();
-          }
+          firePropertyChange(GamesChangeListener.GAME_SELECTED, FlashGamesPlayer.gamePanel.getGame(), getSelectedGame());
+        } else if (node.getUserObject() instanceof Genre) {
+          selectedGenre = (Genre) node.getUserObject();
+
+        }
+      } else {
+        if (node.getUserObject() instanceof Genre) {
+          selectedGenre = (Genre) node.getUserObject();
         }
       }
     }
-  }//GEN-LAST:event_treeValueChanged
+  }
 
   private void treeMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treeMouseReleased
     DefaultMutableTreeNode node;
-    if (evt.getButton() == MouseEvent.BUTTON1) {
+    if (evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() == 2) {
       Point p = evt.getPoint();
       selectedPath = tree.getClosestPathForLocation(p.x, p.y);
       if (tree.getPathBounds(selectedPath).contains(p)) {
-        isSelected = true;
         tree.setSelectionPath(selectedPath);
-        treeValueChanged(null);
-      }
-    } else if (evt.getButton() == MouseEvent.BUTTON3) {
-      Point p = evt.getPoint();
-      //popup.show(scrollpane, p.x, p.y);
-      TreePath path = tree.getClosestPathForLocation(p.x, p.y);
-      if (tree.getPathBounds(path).contains(p)) {
-        isSelected = false;
-        tree.setSelectionPath(path);
-      }
-      node = null;
-      if (tree.getSelectionCount() > 0) {
-        node = (DefaultMutableTreeNode) path.getLastPathComponent();
-        delete.setEnabled(true);
-        if (tree.getModel().isLeaf(node)) {
-          Game game = (Game) node.getUserObject();
-          delete.setText("Delete " + game.getTitle());
-        } else {
-          if (node.getUserObject() instanceof Genre) {
-            Genre genre = (Genre) node.getUserObject();
-            if (node.isLeaf()) {
-              delete.setText("Delete " + node);
-            } else {
-              delete.setText("Delete");
-              delete.setEnabled(false);
-            }
-          } else {
-            delete.setText("Delete");
-            delete.setEnabled(false);
-          }
-        }
-      } else {
-        delete.setText("Delete");
-        delete.setEnabled(false);
+        playGame();
       }
     }
   }//GEN-LAST:event_treeMouseReleased
@@ -270,6 +237,8 @@ public class GamesTree extends javax.swing.JPanel {
       case INTERNET:
         groupAndOrder = "GROUP BY g.internet, g.id ORDER BY g.internet DESC, g.title";
         break;
+      case DATE:
+        groupAndOrder = "ORDER BY g.id DESC, g.title";
     }
     String sql = "SELECT g.id AS id FROM games  g "
             + "INNER JOIN genres gen ON g.genre_id = gen.id " + groupAndOrder;
@@ -291,6 +260,8 @@ public class GamesTree extends javax.swing.JPanel {
           case INTERNET:
             category = game.isInternet() == Game.INTERNET ? "Internet" : "No Internet";
             break;
+          case DATE:
+            category = "Date";
         }
 
         list.add(new GameNode(category, game));

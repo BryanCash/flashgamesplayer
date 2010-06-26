@@ -27,6 +27,7 @@ import com.googlecode.flashgamesplayer.database.Database;
 import com.googlecode.flashgamesplayer.database.Game;
 import com.googlecode.flashgamesplayer.database.Options;
 import com.googlecode.flashgamesplayer.games.GameForm;
+import com.googlecode.flashgamesplayer.games.tree.GamesCellRenderer;
 import com.googlecode.flashgamesplayer.games.tree.GamesTree;
 import com.googlecode.flashgamesplayer.tools.GamesLogger;
 import com.googlecode.flashgamesplayer.tools.MyFunctions;
@@ -61,8 +62,9 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
   public static void setOptions(HashMap<String, Object> op) {
     options = op;
     MyFunctions.checkInternetConnection("http://www.google.com");
-    //gamesTree.tree.setRowHeight((Integer)options.get(Options.TREE_ROW_HEIGHT));
-    //gamesTree.populateTree();
+    gamesTree.tree.setRowHeight((Integer)options.get(Options.TREE_ROW_HEIGHT)+8);
+    gamesTree.tree.revalidate();
+    gamesTree.tree.repaint();
   }
   private final File tmpFile;
 
@@ -114,6 +116,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
 
     panelMain.add(gamePanel);
     gamesTree.tree.setRowHeight((Integer) options.get(Options.TREE_ROW_HEIGHT) + 8);
+    gamesTree.tree.setCellRenderer(new GamesCellRenderer());
     setSize(800, 600);
     setLocationRelativeTo(null);
     setExtendedState(MAXIMIZED_BOTH);
@@ -131,6 +134,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
 
     toolbar = new javax.swing.JToolBar();
     bt_addGame = new javax.swing.JButton();
+    bt_stop = new javax.swing.JButton();
     bt_delete = new javax.swing.JButton();
     bt_screenshot = new javax.swing.JButton();
     jSeparator1 = new javax.swing.JToolBar.Separator();
@@ -181,6 +185,17 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       }
     });
     toolbar.add(bt_addGame);
+
+    bt_stop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/stop.png"))); // NOI18N
+    bt_stop.setFocusable(false);
+    bt_stop.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    bt_stop.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    bt_stop.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        bt_stopActionPerformed(evt);
+      }
+    });
+    toolbar.add(bt_stop);
 
     bt_delete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/delete.png"))); // NOI18N
     bt_delete.setToolTipText("Delete Game");
@@ -500,6 +515,10 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
    
   }//GEN-LAST:event_formWindowClosing
 
+  private void bt_stopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_stopActionPerformed
+    gamePanel.setGame(null);
+  }//GEN-LAST:event_bt_stopActionPerformed
+
   /**
    * @param args the command line arguments
    */
@@ -521,6 +540,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
   public static javax.swing.JButton bt_exit;
   public static javax.swing.JButton bt_options;
   public static javax.swing.JButton bt_screenshot;
+  public static javax.swing.JButton bt_stop;
   public static javax.swing.JComboBox combo_sort;
   public static javax.swing.JMenu gamesMenu;
   public static com.googlecode.flashgamesplayer.games.tree.GamesTree gamesTree;

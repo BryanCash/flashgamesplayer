@@ -14,10 +14,7 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -38,14 +35,12 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
     setBackgroundSelectionColor(Color.LIGHT_GRAY);
     setBackgroundNonSelectionColor(Color.WHITE);
     setBorderSelectionColor(Color.WHITE);
-    treeHeight = (Integer) FlashGamesPlayer.options.get(Options.TREE_ROW_HEIGHT);
-    openIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/open.png")).getImage().getScaledInstance(treeHeight, treeHeight, Image.SCALE_SMOOTH));
-    closedIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/closed.png")).getImage().getScaledInstance(treeHeight, treeHeight, Image.SCALE_SMOOTH));
   }
 
   @Override
   public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
     super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+    treeHeight = (Integer) FlashGamesPlayer.options.get(Options.TREE_ROW_HEIGHT);
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
     Object obj = node.getUserObject();
     ImageIcon disabled;
@@ -61,7 +56,7 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
       if (sc.isFile()) {
 
         gameIcon = new ImageIcon(new ImageIcon(sc.getAbsolutePath()).getImage().getScaledInstance(
-            treeHeight, treeHeight, Image.SCALE_SMOOTH));
+                treeHeight, treeHeight, Image.SCALE_SMOOTH));
 
         // setText("");
       }
@@ -83,7 +78,7 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
       File catFile = new File(Options.USER_DIR + Options.SCREENSHOT_DIR + obj + ".png");
       if (catFile.isFile()) {
         catIcon = new ImageIcon(new ImageIcon(catFile.getAbsolutePath()).getImage().getScaledInstance(
-            treeHeight, treeHeight, Image.SCALE_SMOOTH));
+                treeHeight, treeHeight, Image.SCALE_SMOOTH));
         ImageIcon custom;
         if (expanded) {
           custom = new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/expanded.png"));
@@ -92,11 +87,15 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
         }
         buff = new BufferedImage(treeHeight, treeHeight, BufferedImage.TYPE_INT_ARGB);
         buff.getGraphics().drawImage(catIcon.getImage(), 0, 0, this);
-        buff.getGraphics().drawImage(custom.getImage(), treeHeight/2,treeHeight/2,treeHeight - treeHeight/2,treeHeight - treeHeight/2, this);
+        buff.getGraphics().drawImage(custom.getImage(), treeHeight / 2, treeHeight / 2, treeHeight - treeHeight / 2, treeHeight - treeHeight / 2, this);
         catIcon = new ImageIcon(buff);
-        setIcon(catIcon);
-      }
 
+      } else {
+        openIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/open.png")).getImage().getScaledInstance(treeHeight, treeHeight, Image.SCALE_SMOOTH));
+        closedIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/closed.png")).getImage().getScaledInstance(treeHeight, treeHeight, Image.SCALE_SMOOTH));
+
+      }
+      setIcon(catIcon);
       setFont(getFont().deriveFont(20F));
     }
     setPreferredSize(new Dimension(200, tree.getRowHeight()));
