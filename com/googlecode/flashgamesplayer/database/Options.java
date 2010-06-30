@@ -22,7 +22,8 @@ public class Options extends Record{
   public static final String USER_DIR = "./";
   public static final String GAMES_DIR = "games/";
   public static final String SCREENSHOT_DIR = "screenshots/";
-  public static final int SCREENSHOT_SIZE = 64;
+  public static final int SCREENSHOT_WIDTH = 340;
+  public static final int SCREENSHOT_HEIGHT = 256;
   public static final String STRING = "string";
   public static final String INTEGER = "int";
   public static final String BOOLEAN = "boolean";

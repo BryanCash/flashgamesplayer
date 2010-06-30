@@ -45,7 +45,7 @@ public class GamePanel extends javax.swing.JPanel {
     try{
     getFlashPlayer().load(Options.USER_DIR + Options.GAMES_DIR + game.getFilename());
     } catch (Exception ex){
-      System.out.println("ERROR");
+      
     }
     add(getFlashPlayer(), BorderLayout.CENTER);
     validate();

@@ -28,7 +28,8 @@ import javax.swing.tree.TreeCellRenderer;
 public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCellRenderer {
 
   private static long serialVersionUID = 1242536474L;
-  private Integer treeHeight = 64;
+  private Integer screenshotHeight = 64;
+  private Integer screenshotWidth = 85;
 
   public GamesCellRenderer() {
     setOpaque(false);
@@ -40,7 +41,8 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
   @Override
   public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
     super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
-    treeHeight = (Integer) FlashGamesPlayer.options.get(Options.TREE_ROW_HEIGHT);
+    screenshotHeight = (Integer) FlashGamesPlayer.options.get(Options.TREE_ROW_HEIGHT);
+    screenshotWidth = (screenshotHeight*4)/3;
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
     Object obj = node.getUserObject();
     ImageIcon disabled;
@@ -56,16 +58,16 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
       if (sc.isFile()) {
 
         gameIcon = new ImageIcon(new ImageIcon(sc.getAbsolutePath()).getImage().getScaledInstance(
-                treeHeight, treeHeight, Image.SCALE_SMOOTH));
+                screenshotWidth, screenshotHeight, Image.SCALE_SMOOTH));
 
         // setText("");
       }
       if (!FlashGamesPlayer.isInternet && game.isInternet() == Game.INTERNET) {
 
         disabled = new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/gameLeafDisabled.png"));
-        buff = new BufferedImage(treeHeight, treeHeight, BufferedImage.TYPE_INT_ARGB);
+        buff = new BufferedImage(screenshotWidth, screenshotHeight, BufferedImage.TYPE_INT_ARGB);
         buff.getGraphics().drawImage(gameIcon.getImage(), 0, 0, this);
-        buff.getGraphics().drawImage(disabled.getImage(), treeHeight - 22, treeHeight - 33, this);
+        buff.getGraphics().drawImage(disabled.getImage(), screenshotWidth - 22, screenshotHeight - 33, this);
         gameIcon = new ImageIcon(buff);
         setFont(getFont().deriveFont(Font.ITALIC));
         setForeground(Color.GRAY);
@@ -78,27 +80,36 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
       File catFile = new File(Options.USER_DIR + Options.SCREENSHOT_DIR + obj + ".png");
       if (catFile.isFile()) {
         catIcon = new ImageIcon(new ImageIcon(catFile.getAbsolutePath()).getImage().getScaledInstance(
-                treeHeight, treeHeight, Image.SCALE_SMOOTH));
+                screenshotWidth/2, screenshotHeight/2, Image.SCALE_SMOOTH));
         ImageIcon custom;
         if (expanded) {
           custom = new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/expanded.png"));
         } else {
           custom = new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/collapsed.png"));
         }
-        buff = new BufferedImage(treeHeight, treeHeight, BufferedImage.TYPE_INT_ARGB);
+        buff = new BufferedImage(screenshotWidth/2, screenshotHeight/2, BufferedImage.TYPE_INT_ARGB);
         buff.getGraphics().drawImage(catIcon.getImage(), 0, 0, this);
-        buff.getGraphics().drawImage(custom.getImage(), treeHeight / 2, treeHeight / 2, treeHeight - treeHeight / 2, treeHeight - treeHeight / 2, this);
+        buff.getGraphics().drawImage(custom.getImage(), screenshotWidth/4,screenshotHeight/4, screenshotHeight/4,screenshotHeight/4, this);
         catIcon = new ImageIcon(buff);
 
       } else {
-        openIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/open.png")).getImage().getScaledInstance(treeHeight, treeHeight, Image.SCALE_SMOOTH));
-        closedIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/closed.png")).getImage().getScaledInstance(treeHeight, treeHeight, Image.SCALE_SMOOTH));
+        openIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/open.png")).getImage().getScaledInstance(screenshotWidth/2, screenshotHeight/2, Image.SCALE_SMOOTH));
+        closedIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/closed.png")).getImage().getScaledInstance(screenshotWidth/2, screenshotHeight/2, Image.SCALE_SMOOTH));
 
       }
       setIcon(catIcon);
       setFont(getFont().deriveFont(20F));
+    } else if (obj instanceof Double) {
+      catIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/star.png")).getImage().getScaledInstance(screenshotWidth/2, screenshotHeight/2, Image.SCALE_SMOOTH));
+       setIcon(catIcon);
+       setFont(getFont().deriveFont(20F));
+    }else if (obj instanceof Integer) {
+      catIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/play.png")).getImage().getScaledInstance(screenshotWidth/2, screenshotHeight/2, Image.SCALE_SMOOTH));
+       setIcon(catIcon);
+       setFont(getFont().deriveFont(20F));
     }
-    setPreferredSize(new Dimension(200, tree.getRowHeight()));
+
+    setPreferredSize(new Dimension(screenshotWidth*3, tree.getRowHeight()));
     if (!(Boolean) FlashGamesPlayer.options.get(Options.DISPLAY_GAME_TITLE)) {
       setText("");
     }

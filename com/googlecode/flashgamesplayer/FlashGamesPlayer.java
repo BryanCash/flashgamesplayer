@@ -484,10 +484,10 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       Dimension dim = new Dimension(component.getWidth(), component.getHeight());
       Rectangle captureSize = new Rectangle(point, dim);
       BufferedImage image = robot.createScreenCapture(captureSize);
-      Image icon = image.getScaledInstance(Options.SCREENSHOT_SIZE, Options.SCREENSHOT_SIZE, Image.SCALE_SMOOTH);
+      Image icon = image.getScaledInstance(Options.SCREENSHOT_WIDTH, Options.SCREENSHOT_HEIGHT, Image.SCALE_SMOOTH);
       File file = new File(Options.USER_DIR + Options.SCREENSHOT_DIR
               + gamesTree.getSelectedGame().getId() + ".png");
-      BufferedImage bimg = new BufferedImage(Options.SCREENSHOT_SIZE, Options.SCREENSHOT_SIZE, BufferedImage.TYPE_INT_ARGB);
+      BufferedImage bimg = new BufferedImage(Options.SCREENSHOT_WIDTH, Options.SCREENSHOT_HEIGHT, BufferedImage.TYPE_INT_ARGB);
       bimg.getGraphics().drawImage(icon, 0, 0, this);
       ImageIO.write(bimg, "png", file);
 
