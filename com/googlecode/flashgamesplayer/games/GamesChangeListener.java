@@ -26,6 +26,7 @@ public class GamesChangeListener implements PropertyChangeListener {
     } else if (evt.getPropertyName().equals(GAME_SELECTED)) {
       Game game = (Game) evt.getNewValue();
       FlashGamesPlayer.gamePanel.setGame(game);
+      
     } else if (evt.getPropertyName().equals(GAME_DELETED)) {
       FlashGamesPlayer.gamePanel.setGame(null);
       FlashGamesPlayer.label_gameTitle.setText("");

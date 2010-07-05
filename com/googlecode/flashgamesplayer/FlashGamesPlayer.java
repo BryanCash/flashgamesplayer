@@ -27,6 +27,7 @@ import com.googlecode.flashgamesplayer.database.Database;
 import com.googlecode.flashgamesplayer.database.Game;
 import com.googlecode.flashgamesplayer.database.Options;
 import com.googlecode.flashgamesplayer.games.GameForm;
+import com.googlecode.flashgamesplayer.games.GamesChangeListener;
 import com.googlecode.flashgamesplayer.games.tree.GamesCellRenderer;
 import com.googlecode.flashgamesplayer.games.tree.GamesTree;
 import com.googlecode.flashgamesplayer.tools.GamesLogger;
@@ -96,7 +97,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     options = Options.getOptions();
     gamePanel = new GamePanel();
     initComponents();
-
+    splitpane.setDividerLocation(220);
     MyFunctions.checkInternetConnection("http://www.google.com");
     rating.addPropertyChangeListener(new PropertyChangeListener() {
 
@@ -120,6 +121,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     setSize(800, 600);
     setLocationRelativeTo(null);
     setExtendedState(MAXIMIZED_BOTH);
+    addPropertyChangeListener(new GamesChangeListener());
     setVisible(true);
   }
 
@@ -153,6 +155,9 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     jLabel1 = new javax.swing.JLabel();
     jLabel2 = new javax.swing.JLabel();
     tf_plays = new javax.swing.JTextField();
+    jLabel3 = new javax.swing.JLabel();
+    tf_password = new javax.swing.JTextField();
+    bt_savePassword = new javax.swing.JButton();
     menuBar = new javax.swing.JMenuBar();
     gamesMenu = new javax.swing.JMenu();
     menuItem_addGame = new javax.swing.JMenuItem();
@@ -251,7 +256,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     });
     toolbar.add(bt_exit);
 
-    splitpane.setDividerLocation(300);
+    splitpane.setDividerLocation(50);
     splitpane.setMinimumSize(new java.awt.Dimension(700, 500));
     splitpane.setPreferredSize(new java.awt.Dimension(789, 544));
 
@@ -271,8 +276,8 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       .addGroup(leftLayout.createSequentialGroup()
         .addContainerGap()
         .addGroup(leftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addComponent(gamesTree, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
-          .addComponent(combo_sort, javax.swing.GroupLayout.Alignment.TRAILING, 0, 279, Short.MAX_VALUE))
+          .addComponent(gamesTree, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
+          .addComponent(combo_sort, javax.swing.GroupLayout.Alignment.TRAILING, 0, 29, Short.MAX_VALUE))
         .addContainerGap())
     );
     leftLayout.setVerticalGroup(
@@ -315,31 +320,53 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     tf_plays.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
     tf_plays.setOpaque(false);
 
+    jLabel3.setText("Password :");
+
+    bt_savePassword.setText("Save");
+    bt_savePassword.setEnabled(false);
+    bt_savePassword.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        bt_savePasswordActionPerformed(evt);
+      }
+    });
+
     javax.swing.GroupLayout panel_headerLayout = new javax.swing.GroupLayout(panel_header);
     panel_header.setLayout(panel_headerLayout);
     panel_headerLayout.setHorizontalGroup(
       panel_headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(panel_headerLayout.createSequentialGroup()
         .addContainerGap()
-        .addComponent(label_gameTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+        .addComponent(label_gameTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(jLabel3)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(tf_password, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(bt_savePassword)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-        .addComponent(tf_plays, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(tf_plays, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(rating, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-        .addGap(10, 10, 10))
+        .addContainerGap())
     );
     panel_headerLayout.setVerticalGroup(
       panel_headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGroup(panel_headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-        .addComponent(label_gameTitle)
-        .addComponent(jLabel2)
-        .addComponent(jLabel1)
-        .addComponent(tf_plays, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-      .addComponent(rating, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+      .addGroup(panel_headerLayout.createSequentialGroup()
+        .addGroup(panel_headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addGroup(panel_headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+            .addComponent(label_gameTitle)
+            .addComponent(jLabel1)
+            .addComponent(tf_password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jLabel3)
+            .addComponent(tf_plays, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jLabel2)
+            .addComponent(bt_savePassword))
+          .addComponent(rating, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addContainerGap(1, Short.MAX_VALUE))
     );
 
     javax.swing.GroupLayout rightLayout = new javax.swing.GroupLayout(right);
@@ -349,17 +376,17 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightLayout.createSequentialGroup()
         .addContainerGap()
         .addGroup(rightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-          .addComponent(panelMain, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
+          .addComponent(panelMain, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 713, Short.MAX_VALUE)
           .addComponent(panel_header, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         .addContainerGap())
     );
     rightLayout.setVerticalGroup(
       rightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGroup(rightLayout.createSequentialGroup()
+      .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightLayout.createSequentialGroup()
         .addContainerGap()
-        .addComponent(panel_header, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addComponent(panel_header, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(panelMain, javax.swing.GroupLayout.DEFAULT_SIZE, 422, Short.MAX_VALUE)
+        .addComponent(panelMain, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)
         .addContainerGap())
     );
 
@@ -516,8 +543,21 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
   }//GEN-LAST:event_formWindowClosing
 
   private void bt_stopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_stopActionPerformed
-    gamePanel.setGame(null);
+    //gamePanel.setGame(null);
+    firePropertyChange(GamesChangeListener.GAME_SELECTED, FlashGamesPlayer.gamePanel.getGame(), null);
   }//GEN-LAST:event_bt_stopActionPerformed
+
+  private void bt_savePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_savePasswordActionPerformed
+    if(gamePanel.getGame()!=null){
+      int id = gamePanel.getGame().getId();
+      try {
+        Game.updatePassword(id, tf_password.getText().trim());
+      } catch (SQLException ex) {
+        MyMessages.error("Password save", "Could not save the password");
+        logger.log(Level.SEVERE, null, ex);
+      }
+    }
+  }//GEN-LAST:event_bt_savePasswordActionPerformed
 
   /**
    * @param args the command line arguments
@@ -539,6 +579,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
   public static javax.swing.JButton bt_delete;
   public static javax.swing.JButton bt_exit;
   public static javax.swing.JButton bt_options;
+  public static javax.swing.JButton bt_savePassword;
   public static javax.swing.JButton bt_screenshot;
   public static javax.swing.JButton bt_stop;
   public static javax.swing.JComboBox combo_sort;
@@ -546,6 +587,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
   public static com.googlecode.flashgamesplayer.games.tree.GamesTree gamesTree;
   public static javax.swing.JLabel jLabel1;
   public static javax.swing.JLabel jLabel2;
+  public static javax.swing.JLabel jLabel3;
   public static javax.swing.JToolBar.Separator jSeparator1;
   public static javax.swing.JLabel label_gameTitle;
   public static javax.swing.JLabel label_internet;
@@ -561,6 +603,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
   public static com.googlecode.starrating.StarRating rating;
   public static javax.swing.JPanel right;
   public static javax.swing.JSplitPane splitpane;
+  public static javax.swing.JTextField tf_password;
   public static javax.swing.JTextField tf_plays;
   public static javax.swing.JToolBar toolbar;
   public static javax.swing.JMenu toolsMenu;

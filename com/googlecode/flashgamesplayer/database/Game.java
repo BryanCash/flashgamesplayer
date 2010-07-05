@@ -26,7 +26,7 @@ public class Game extends Record {
   private double rate = 0.0;
   private int internet;
   private boolean newGame;
-
+  private String password;
   public static int NO_INTERNET = 0;
   public static int INTERNET = 1;
 
@@ -38,16 +38,9 @@ public class Game extends Record {
   public int save() throws SQLException {
     String sql;
     if (this.getId() != 0) {
-      sql = "UPDATE games SET "
-          + "genre_id = " + this.getGenre_id()
-          + ", title = '" + this.getTitle()
-          + "', filename = '" + this.getFilename()
-          + "', internet = " + this.isInternet()
-          + " WHERE id = " + this.getId();
+      sql = "UPDATE games SET " + "genre_id = " + this.getGenre_id() + ", title = '" + this.getTitle() + "', filename = '" + this.getFilename() + "', password = '" + this.getPassword() + "', internet = " + this.isInternet() + " WHERE id = " + this.getId();
     } else {
-      sql = "INSERT INTO games (genre_id, title, filename, internet ) "
-          + "VALUES(" + this.getGenre_id() + ", '" + this.getTitle() + "', '"
-          + this.getFilename() + "'," + this.isInternet() + " )";
+      sql = "INSERT INTO games (genre_id, title, filename, internet, password ) " + "VALUES(" + this.getGenre_id() + ", '" + this.getTitle() + "', '" + this.getFilename() + "'," + this.isInternet() + ", '" + this.getPassword() + "' )";
     }
     return queryUpdate(sql);
   }
@@ -65,6 +58,7 @@ public class Game extends Record {
         game.setPlayed(rs.getInt("played"));
         game.setRate(rs.getDouble("rate"));
         game.setInternet(rs.getInt("internet"));
+        game.setPassword(rs.getString("password"));
         game.setNewGame(false);
         return game;
       }
@@ -80,12 +74,17 @@ public class Game extends Record {
     return queryUpdate(sql);
   }
 
+  public static int updatePassword(int id, String password) throws SQLException {
+    String sql = "UPDATE games SET password = '"+ password +"' WHERE id = " + id;
+    return queryUpdate(sql);
+  }
+
   public static int updateRate(int id, double rate) throws SQLException {
     String sql = "UPDATE games SET rate = " + rate + " WHERE id = " + id;
     return queryUpdate(sql);
   }
 
-   public boolean delete() {
+  public boolean delete() {
     try {
       String sql = "DELETE FROM games WHERE id =" + this.getId();
       queryUpdate(sql);
@@ -95,7 +94,7 @@ public class Game extends Record {
       FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
       return false;
     }
-    
+
   }
 
   public static Game getFirstGame(int genre) {
@@ -235,5 +234,17 @@ public class Game extends Record {
     this.newGame = newGame;
   }
 
+  /**
+   * @return the password
+   */
+  public String getPassword() {
+    return password;
+  }
 
+  /**
+   * @param password the password to set
+   */
+  public void setPassword(String password) {
+    this.password = password;
+  }
 }

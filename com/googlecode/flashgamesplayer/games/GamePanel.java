@@ -49,12 +49,14 @@ public class GamePanel extends javax.swing.JPanel {
     }
     add(getFlashPlayer(), BorderLayout.CENTER);
     validate();
-    this.game = game;
-    this.genre_id = game.getGenre_id();
-    FlashGamesPlayer.label_gameTitle.setText(game.getTitle());
-    FlashGamesPlayer.rating.setRate(game.getRate());
+    this.game = Game.getGameById(game.getId());
+    this.genre_id = this.game.getGenre_id();
+    FlashGamesPlayer.label_gameTitle.setText(this.game.getTitle());
+    FlashGamesPlayer.rating.setRate(this.game.getRate());
     FlashGamesPlayer.rating.setRatingEnabled(true);
-    FlashGamesPlayer.tf_plays.setText(String.valueOf(game.getPlayed()));
+    FlashGamesPlayer.tf_plays.setText(String.valueOf(this.game.getPlayed()));
+    FlashGamesPlayer.bt_savePassword.setEnabled(game!=null);
+    FlashGamesPlayer.tf_password.setText(this.game.getPassword());
     try {
       Game.updatePlayed(game.getId());
     } catch (SQLException ex) {

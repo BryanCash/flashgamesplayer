@@ -110,7 +110,8 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
     }
 
     setPreferredSize(new Dimension(screenshotWidth*3, tree.getRowHeight()));
-    if (!(Boolean) FlashGamesPlayer.options.get(Options.DISPLAY_GAME_TITLE)) {
+    if (!(Boolean) FlashGamesPlayer.options.get(Options.DISPLAY_GAME_TITLE) &&
+            obj instanceof Game) {
       setText("");
     }
     return this;

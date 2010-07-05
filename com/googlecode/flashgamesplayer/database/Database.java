@@ -27,6 +27,8 @@ public class Database {
     File db = new File(PATH);
     if (db.isFile()) {
       connect();
+     
+
     } else {
       connect();
       createDatabase();
@@ -54,6 +56,7 @@ public class Database {
           + "`genre_id` INTEGER, "
           + "`title` VARCHAR, "
           + "`filename` VARCHAR,`played` INTEGER DEFAULT 0, "
+          + "`password` VARCHAR, "
           + "`rate` DOUBLE DEFAULT 0, "
           + "`internet` INTEGER DEFAULT 0)");
       FlashGamesPlayer.logger.log(Level.INFO, "Creating table genres");
@@ -65,7 +68,7 @@ public class Database {
           + "`type` VARCHAR, `value` VARCHAR)");
       addOptions();
     } catch (SQLException ex) {
-      FlashGamesPlayer.logger.log(Level.SEVERE, "Could create the tables", ex);
+      FlashGamesPlayer.logger.log(Level.SEVERE, "Could not create the tables", ex);
     }
 
   }
