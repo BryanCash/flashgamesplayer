@@ -151,7 +151,6 @@ public class GamesTree extends javax.swing.JPanel {
           }
           if (getSelectedGame().getDeleted() == 1) {
             MyMessages.error("Play Game", "This games is deleted. Undelete it first.");
-            setSelectedGame(null);
           }
           firePropertyChange(GamesChangeListener.GAME_SELECTED, FlashGamesPlayer.gamePanel.getGame(), getSelectedGame());
         } else if (node.getUserObject() instanceof Genre) {

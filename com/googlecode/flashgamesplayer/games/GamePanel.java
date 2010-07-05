@@ -44,10 +44,12 @@ public class GamePanel extends javax.swing.JPanel {
       remove(getFlashPlayer());
     }
     flashPlayer = new JFlashPlayer();
-    try{
-    getFlashPlayer().load(Options.USER_DIR + Options.GAMES_DIR + game.getFilename());
-    } catch (Exception ex){
-      
+    try {
+      if (game != null && game.getDeleted() == 0) {
+        getFlashPlayer().load(Options.USER_DIR + Options.GAMES_DIR + game.getFilename());
+        Game.updatePlayed(this.game.getId());
+      }
+    } catch (Exception ex) {
     }
     add(getFlashPlayer(), BorderLayout.CENTER);
     validate();
@@ -56,26 +58,23 @@ public class GamePanel extends javax.swing.JPanel {
     FlashGamesPlayer.rating.setRate(this.game.getRate());
     FlashGamesPlayer.rating.setRatingEnabled(true);
     FlashGamesPlayer.tf_plays.setText(String.valueOf(this.game.getPlayed()));
-    FlashGamesPlayer.bt_savePassword.setEnabled(game!=null);
+    FlashGamesPlayer.bt_savePassword.setEnabled(game != null);
     FlashGamesPlayer.tf_password.setText(this.game.getPassword());
-    FlashGamesPlayer.bt_delete.setEnabled(game!=null);
-    FlashGamesPlayer.menuItem_deleteGame.setEnabled(game!=null);
-    try {
-      Game.updatePlayed(this.game.getId());
-    } catch (SQLException ex) {
-      FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
-    }
+    FlashGamesPlayer.bt_delete.setEnabled(game.getDeleted() == 0);
+    FlashGamesPlayer.menuItem_deleteGame.setEnabled(game.getDeleted() == 0);
+    FlashGamesPlayer.bt_restore.setEnabled(game.getDeleted() == 1);
+   
   }
 
   public Game getGame() {
     return game;
   }
 
-  public Genre getGenre(){
+  public Genre getGenre() {
     return Genre.getGenreById(this.genre_id);
   }
 
-  public JFlashPlayer getFlashPlayer(){
+  public JFlashPlayer getFlashPlayer() {
     return this.flashPlayer;
   }
 

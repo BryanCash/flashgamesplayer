@@ -67,7 +67,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
   public static void setOptions(HashMap<String, Object> op) {
     options = op;
     MyFunctions.checkInternetConnection("http://www.google.com");
-    gamesTree.tree.setRowHeight((Integer)options.get(Options.TREE_ROW_HEIGHT)+8);
+    gamesTree.tree.setRowHeight((Integer) options.get(Options.TREE_ROW_HEIGHT) + 8);
     gamesTree.tree.revalidate();
     gamesTree.tree.repaint();
   }
@@ -75,8 +75,8 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
 
   /** Creates new form flashplayer */
   public FlashGamesPlayer() {
-    tmpFile = new File(Options.USER_DIR+".tmp");
-    if(tmpFile.exists()){
+    tmpFile = new File(Options.USER_DIR + ".tmp");
+    if (tmpFile.exists()) {
       MyMessages.message("Application open", "The application is already open");
       System.exit(0);
     } else {
@@ -89,9 +89,9 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     }
 
     UIManager.put("Tree.expandedIcon",
-            new ImageIcon(""));
+        new ImageIcon(""));
     UIManager.put("Tree.collapsedIcon",
-            new ImageIcon(""));
+        new ImageIcon(""));
 
     createLogger();
     createDatabase();
@@ -126,7 +126,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     setLocationRelativeTo(null);
     //setExtendedState(MAXIMIZED_BOTH);
     addPropertyChangeListener(new GamesChangeListener());
-    new FileDrop(splitpane, BorderFactory.createLineBorder(Color.RED, 2),new MyFileDropListener());
+    new FileDrop(splitpane, BorderFactory.createLineBorder(Color.RED, 2), new MyFileDropListener());
     setVisible(true);
   }
 
@@ -143,6 +143,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     bt_addGame = new javax.swing.JButton();
     bt_stop = new javax.swing.JButton();
     bt_delete = new javax.swing.JButton();
+    bt_restore = new javax.swing.JButton();
     bt_screenshot = new javax.swing.JButton();
     jSeparator1 = new javax.swing.JToolBar.Separator();
     label_internet = new javax.swing.JLabel();
@@ -220,6 +221,18 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     });
     toolbar.add(bt_delete);
 
+    bt_restore.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/restore.png"))); // NOI18N
+    bt_restore.setEnabled(false);
+    bt_restore.setFocusable(false);
+    bt_restore.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    bt_restore.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    bt_restore.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        bt_restoreActionPerformed(evt);
+      }
+    });
+    toolbar.add(bt_restore);
+
     bt_screenshot.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/screenshot.png"))); // NOI18N
     bt_screenshot.setToolTipText("Take a screenshot");
     bt_screenshot.setEnabled(false);
@@ -282,8 +295,8 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       .addGroup(leftLayout.createSequentialGroup()
         .addContainerGap()
         .addGroup(leftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addComponent(gamesTree, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
-          .addComponent(combo_sort, javax.swing.GroupLayout.Alignment.TRAILING, 0, 29, Short.MAX_VALUE))
+          .addComponent(gamesTree, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+          .addComponent(combo_sort, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         .addContainerGap())
     );
     leftLayout.setVerticalGroup(
@@ -342,7 +355,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       panel_headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(panel_headerLayout.createSequentialGroup()
         .addContainerGap()
-        .addComponent(label_gameTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)
+        .addComponent(label_gameTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(jLabel3)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -382,7 +395,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightLayout.createSequentialGroup()
         .addContainerGap()
         .addGroup(rightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-          .addComponent(panelMain, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE)
+          .addComponent(panelMain, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 712, Short.MAX_VALUE)
           .addComponent(panel_header, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         .addContainerGap())
     );
@@ -519,7 +532,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       BufferedImage image = robot.createScreenCapture(captureSize);
       Image icon = image.getScaledInstance(Options.SCREENSHOT_WIDTH, Options.SCREENSHOT_HEIGHT, Image.SCALE_SMOOTH);
       File file = new File(Options.USER_DIR + Options.SCREENSHOT_DIR
-              + gamesTree.getSelectedGame().getId() + ".png");
+          + gamesTree.getSelectedGame().getId() + ".png");
       BufferedImage bimg = new BufferedImage(Options.SCREENSHOT_WIDTH, Options.SCREENSHOT_HEIGHT, BufferedImage.TYPE_INT_ARGB);
       bimg.getGraphics().drawImage(icon, 0, 0, this);
       ImageIO.write(bimg, "png", file);
@@ -544,8 +557,8 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
   }//GEN-LAST:event_bt_exitActionPerformed
 
   private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-   menuItem_exitActionPerformed(null);
-   
+    menuItem_exitActionPerformed(null);
+
   }//GEN-LAST:event_formWindowClosing
 
   private void bt_stopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_stopActionPerformed
@@ -554,7 +567,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
   }//GEN-LAST:event_bt_stopActionPerformed
 
   private void bt_savePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_savePasswordActionPerformed
-    if(gamePanel.getGame()!=null){
+    if (gamePanel.getGame() != null) {
       int id = gamePanel.getGame().getId();
       try {
         Game.updatePassword(id, tf_password.getText().trim());
@@ -564,6 +577,16 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       }
     }
   }//GEN-LAST:event_bt_savePasswordActionPerformed
+
+  private void bt_restoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_restoreActionPerformed
+    if (gamePanel.getGame() != null) {
+      Game game = gamePanel.getGame();
+      if (!game.restore()) {
+        MyMessages.error("Game restore", "Could not restore the game");
+        firePropertyChange(GamesChangeListener.GAME_ADDED, null, FlashGamesPlayer.gamePanel.getGame());
+      }
+    }
+  }//GEN-LAST:event_bt_restoreActionPerformed
 
   /**
    * @param args the command line arguments
@@ -585,6 +608,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
   public static javax.swing.JButton bt_delete;
   public static javax.swing.JButton bt_exit;
   public static javax.swing.JButton bt_options;
+  public static javax.swing.JButton bt_restore;
   public static javax.swing.JButton bt_savePassword;
   public static javax.swing.JButton bt_screenshot;
   public static javax.swing.JButton bt_stop;

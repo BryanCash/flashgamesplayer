@@ -109,6 +109,17 @@ public class Game extends Record {
     }
 
   }
+  public boolean restore() {
+    try {
+      String sql = "UPDATE games SET deleted = " + NOT_DELETED + " WHERE id =" + this.getId();
+      queryUpdate(sql);
+      return true;
+    } catch (SQLException ex) {
+      FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
+      return false;
+    }
+
+  }
 
   public static Game getFirstGame(int genre, boolean deleted) {
     String sql;
