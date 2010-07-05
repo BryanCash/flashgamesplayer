@@ -37,7 +37,7 @@ public class MyFunctions {
 
     File f1 = new File(srFile);
     File f2 = new File(dtFile);
-    if (f1.equals(f2)) {
+    if (f1.getCanonicalPath().equals(f2.getCanonicalPath())) {
       return true;
     }
     InputStream in = new FileInputStream(f1);

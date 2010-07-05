@@ -190,13 +190,13 @@ public class GamesTree extends javax.swing.JPanel {
   }//GEN-LAST:event_deleteActionPerformed
 
   public void deleteGame(Game game) {
-    //if (MyMessages.question("Delete Game", "Really delete the game : " + game.getTitle()) == JOptionPane.OK_OPTION) {
-    //  if (game.delete()) {
-    //    firePropertyChange(GamesChangeListener.GAME_DELETED, game, null);
-    //  } else {
-    //    MyMessages.error("Error", "Could not delete the game");
-    //  }
-   // }
+    if (MyMessages.question("Delete Game", "Really delete the game : " + game.getTitle()) == JOptionPane.OK_OPTION) {
+      if (game.delete()) {
+        firePropertyChange(GamesChangeListener.GAME_DELETED, game, null);
+      } else {
+        MyMessages.error("Error", "Could not delete the game");
+      }
+    }
   }
 
   private void treeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_treeKeyReleased
