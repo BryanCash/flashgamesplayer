@@ -41,7 +41,8 @@ public class GamesTree extends javax.swing.JPanel {
   public static final int RATE = 2;
   public static final int INTERNET = 3;
   public static final int DATE = 4;
-  public static final String[] SORTS = {"Genre", "Played", "Rate", "Internet","Date Added"};
+  public static final int DELETED = 5;
+  public static final String[] SORTS = {"Genre", "Played", "Rate", "Internet", "Date Added", "Deleted"};
   private static final long serialVersionUID = 345345636456L;
   DefaultTreeModel model = new GamesTreeModel(null);
   private boolean isSelected;
@@ -145,12 +146,16 @@ public class GamesTree extends javax.swing.JPanel {
         if (node.getUserObject() instanceof Game) {
           setSelectedGame((Game) node.getUserObject());
           if (!FlashGamesPlayer.isInternet && getSelectedGame().isInternet() == Game.INTERNET) {
-            return;
+            MyMessages.error("Play Game", "This games requires internet connection which is not established");
+            setSelectedGame(null);
+          }
+          if (getSelectedGame().getDeleted() == 1) {
+            MyMessages.error("Play Game", "This games is deleted. Undelete it first.");
+            setSelectedGame(null);
           }
           firePropertyChange(GamesChangeListener.GAME_SELECTED, FlashGamesPlayer.gamePanel.getGame(), getSelectedGame());
         } else if (node.getUserObject() instanceof Genre) {
           selectedGenre = (Genre) node.getUserObject();
-
         }
       } else {
         if (node.getUserObject() instanceof Genre) {
@@ -182,10 +187,8 @@ public class GamesTree extends javax.swing.JPanel {
     Object obj = node.getUserObject();
     if (obj instanceof Game) {
       Game game = (Game) obj;
-      System.out.println(game.getId());
     } else if (obj instanceof Genre) {
       Genre genre = (Genre) obj;
-      System.out.println(genre.getId());
     }
   }//GEN-LAST:event_deleteActionPerformed
 
@@ -206,7 +209,7 @@ public class GamesTree extends javax.swing.JPanel {
     if (obj instanceof Game) {
       Game game = (Game) obj;
       if (evt.getKeyCode() == KeyEvent.VK_F2) {
-        new GameForm(game,null);
+        new GameForm(game, null);
       } else if (evt.getKeyCode() == KeyEvent.VK_DELETE) {
         deleteGame(game);
       }
@@ -239,29 +242,39 @@ public class GamesTree extends javax.swing.JPanel {
         break;
       case DATE:
         groupAndOrder = "ORDER BY g.id DESC, g.title";
+        break;
+      case DELETED:
+        groupAndOrder = "GROUP BY g.deleted,g.id ORDER BY g.deleted, g.title";
+        break;
     }
     String sql = "SELECT g.id AS id FROM games  g "
-            + "INNER JOIN genres gen ON g.genre_id = gen.id " + groupAndOrder;
+        + "INNER JOIN genres gen ON g.genre_id = gen.id "
+        + (sort != DELETED ? "WHERE g.deleted = " + Game.NOT_DELETED + " " : "")
+        + groupAndOrder;
     try {
       ResultSet rs = new Database().getStmt().executeQuery(sql);
       while (rs.next()) {
         Game game = Game.getGameById(rs.getInt("id"));
-        Object category = null;
+        Category category = null;
         switch (sort) {
           case GENRE:
-            category = Genre.getGenreById(game.getGenre_id()).getGenre();
+            category = new Category(GENRE, Genre.getGenreById(game.getGenre_id()).getGenre());
             break;
           case PLAYED:
-            category = game.getPlayed();
+            category = new Category(PLAYED, game.getPlayed());
             break;
           case RATE:
-            category = game.getRate();
+            category = new Category(RATE, game.getRate());
             break;
           case INTERNET:
-            category = game.isInternet() == Game.INTERNET ? "Internet" : "No Internet";
+            category = new Category(INTERNET, game.isInternet() == Game.INTERNET ? "Internet" : "No Internet");
             break;
           case DATE:
-            category = "Date";
+            category = new Category(DATE, "Date");
+            break;
+          case DELETED:
+            category = new Category(DELETED, game.getDeleted() == Game.DELETED ? "Deleted" : "Not Deleted");
+            break;
         }
 
         list.add(new GameNode(category, game));
@@ -280,16 +293,16 @@ public class GamesTree extends javax.swing.JPanel {
   }
 
   private DefaultMutableTreeNode createTree(ArrayList<GameNode> list) {
-    DefaultMutableTreeNode root = new DefaultMutableTreeNode("Games");
+    DefaultMutableTreeNode root = new DefaultMutableTreeNode(new Category(GENRE, "Games"));
     Object prevNodeCategory = "";
     DefaultMutableTreeNode curNode = null;
     for (Iterator<GameNode> it = list.iterator(); it.hasNext();) {
       GameNode gameNode = it.next();
-      if (!gameNode.category.equals(prevNodeCategory)) {
+      if (!gameNode.category.value.equals(prevNodeCategory)) {
         curNode = new DefaultMutableTreeNode(gameNode.category);
         root.add(curNode);
         curNode.add(new DefaultMutableTreeNode(gameNode.game));
-        prevNodeCategory = gameNode.category;
+        prevNodeCategory = gameNode.category.value;
       } else {
         curNode.add(new DefaultMutableTreeNode(gameNode.game));
       }
@@ -336,12 +349,43 @@ public class GamesTree extends javax.swing.JPanel {
 
   class GameNode {
 
-    private Object category;
+    private Category category;
     private Game game;
 
-    public GameNode(Object category, Game g) {
+    public GameNode(Category category, Game g) {
       this.category = category;
       this.game = g;
+    }
+  }
+
+  class Category {
+
+    private int type;
+    private Object value;
+
+    public Category(int type, Object value) {
+      this.type = type;
+      this.value = value;
+
+    }
+
+    @Override
+    public String toString() {
+      return value.toString();
+    }
+
+    /**
+     * @return the type
+     */
+    public int getType() {
+      return type;
+    }
+
+    /**
+     * @return the value
+     */
+    public Object getValue() {
+      return value;
     }
   }
 }

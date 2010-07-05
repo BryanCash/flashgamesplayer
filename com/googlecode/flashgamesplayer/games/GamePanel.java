@@ -36,7 +36,9 @@ public class GamePanel extends javax.swing.JPanel {
 
   public void setGame(Game game) {
     if (game == null) {
-      game = new Game();
+      this.game = new Game();
+    } else {
+      this.game = Game.getGameById(game.getId());
     }
     if (getFlashPlayer() != null) {
       remove(getFlashPlayer());
@@ -49,16 +51,17 @@ public class GamePanel extends javax.swing.JPanel {
     }
     add(getFlashPlayer(), BorderLayout.CENTER);
     validate();
-    this.game = Game.getGameById(game.getId());
-    this.genre_id = this.game.getGenre_id();
+    //this.genre_id = this.game.getGenre_id();
     FlashGamesPlayer.label_gameTitle.setText(this.game.getTitle());
     FlashGamesPlayer.rating.setRate(this.game.getRate());
     FlashGamesPlayer.rating.setRatingEnabled(true);
     FlashGamesPlayer.tf_plays.setText(String.valueOf(this.game.getPlayed()));
     FlashGamesPlayer.bt_savePassword.setEnabled(game!=null);
     FlashGamesPlayer.tf_password.setText(this.game.getPassword());
+    FlashGamesPlayer.bt_delete.setEnabled(game!=null);
+    FlashGamesPlayer.menuItem_deleteGame.setEnabled(game!=null);
     try {
-      Game.updatePlayed(game.getId());
+      Game.updatePlayed(this.game.getId());
     } catch (SQLException ex) {
       FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
     }

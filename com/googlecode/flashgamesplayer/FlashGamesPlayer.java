@@ -50,8 +50,6 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import net.iharder.dnd.FileDrop;
-import net.iharder.dnd.FileDropEvent;
-import net.iharder.dnd.FileDropListener;
 
 /**
  *
@@ -126,7 +124,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     gamesTree.tree.setCellRenderer(new GamesCellRenderer());
     setSize(800, 600);
     setLocationRelativeTo(null);
-    setExtendedState(MAXIMIZED_BOTH);
+    //setExtendedState(MAXIMIZED_BOTH);
     addPropertyChangeListener(new GamesChangeListener());
     new FileDrop(splitpane, BorderFactory.createLineBorder(Color.RED, 2),new MyFileDropListener());
     setVisible(true);

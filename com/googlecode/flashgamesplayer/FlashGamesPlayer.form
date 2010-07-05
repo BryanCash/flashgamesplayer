@@ -277,8 +277,8 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="gamesTree" alignment="1" pref="29" max="32767" attributes="0"/>
-                          <Component id="combo_sort" alignment="1" pref="29" max="32767" attributes="0"/>
+                          <Component id="gamesTree" alignment="1" pref="28" max="32767" attributes="0"/>
+                          <Component id="combo_sort" alignment="1" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -334,7 +334,7 @@
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="panelMain" alignment="0" pref="711" max="32767" attributes="0"/>
+                          <Component id="panelMain" alignment="0" pref="712" max="32767" attributes="0"/>
                           <Component id="panel_header" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -388,7 +388,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="label_gameTitle" pref="152" max="32767" attributes="0"/>
+                          <Component id="label_gameTitle" pref="153" max="32767" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="1"/>

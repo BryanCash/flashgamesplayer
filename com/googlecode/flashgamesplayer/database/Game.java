@@ -27,8 +27,11 @@ public class Game extends Record {
   private int internet;
   private boolean newGame;
   private String password;
+  private int deleted;
   public static int NO_INTERNET = 0;
   public static int INTERNET = 1;
+  public static int NOT_DELETED = 0;
+  public static int DELETED = 1;
 
   public Game() {
     super();
@@ -38,9 +41,18 @@ public class Game extends Record {
   public int save() throws SQLException {
     String sql;
     if (this.getId() != 0) {
-      sql = "UPDATE games SET " + "genre_id = " + this.getGenre_id() + ", title = '" + this.getTitle() + "', filename = '" + this.getFilename() + "', password = '" + this.getPassword() + "', internet = " + this.isInternet() + " WHERE id = " + this.getId();
+      sql = "UPDATE games SET " + "genre_id = " + this.getGenre_id()
+          + ", title = '" + this.getTitle()
+          + "', filename = '" + this.getFilename()
+          + "', password = '" + this.getPassword()
+          + "', internet = " + this.isInternet()
+          + ", deleted = " + this.getDeleted()
+          + " WHERE id = " + this.getId();
     } else {
-      sql = "INSERT INTO games (genre_id, title, filename, internet, password ) " + "VALUES(" + this.getGenre_id() + ", '" + this.getTitle() + "', '" + this.getFilename() + "'," + this.isInternet() + ", '" + this.getPassword() + "' )";
+      sql = "INSERT INTO games (genre_id, title, filename, internet, password, deleted ) "
+          + "VALUES(" + this.getGenre_id() + ", '" + this.getTitle()
+          + "', '" + this.getFilename() + "'," + this.isInternet()
+          + ", '" + this.getPassword() + "', " + this.getDeleted() + " )";
     }
     return queryUpdate(sql);
   }
@@ -59,6 +71,7 @@ public class Game extends Record {
         game.setRate(rs.getDouble("rate"));
         game.setInternet(rs.getInt("internet"));
         game.setPassword(rs.getString("password"));
+        game.setDeleted(rs.getInt("deleted"));
         game.setNewGame(false);
         return game;
       }
@@ -75,7 +88,7 @@ public class Game extends Record {
   }
 
   public static int updatePassword(int id, String password) throws SQLException {
-    String sql = "UPDATE games SET password = '"+ password +"' WHERE id = " + id;
+    String sql = "UPDATE games SET password = '" + password + "' WHERE id = " + id;
     return queryUpdate(sql);
   }
 
@@ -86,7 +99,7 @@ public class Game extends Record {
 
   public boolean delete() {
     try {
-      String sql = "DELETE FROM games WHERE id =" + this.getId();
+      String sql = "UPDATE games SET deleted = " + DELETED + " WHERE id =" + this.getId();
       queryUpdate(sql);
       //new File(Options.USER_DIR + Options.GAMES_DIR + this.getFilename()).delete();
       return true;
@@ -97,12 +110,12 @@ public class Game extends Record {
 
   }
 
-  public static Game getFirstGame(int genre) {
+  public static Game getFirstGame(int genre, boolean deleted) {
     String sql;
     if (genre == 0) {
-      sql = "SELECT id FROM games";
+      sql = "SELECT id FROM games" + (!deleted ? " WHERE deleted = " + NOT_DELETED : "");
     } else {
-      sql = "SELECT id FROM games WHERE genre_id = " + genre;
+      sql = "SELECT id FROM games WHERE genre_id = " + genre + (!deleted ? " AND deleted = " + NOT_DELETED : "");
     }
     try {
       ResultSet rs = query(sql);
@@ -246,5 +259,19 @@ public class Game extends Record {
    */
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  /**
+   * @return the deleted
+   */
+  public int getDeleted() {
+    return deleted;
+  }
+
+  /**
+   * @param deleted the deleted to set
+   */
+  public void setDeleted(int deleted) {
+    this.deleted = deleted;
   }
 }

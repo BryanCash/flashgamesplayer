@@ -98,6 +98,8 @@ public class GameForm extends MyDraggable {
     bt_browse = new javax.swing.JButton();
     jLabel2 = new javax.swing.JLabel();
     cb_internet = new javax.swing.JCheckBox();
+    jLabel3 = new javax.swing.JLabel();
+    cb_deleted = new javax.swing.JCheckBox();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -154,6 +156,11 @@ public class GameForm extends MyDraggable {
 
     cb_internet.setSelected(game.isInternet() ==1);
 
+    jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+    jLabel3.setText("Deleted :");
+
+    cb_deleted.setSelected(game.getDeleted()==1);
+
     javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
     jPanel1.setLayout(jPanel1Layout);
     jPanel1Layout.setHorizontalGroup(
@@ -179,9 +186,11 @@ public class GameForm extends MyDraggable {
               .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                   .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                  .addComponent(label_file, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE))
+                  .addComponent(label_file, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
+                  .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addComponent(cb_deleted)
                   .addComponent(cb_internet)
                   .addComponent(tf_file, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -210,7 +219,11 @@ public class GameForm extends MyDraggable {
         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
           .addComponent(jLabel2)
           .addComponent(cb_internet))
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+          .addComponent(jLabel3)
+          .addComponent(cb_deleted))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(bt_add)
           .addComponent(bt_cancel))
@@ -264,6 +277,7 @@ public class GameForm extends MyDraggable {
           game.setFilename(filename);
         }
         game.setInternet(cb_internet.isSelected() ? 1 : 0);
+        game.setDeleted(cb_deleted.isSelected() ? 1 : 0);
         try {
           MyFunctions.copyfile(swfFile, Options.USER_DIR + Options.GAMES_DIR + filename);
         } catch (FileNotFoundException ex) {
@@ -319,10 +333,12 @@ public class GameForm extends MyDraggable {
   private javax.swing.JButton bt_add;
   private javax.swing.JButton bt_browse;
   private javax.swing.JButton bt_cancel;
+  private javax.swing.JCheckBox cb_deleted;
   private javax.swing.JCheckBox cb_internet;
   private com.googlecode.svalidators.formcomponents.SComboBox combo_genre;
   private javax.swing.JLabel jLabel1;
   private javax.swing.JLabel jLabel2;
+  private javax.swing.JLabel jLabel3;
   private javax.swing.JPanel jPanel1;
   private javax.swing.JLabel label_file;
   private javax.swing.JLabel label_genre;

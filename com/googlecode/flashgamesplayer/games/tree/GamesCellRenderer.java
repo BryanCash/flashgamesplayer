@@ -7,6 +7,7 @@ package com.googlecode.flashgamesplayer.games.tree;
 import com.googlecode.flashgamesplayer.FlashGamesPlayer;
 import com.googlecode.flashgamesplayer.database.Game;
 import com.googlecode.flashgamesplayer.database.Options;
+import com.googlecode.flashgamesplayer.games.tree.GamesTree.Category;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -42,7 +43,7 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
   public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
     super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
     screenshotHeight = (Integer) FlashGamesPlayer.options.get(Options.TREE_ROW_HEIGHT);
-    screenshotWidth = (screenshotHeight*4)/3;
+    screenshotWidth = (screenshotHeight * 4) / 3;
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
     Object obj = node.getUserObject();
     ImageIcon disabled;
@@ -58,7 +59,7 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
       if (sc.isFile()) {
 
         gameIcon = new ImageIcon(new ImageIcon(sc.getAbsolutePath()).getImage().getScaledInstance(
-                screenshotWidth, screenshotHeight, Image.SCALE_SMOOTH));
+            screenshotWidth, screenshotHeight, Image.SCALE_SMOOTH));
 
         // setText("");
       }
@@ -76,42 +77,47 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
       }
       setIcon(gameIcon);
       setFont(getFont().deriveFont(12F));
-    } else if (obj instanceof String) {
-      File catFile = new File(Options.USER_DIR + Options.SCREENSHOT_DIR + obj + ".png");
-      if (catFile.isFile()) {
-        catIcon = new ImageIcon(new ImageIcon(catFile.getAbsolutePath()).getImage().getScaledInstance(
-                screenshotWidth/2, screenshotHeight/2, Image.SCALE_SMOOTH));
-        ImageIcon custom;
-        if (expanded) {
-          custom = new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/expanded.png"));
+    } else if (obj instanceof GamesTree.Category) {
+      Category cat = (Category) obj;
+      if (cat.getType() == GamesTree.GENRE
+          || cat.getType() == GamesTree.DATE
+          || cat.getType() == GamesTree.INTERNET
+          || cat.getType() == GamesTree.DELETED) {
+        File catFile = new File(Options.USER_DIR + Options.SCREENSHOT_DIR + obj + ".png");
+        if (catFile.isFile()) {
+          catIcon = new ImageIcon(new ImageIcon(catFile.getAbsolutePath()).getImage().getScaledInstance(
+              screenshotWidth / 2, screenshotHeight / 2, Image.SCALE_SMOOTH));
+          ImageIcon custom;
+          if (expanded) {
+            custom = new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/expanded.png"));
+          } else {
+            custom = new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/collapsed.png"));
+          }
+          buff = new BufferedImage(screenshotWidth / 2, screenshotHeight / 2, BufferedImage.TYPE_INT_ARGB);
+          buff.getGraphics().drawImage(catIcon.getImage(), 0, 0, this);
+          buff.getGraphics().drawImage(custom.getImage(), screenshotWidth / 4, screenshotHeight / 4, screenshotHeight / 4, screenshotHeight / 4, this);
+          catIcon = new ImageIcon(buff);
+
         } else {
-          custom = new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/collapsed.png"));
+          openIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/open.png")).getImage().getScaledInstance(screenshotWidth / 2, screenshotHeight / 2, Image.SCALE_SMOOTH));
+          closedIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/closed.png")).getImage().getScaledInstance(screenshotWidth / 2, screenshotHeight / 2, Image.SCALE_SMOOTH));
+
         }
-        buff = new BufferedImage(screenshotWidth/2, screenshotHeight/2, BufferedImage.TYPE_INT_ARGB);
-        buff.getGraphics().drawImage(catIcon.getImage(), 0, 0, this);
-        buff.getGraphics().drawImage(custom.getImage(), screenshotWidth/4,screenshotHeight/4, screenshotHeight/4,screenshotHeight/4, this);
-        catIcon = new ImageIcon(buff);
-
-      } else {
-        openIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/open.png")).getImage().getScaledInstance(screenshotWidth/2, screenshotHeight/2, Image.SCALE_SMOOTH));
-        closedIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/closed.png")).getImage().getScaledInstance(screenshotWidth/2, screenshotHeight/2, Image.SCALE_SMOOTH));
-
+        setIcon(catIcon);
+        setFont(getFont().deriveFont(20F));
+      } else if (cat.getType() == GamesTree.RATE) {
+        catIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/star.png")).getImage().getScaledInstance(screenshotWidth / 2, screenshotHeight / 2, Image.SCALE_SMOOTH));
+        setIcon(catIcon);
+        setFont(getFont().deriveFont(20F));
+      } else if (cat.getType() == GamesTree.PLAYED) {
+        catIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/play.png")).getImage().getScaledInstance(screenshotWidth / 2, screenshotHeight / 2, Image.SCALE_SMOOTH));
+        setIcon(catIcon);
+        setFont(getFont().deriveFont(20F));
       }
-      setIcon(catIcon);
-      setFont(getFont().deriveFont(20F));
-    } else if (obj instanceof Double) {
-      catIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/star.png")).getImage().getScaledInstance(screenshotWidth/2, screenshotHeight/2, Image.SCALE_SMOOTH));
-       setIcon(catIcon);
-       setFont(getFont().deriveFont(20F));
-    }else if (obj instanceof Integer) {
-      catIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/play.png")).getImage().getScaledInstance(screenshotWidth/2, screenshotHeight/2, Image.SCALE_SMOOTH));
-       setIcon(catIcon);
-       setFont(getFont().deriveFont(20F));
     }
-
-    setPreferredSize(new Dimension(screenshotWidth*3, tree.getRowHeight()));
-    if (!(Boolean) FlashGamesPlayer.options.get(Options.DISPLAY_GAME_TITLE) &&
-            obj instanceof Game) {
+    setPreferredSize(new Dimension(screenshotWidth * 3, tree.getRowHeight()));
+    if (!(Boolean) FlashGamesPlayer.options.get(Options.DISPLAY_GAME_TITLE)
+        && obj instanceof Game) {
       setText("");
     }
     return this;
