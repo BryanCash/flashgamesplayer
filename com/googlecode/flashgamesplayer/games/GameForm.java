@@ -41,18 +41,29 @@ public class GameForm extends MyDraggable {
   private ArrayList<JComponent> components = new ArrayList<JComponent>();
   DefaultComboBoxModel genresModel;
   Game game;
+  String newFileName= "";
 
+  public GameForm(File file) {
+     this(new Game(), file);
+  }
 
   /** Creates new form GameForm */
   public GameForm() {
-    this(new Game());
+    this(new Game(),null);
   }
 
-  public GameForm(Game game) {
+  public GameForm(Game game, File file) {
     this.game = game;
     genresModel = new DefaultComboBoxModel(Genre.getAll());
+    if(file != null){
+      try {
+        newFileName = file.getCanonicalPath();
+      } catch (IOException ex) {
+        FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
+      }
+    }
     initComponents();
-    tf_file.addValidator(new FileValidator("", FileValidator.Type.FILE, false));
+    tf_file.addValidator(new FileValidator(newFileName, FileValidator.Type.FILE, false));
     tf_title.addValidator(new RequiredValidator());
     combo_genre.addValidator(new RequiredValidator());
     components.add(tf_file);
@@ -127,7 +138,7 @@ public class GameForm extends MyDraggable {
     combo_genre.setName("Genre"); // NOI18N
 
     tf_file.setEditable(game.getId() == 0);
-    tf_file.setText(game.isNewGame() ? "" :Options.USER_DIR + Options.GAMES_DIR +game.getFilename());
+    tf_file.setText(game.isNewGame() ? newFileName :Options.USER_DIR + Options.GAMES_DIR +game.getFilename());
     tf_file.setName("Swf file"); // NOI18N
 
     bt_browse.setText("Browse");
@@ -249,7 +260,7 @@ public class GameForm extends MyDraggable {
         String filename = new File(tf_file.getText().trim()).getName();
         game.setGenre_id(genreId);
         game.setTitle(title);
-        if(game.isNewGame()){
+        if (game.isNewGame()) {
           game.setFilename(filename);
         }
         game.setInternet(cb_internet.isSelected() ? 1 : 0);
@@ -262,7 +273,7 @@ public class GameForm extends MyDraggable {
         }
         try {
           if (game.save() > -1) {
-            MyMessages.message("Game "+ (game.isNewGame() ? " added " : " updated"), "The game was "+(game.isNewGame() ? " added " : " updated"));
+            MyMessages.message("Game " + (game.isNewGame() ? " added " : " updated"), "The game was " + (game.isNewGame() ? " added " : " updated"));
             firePropertyChange(GamesChangeListener.GAME_ADDED, null, null);
           }
         } catch (SQLException ex) {

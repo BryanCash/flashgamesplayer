@@ -31,9 +31,11 @@ import com.googlecode.flashgamesplayer.games.GamesChangeListener;
 import com.googlecode.flashgamesplayer.games.tree.GamesCellRenderer;
 import com.googlecode.flashgamesplayer.games.tree.GamesTree;
 import com.googlecode.flashgamesplayer.tools.GamesLogger;
+import com.googlecode.flashgamesplayer.tools.MyFileDropListener;
 import com.googlecode.flashgamesplayer.tools.MyFunctions;
 import com.googlecode.flashgamesplayer.tools.MyMessages;
 import com.googlecode.flashgamesplayer.tools.OptionsForm;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -41,11 +43,15 @@ import java.awt.Robot;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import net.iharder.dnd.FileDrop;
+import net.iharder.dnd.FileDropEvent;
+import net.iharder.dnd.FileDropListener;
 
 /**
  *
@@ -122,6 +128,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     setLocationRelativeTo(null);
     setExtendedState(MAXIMIZED_BOTH);
     addPropertyChangeListener(new GamesChangeListener());
+    new FileDrop(splitpane, BorderFactory.createLineBorder(Color.RED, 2),new MyFileDropListener());
     setVisible(true);
   }
 
@@ -256,6 +263,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     });
     toolbar.add(bt_exit);
 
+    splitpane.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153), 2));
     splitpane.setDividerLocation(50);
     splitpane.setMinimumSize(new java.awt.Dimension(700, 500));
     splitpane.setPreferredSize(new java.awt.Dimension(789, 544));
@@ -286,7 +294,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
         .addContainerGap()
         .addComponent(combo_sort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(gamesTree, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
+        .addComponent(gamesTree, javax.swing.GroupLayout.DEFAULT_SIZE, 422, Short.MAX_VALUE)
         .addContainerGap())
     );
 
@@ -336,7 +344,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       panel_headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(panel_headerLayout.createSequentialGroup()
         .addContainerGap()
-        .addComponent(label_gameTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+        .addComponent(label_gameTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(jLabel3)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -376,7 +384,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightLayout.createSequentialGroup()
         .addContainerGap()
         .addGroup(rightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-          .addComponent(panelMain, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 713, Short.MAX_VALUE)
+          .addComponent(panelMain, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE)
           .addComponent(panel_header, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         .addContainerGap())
     );
@@ -386,7 +394,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
         .addContainerGap()
         .addComponent(panel_header, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(panelMain, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)
+        .addComponent(panelMain, javax.swing.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
         .addContainerGap())
     );
 

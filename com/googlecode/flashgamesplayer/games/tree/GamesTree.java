@@ -206,7 +206,7 @@ public class GamesTree extends javax.swing.JPanel {
     if (obj instanceof Game) {
       Game game = (Game) obj;
       if (evt.getKeyCode() == KeyEvent.VK_F2) {
-        new GameForm(game);
+        new GameForm(game,null);
       } else if (evt.getKeyCode() == KeyEvent.VK_DELETE) {
         deleteGame(game);
       }
