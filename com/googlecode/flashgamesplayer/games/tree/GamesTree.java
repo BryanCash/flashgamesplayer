@@ -193,7 +193,7 @@ public class GamesTree extends javax.swing.JPanel {
 
   public void deleteGame(Game game) {
     if (MyMessages.question("Delete Game", "Really delete the game : " + game.getTitle()) == JOptionPane.OK_OPTION) {
-      if (game.delete()) {
+      if (game.setDeleted(Game.DELETED)) {
         firePropertyChange(GamesChangeListener.GAME_DELETED, game, null);
       } else {
         MyMessages.error("Error", "Could not delete the game");
@@ -346,45 +346,58 @@ public class GamesTree extends javax.swing.JPanel {
     this.selectedGame = selectedGame;
   }
 
-  class GameNode {
-
-    private Category category;
-    private Game game;
-
-    public GameNode(Category category, Game g) {
-      this.category = category;
-      this.game = g;
+  public void restoreGame() {
+    if (FlashGamesPlayer.gamePanel.getGame() != null) {
+      Game game = FlashGamesPlayer.gamePanel.getGame();
+      if (game.setDeleted(Game.NOT_DELETED)) {
+        firePropertyChange(GamesChangeListener.GAME_RESTORED, null, FlashGamesPlayer.gamePanel.getGame());
+      } else {
+        MyMessages.error("Game restore", "Could not restore the game");
+      }
     }
   }
 
-  class Category {
 
-    private int type;
-    private Object value;
+class GameNode {
 
-    public Category(int type, Object value) {
-      this.type = type;
-      this.value = value;
+  private Category category;
+  private Game game;
 
-    }
-
-    @Override
-    public String toString() {
-      return value.toString();
-    }
-
-    /**
-     * @return the type
-     */
-    public int getType() {
-      return type;
-    }
-
-    /**
-     * @return the value
-     */
-    public Object getValue() {
-      return value;
-    }
+  public GameNode(Category category, Game g) {
+    this.category = category;
+    this.game = g;
   }
+}
+
+class Category {
+
+  private int type;
+  private Object value;
+
+  public Category(int type, Object value) {
+    this.type = type;
+    this.value = value;
+
+  }
+
+  @Override
+  public String toString() {
+    return value.toString();
+  }
+
+  /**
+   * @return the type
+   */
+  public int getType() {
+    return type;
+  }
+
+  /**
+   * @return the value
+   */
+  public Object getValue() {
+    return value;
+  }
+}
+
 }

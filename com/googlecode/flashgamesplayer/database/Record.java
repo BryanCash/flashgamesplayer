@@ -67,7 +67,6 @@ public class Record {
       if (rs != null) {
         rs.close();
       }
-
     }
   }
 }

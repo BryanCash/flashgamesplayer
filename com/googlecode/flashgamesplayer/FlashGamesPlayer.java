@@ -110,11 +110,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
         if (evt.getPropertyName().equals(StarRating.RATE_CHANGED)) {
           double rate = (Double) evt.getNewValue();
           Game game = gamePanel.getGame();
-          try {
-            Game.updateRate(game.getId(), rate);
-          } catch (SQLException ex) {
-            logger.log(Level.SEVERE, null, ex);
-          }
+          game.setRate(rate);
         }
       }
     });
@@ -568,24 +564,13 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
 
   private void bt_savePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_savePasswordActionPerformed
     if (gamePanel.getGame() != null) {
-      int id = gamePanel.getGame().getId();
-      try {
-        Game.updatePassword(id, tf_password.getText().trim());
-      } catch (SQLException ex) {
-        MyMessages.error("Password save", "Could not save the password");
-        logger.log(Level.SEVERE, null, ex);
-      }
+      Game game = gamePanel.getGame();
+      game.setPassword(tf_password.getText().trim());
     }
   }//GEN-LAST:event_bt_savePasswordActionPerformed
 
   private void bt_restoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_restoreActionPerformed
-    if (gamePanel.getGame() != null) {
-      Game game = gamePanel.getGame();
-      if (!game.restore()) {
-        MyMessages.error("Game restore", "Could not restore the game");
-        firePropertyChange(GamesChangeListener.GAME_ADDED, null, FlashGamesPlayer.gamePanel.getGame());
-      }
-    }
+    gamesTree.restoreGame();
   }//GEN-LAST:event_bt_restoreActionPerformed
 
   /**

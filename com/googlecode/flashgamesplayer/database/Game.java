@@ -63,15 +63,15 @@ public class Game extends Record {
       Game game = new Game();
       ResultSet rs = query(sql);
       if (rs.next()) {
-        game.setFilename(rs.getString("filename"));
-        game.setGenre_id(rs.getInt("genre_id"));
-        game.setId(rs.getInt("id"));
-        game.setTitle(rs.getString("title"));
-        game.setPlayed(rs.getInt("played"));
-        game.setRate(rs.getDouble("rate"));
-        game.setInternet(rs.getInt("internet"));
-        game.setPassword(rs.getString("password"));
-        game.setDeleted(rs.getInt("deleted"));
+        game.filename = rs.getString("filename");
+        game.genre_id = rs.getInt("genre_id");
+        game.id = rs.getInt("id");
+        game.title = rs.getString("title");
+        game.played = rs.getInt("played");
+        game.rate = rs.getDouble("rate");
+        game.internet = rs.getInt("internet");
+        game.password = rs.getString("password");
+        game.deleted = rs.getInt("deleted");
         game.setNewGame(false);
         return game;
       }
@@ -82,25 +82,51 @@ public class Game extends Record {
     }
   }
 
-  public static int updatePlayed(int id) throws SQLException {
-    String sql = "UPDATE games SET played = played + 1 WHERE id = " + id;
-    return queryUpdate(sql);
+  private int updatePlayed(int id) {
+    int result;
+    String sql = "UPDATE games SET played = played + 1";
+    try {
+      result = queryUpdate(sql);
+      this.played++;
+    } catch (SQLException ex) {
+      FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
+      return -1;
+    }
+    return result;
+
   }
 
-  public static int updatePassword(int id, String password) throws SQLException {
-    String sql = "UPDATE games SET password = '" + password + "' WHERE id = " + id;
-    return queryUpdate(sql);
+  private int updatePassword(String password) {
+    int result;
+    String sql = "UPDATE games SET password = '" + password + "'";
+    try {
+      result = queryUpdate(sql);
+      this.password = password;
+    } catch (SQLException ex) {
+      FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
+      return -1;
+    }
+    return result;
   }
 
-  public static int updateRate(int id, double rate) throws SQLException {
+  private int updateRate(double rate) {
+    int result;
     String sql = "UPDATE games SET rate = " + rate + " WHERE id = " + id;
-    return queryUpdate(sql);
+    try {
+      result = queryUpdate(sql);
+      this.rate = rate;
+    } catch (SQLException ex) {
+      FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
+      return -1;
+    }
+    return result;
   }
 
-  public boolean delete() {
+  private boolean delete() {
     try {
       String sql = "UPDATE games SET deleted = " + DELETED + " WHERE id =" + this.getId();
       queryUpdate(sql);
+      this.deleted = DELETED;
       //new File(Options.USER_DIR + Options.GAMES_DIR + this.getFilename()).delete();
       return true;
     } catch (SQLException ex) {
@@ -109,7 +135,8 @@ public class Game extends Record {
     }
 
   }
-  public boolean restore() {
+
+  private boolean restore() {
     try {
       String sql = "UPDATE games SET deleted = " + NOT_DELETED + " WHERE id =" + this.getId();
       queryUpdate(sql);
@@ -213,7 +240,7 @@ public class Game extends Record {
    * @param played the played to set
    */
   public void setPlayed(int played) {
-    this.played = played;
+    updatePlayed(id);
   }
 
   /**
@@ -227,7 +254,7 @@ public class Game extends Record {
    * @param rate the rate to set
    */
   public void setRate(double rate) {
-    this.rate = rate;
+    updateRate(rate);
   }
 
   /**
@@ -269,7 +296,7 @@ public class Game extends Record {
    * @param password the password to set
    */
   public void setPassword(String password) {
-    this.password = password;
+    updatePassword(password);
   }
 
   /**
@@ -282,7 +309,12 @@ public class Game extends Record {
   /**
    * @param deleted the deleted to set
    */
-  public void setDeleted(int deleted) {
-    this.deleted = deleted;
+  public boolean setDeleted(int deleted) {
+    if(deleted == NOT_DELETED){
+     return restore();
+    } else if(deleted == DELETED){
+      return delete();
+    }
+    return false;
   }
 }

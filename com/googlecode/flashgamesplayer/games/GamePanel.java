@@ -47,7 +47,7 @@ public class GamePanel extends javax.swing.JPanel {
     try {
       if (game != null && game.getDeleted() == 0) {
         getFlashPlayer().load(Options.USER_DIR + Options.GAMES_DIR + game.getFilename());
-        Game.updatePlayed(this.game.getId());
+        game.setPlayed(this.game.getId());
       }
     } catch (Exception ex) {
     }
