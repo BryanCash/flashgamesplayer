@@ -7,8 +7,6 @@ package com.googlecode.flashgamesplayer.tools;
 import com.googlecode.flashgamesplayer.games.GameForm;
 import java.io.File;
 import net.iharder.dnd.FileDrop;
-import net.iharder.dnd.FileDropEvent;
-import net.iharder.dnd.FileDropListener;
 
 /**
  *

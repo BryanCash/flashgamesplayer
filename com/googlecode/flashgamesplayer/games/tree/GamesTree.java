@@ -152,7 +152,7 @@ public class GamesTree extends javax.swing.JPanel {
           if (getSelectedGame().getDeleted() == 1) {
             MyMessages.error("Play Game", "This games is deleted. Undelete it first.");
           }
-          firePropertyChange(GamesChangeListener.GAME_SELECTED, FlashGamesPlayer.gamePanel.getGame(), getSelectedGame());
+          firePropertyChange(GamesChangeListener.GAME_PLAY, FlashGamesPlayer.gamePanel.getGame(), getSelectedGame());
         } else if (node.getUserObject() instanceof Genre) {
           selectedGenre = (Genre) node.getUserObject();
         }
@@ -172,6 +172,15 @@ public class GamesTree extends javax.swing.JPanel {
       if (tree.getPathBounds(selectedPath).contains(p)) {
         tree.setSelectionPath(selectedPath);
         playGame();
+      }
+    } else if(evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() == 1){
+      Point p = evt.getPoint();
+      selectedPath = tree.getClosestPathForLocation(p.x, p.y);
+      if (tree.getPathBounds(selectedPath).contains(p)) {
+        tree.setSelectionPath(selectedPath);
+        node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+        Game newGame = (Game) node.getUserObject();
+        firePropertyChange(GamesChangeListener.GAME_SELECTED, getSelectedGame(), newGame);
       }
     }
   }//GEN-LAST:event_treeMouseReleased
@@ -243,7 +252,7 @@ public class GamesTree extends javax.swing.JPanel {
         groupAndOrder = "ORDER BY g.id DESC, g.title";
         break;
       case DELETED:
-        groupAndOrder = "GROUP BY g.deleted,g.id ORDER BY g.deleted, g.title";
+        groupAndOrder = "WHERE deleted = " + Game.DELETED+ " ORDER BY g.title";
         break;
     }
     String sql = "SELECT g.id AS id FROM games  g "

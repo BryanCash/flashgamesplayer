@@ -559,7 +559,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
 
   private void bt_stopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_stopActionPerformed
     //gamePanel.setGame(null);
-    firePropertyChange(GamesChangeListener.GAME_SELECTED, FlashGamesPlayer.gamePanel.getGame(), null);
+    firePropertyChange(GamesChangeListener.GAME_PLAY, FlashGamesPlayer.gamePanel.getGame(), null);
   }//GEN-LAST:event_bt_stopActionPerformed
 
   private void bt_savePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_savePasswordActionPerformed

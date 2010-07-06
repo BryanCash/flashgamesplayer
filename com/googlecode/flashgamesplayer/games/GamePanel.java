@@ -35,6 +35,10 @@ public class GamePanel extends javax.swing.JPanel {
   }
 
   public void setGame(Game game) {
+    setGame(game,true);
+  }
+
+  public void setGame(Game game, boolean play) {
     if (game == null) {
       this.game = new Game();
     } else {
@@ -45,7 +49,7 @@ public class GamePanel extends javax.swing.JPanel {
     }
     flashPlayer = new JFlashPlayer();
     try {
-      if (game != null && game.getDeleted() == 0) {
+      if (game != null && game.getDeleted() == 0 && play) {
         getFlashPlayer().load(Options.USER_DIR + Options.GAMES_DIR + game.getFilename());
         game.setPlayed(this.game.getId());
       }
@@ -60,10 +64,10 @@ public class GamePanel extends javax.swing.JPanel {
     FlashGamesPlayer.tf_plays.setText(String.valueOf(this.game.getPlayed()));
     FlashGamesPlayer.bt_savePassword.setEnabled(game != null);
     FlashGamesPlayer.tf_password.setText(this.game.getPassword());
-    FlashGamesPlayer.bt_delete.setEnabled(game.getDeleted() == 0);
-    FlashGamesPlayer.menuItem_deleteGame.setEnabled(game.getDeleted() == 0);
-    FlashGamesPlayer.bt_restore.setEnabled(game.getDeleted() == 1);
-   
+    FlashGamesPlayer.bt_delete.setEnabled(game != null && game.getDeleted() == 0);
+    FlashGamesPlayer.menuItem_deleteGame.setEnabled(game != null && game.getDeleted() == 0);
+    FlashGamesPlayer.bt_restore.setEnabled(game != null && game.getDeleted() == 1);
+
   }
 
   public Game getGame() {
