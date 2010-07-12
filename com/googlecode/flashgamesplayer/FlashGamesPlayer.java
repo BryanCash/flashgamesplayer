@@ -28,6 +28,7 @@ import com.googlecode.flashgamesplayer.database.Game;
 import com.googlecode.flashgamesplayer.database.Options;
 import com.googlecode.flashgamesplayer.games.GameForm;
 import com.googlecode.flashgamesplayer.games.GamesChangeListener;
+import com.googlecode.flashgamesplayer.games.MySortComboRenderer;
 import com.googlecode.flashgamesplayer.games.tree.GamesCellRenderer;
 import com.googlecode.flashgamesplayer.games.tree.GamesTree;
 import com.googlecode.flashgamesplayer.tools.GamesLogger;
@@ -102,6 +103,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     options = Options.getOptions();
     gamePanel = new GamePanel();
     initComponents();
+    combo_sort.setRenderer(new MySortComboRenderer());
     setTitle("Flash games player version " + version + " ( "+MyFunctions.getTotalGames()+" available games )");
     splitpane.setDividerLocation(220);
     MyFunctions.checkInternetConnection("http://www.google.com");

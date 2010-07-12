@@ -31,12 +31,15 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
   private static long serialVersionUID = 1242536474L;
   private Integer screenshotHeight = 64;
   private Integer screenshotWidth = 85;
+  private Boolean showScreenshot;
 
   public GamesCellRenderer() {
     setOpaque(false);
     setBackgroundSelectionColor(Color.LIGHT_GRAY);
     setBackgroundNonSelectionColor(Color.WHITE);
     setBorderSelectionColor(Color.WHITE);
+    
+
   }
 
   @Override
@@ -46,6 +49,16 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
     screenshotWidth = (screenshotHeight * 4) / 3;
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
     Object obj = node.getUserObject();
+    showScreenshot = (Boolean) FlashGamesPlayer.options.get(Options.DISPLAY_GAME_SCREENSHOT);
+    if (!showScreenshot) {
+      tree.setRowHeight(16);
+      Image gameIcon = new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/gameLeaf.png")).getImage().getScaledInstance(12, 12, Image.SCALE_SMOOTH);
+      if (obj instanceof Game) {
+        setIcon(new ImageIcon(gameIcon));
+      }
+      return this;
+    }
+
     ImageIcon disabled;
     BufferedImage buff;
     if (selected) {
@@ -57,7 +70,6 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
       ImageIcon gameIcon = new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/gameLeaf.png"));
       File sc = new File(Options.USER_DIR + Options.SCREENSHOT_DIR + game.getId() + ".png");
       if (sc.isFile()) {
-
         gameIcon = new ImageIcon(new ImageIcon(sc.getAbsolutePath()).getImage().getScaledInstance(
             screenshotWidth, screenshotHeight, Image.SCALE_SMOOTH));
 
