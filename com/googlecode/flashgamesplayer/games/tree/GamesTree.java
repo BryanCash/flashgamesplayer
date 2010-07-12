@@ -173,7 +173,7 @@ public class GamesTree extends javax.swing.JPanel {
         tree.setSelectionPath(selectedPath);
         playGame();
       }
-    } else if(evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() == 1){
+    } else if (evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() == 1) {
       Point p = evt.getPoint();
       selectedPath = tree.getClosestPathForLocation(p.x, p.y);
       if (tree.getPathBounds(selectedPath).contains(p)) {
@@ -252,7 +252,7 @@ public class GamesTree extends javax.swing.JPanel {
         groupAndOrder = "ORDER BY g.id DESC, g.title";
         break;
       case DELETED:
-        groupAndOrder = "WHERE deleted = " + Game.DELETED+ " ORDER BY g.title";
+        groupAndOrder = "WHERE deleted = " + Game.DELETED + " ORDER BY g.title";
         break;
     }
     String sql = "SELECT g.id AS id FROM games  g "
@@ -287,6 +287,26 @@ public class GamesTree extends javax.swing.JPanel {
 
         list.add(new GameNode(category, game));
       }
+      CreateGamesTree gamesTree = new CreateGamesTree(list);
+      Thread t = new Thread(gamesTree);
+      t.start();
+
+    } catch (SQLException ex) {
+      FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
+    }
+  }
+
+  class CreateGamesTree implements Runnable {
+
+    private final ArrayList<GameNode> list;
+
+    private CreateGamesTree(ArrayList<GameNode> list) {
+      this.list = list;
+
+    }
+
+    @Override
+    public void run() {
       DefaultMutableTreeNode root = createTree(list);
       model = new DefaultTreeModel(root);
       tree.setModel(model);
@@ -295,28 +315,26 @@ public class GamesTree extends javax.swing.JPanel {
         tree.expandRow(row);
         row++;
       }
-    } catch (SQLException ex) {
-      FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
     }
-  }
 
-  private DefaultMutableTreeNode createTree(ArrayList<GameNode> list) {
-    DefaultMutableTreeNode root = new DefaultMutableTreeNode(new Category(GENRE, "Games"));
-    Object prevNodeCategory = "";
-    DefaultMutableTreeNode curNode = null;
-    for (Iterator<GameNode> it = list.iterator(); it.hasNext();) {
-      GameNode gameNode = it.next();
-      if (!gameNode.category.value.equals(prevNodeCategory)) {
-        curNode = new DefaultMutableTreeNode(gameNode.category);
-        root.add(curNode);
-        curNode.add(new DefaultMutableTreeNode(gameNode.game));
-        prevNodeCategory = gameNode.category.value;
-      } else {
-        curNode.add(new DefaultMutableTreeNode(gameNode.game));
+    private DefaultMutableTreeNode createTree(ArrayList<GameNode> list) {
+      DefaultMutableTreeNode root = new DefaultMutableTreeNode(new Category(GENRE, "Games"));
+      Object prevNodeCategory = "";
+      DefaultMutableTreeNode curNode = null;
+      for (Iterator<GameNode> it = list.iterator(); it.hasNext();) {
+        GameNode gameNode = it.next();
+        if (!gameNode.category.value.equals(prevNodeCategory)) {
+          curNode = new DefaultMutableTreeNode(gameNode.category);
+          root.add(curNode);
+          curNode.add(new DefaultMutableTreeNode(gameNode.game));
+          prevNodeCategory = gameNode.category.value;
+        } else {
+          curNode.add(new DefaultMutableTreeNode(gameNode.game));
+        }
       }
-    }
-    return root;
+      return root;
 
+    }
   }
 
   public void populateTree() {
@@ -366,47 +384,45 @@ public class GamesTree extends javax.swing.JPanel {
     }
   }
 
+  class GameNode {
 
-class GameNode {
+    private Category category;
+    private Game game;
 
-  private Category category;
-  private Game game;
-
-  public GameNode(Category category, Game g) {
-    this.category = category;
-    this.game = g;
-  }
-}
-
-class Category {
-
-  private int type;
-  private Object value;
-
-  public Category(int type, Object value) {
-    this.type = type;
-    this.value = value;
-
+    public GameNode(Category category, Game g) {
+      this.category = category;
+      this.game = g;
+    }
   }
 
-  @Override
-  public String toString() {
-    return value.toString();
-  }
+  class Category {
 
-  /**
-   * @return the type
-   */
-  public int getType() {
-    return type;
-  }
+    private int type;
+    private Object value;
 
-  /**
-   * @return the value
-   */
-  public Object getValue() {
-    return value;
-  }
-}
+    public Category(int type, Object value) {
+      this.type = type;
+      this.value = value;
 
+    }
+
+    @Override
+    public String toString() {
+      return value.toString();
+    }
+
+    /**
+     * @return the type
+     */
+    public int getType() {
+      return type;
+    }
+
+    /**
+     * @return the value
+     */
+    public Object getValue() {
+      return value;
+    }
+  }
 }
