@@ -63,6 +63,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
   public static GamePanel gamePanel;
   public static boolean isInternet = false;
   public static HashMap<String, Object> options;
+  public static String version = "0.9";
 
   public static void setOptions(HashMap<String, Object> op) {
     options = op;
@@ -101,6 +102,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     options = Options.getOptions();
     gamePanel = new GamePanel();
     initComponents();
+    setTitle("Flash games player version " + version + " ( "+MyFunctions.getTotalGames()+" available games )");
     splitpane.setDividerLocation(220);
     MyFunctions.checkInternetConnection("http://www.google.com");
     rating.addPropertyChangeListener(new PropertyChangeListener() {
@@ -170,7 +172,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     menuItem_options = new javax.swing.JMenuItem();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-    setTitle("Flash games player v0.1");
+    setTitle("Flash games player ");
     setMinimumSize(new java.awt.Dimension(780, 580));
     addWindowListener(new java.awt.event.WindowAdapter() {
       public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -178,7 +180,6 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       }
     });
 
-    toolbar.setFloatable(false);
     toolbar.setRollover(true);
 
     bt_addGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/addGame.png"))); // NOI18N
@@ -270,8 +271,10 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     });
     toolbar.add(bt_exit);
 
+    getContentPane().add(toolbar, java.awt.BorderLayout.NORTH);
+
     splitpane.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153), 2));
-    splitpane.setDividerLocation(50);
+    splitpane.setDividerLocation(150);
     splitpane.setMinimumSize(new java.awt.Dimension(700, 500));
     splitpane.setPreferredSize(new java.awt.Dimension(789, 544));
 
@@ -291,8 +294,8 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       .addGroup(leftLayout.createSequentialGroup()
         .addContainerGap()
         .addGroup(leftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addComponent(gamesTree, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
-          .addComponent(combo_sort, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+          .addComponent(gamesTree, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
+          .addComponent(combo_sort, javax.swing.GroupLayout.Alignment.TRAILING, 0, 128, Short.MAX_VALUE))
         .addContainerGap())
     );
     leftLayout.setVerticalGroup(
@@ -301,7 +304,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
         .addContainerGap()
         .addComponent(combo_sort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(gamesTree, javax.swing.GroupLayout.DEFAULT_SIZE, 422, Short.MAX_VALUE)
+        .addComponent(gamesTree, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
         .addContainerGap())
     );
 
@@ -351,7 +354,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       panel_headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(panel_headerLayout.createSequentialGroup()
         .addContainerGap()
-        .addComponent(label_gameTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
+        .addComponent(label_gameTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(jLabel3)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -391,7 +394,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightLayout.createSequentialGroup()
         .addContainerGap()
         .addGroup(rightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-          .addComponent(panelMain, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 712, Short.MAX_VALUE)
+          .addComponent(panelMain, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 603, Short.MAX_VALUE)
           .addComponent(panel_header, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         .addContainerGap())
     );
@@ -401,11 +404,13 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
         .addContainerGap()
         .addComponent(panel_header, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(panelMain, javax.swing.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
+        .addComponent(panelMain, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
         .addContainerGap())
     );
 
     splitpane.setRightComponent(right);
+
+    getContentPane().add(splitpane, java.awt.BorderLayout.CENTER);
 
     gamesMenu.setText("Games");
 
@@ -466,23 +471,6 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     menuBar.add(toolsMenu);
 
     setJMenuBar(menuBar);
-
-    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-    getContentPane().setLayout(layout);
-    layout.setHorizontalGroup(
-      layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGroup(layout.createSequentialGroup()
-        .addComponent(toolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 779, Short.MAX_VALUE)
-        .addContainerGap())
-      .addComponent(splitpane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 789, Short.MAX_VALUE)
-    );
-    layout.setVerticalGroup(
-      layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGroup(layout.createSequentialGroup()
-        .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(splitpane, javax.swing.GroupLayout.PREFERRED_SIZE, 474, Short.MAX_VALUE))
-    );
 
     pack();
   }// </editor-fold>//GEN-END:initComponents

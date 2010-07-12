@@ -179,8 +179,10 @@ public class GamesTree extends javax.swing.JPanel {
       if (tree.getPathBounds(selectedPath).contains(p)) {
         tree.setSelectionPath(selectedPath);
         node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-        Game newGame = (Game) node.getUserObject();
-        firePropertyChange(GamesChangeListener.GAME_SELECTED, getSelectedGame(), newGame);
+        if (node.getUserObject() instanceof Game) {
+          Game newGame = (Game) node.getUserObject();
+          firePropertyChange(GamesChangeListener.GAME_SELECTED, getSelectedGame(), newGame);
+        }
       }
     }
   }//GEN-LAST:event_treeMouseReleased

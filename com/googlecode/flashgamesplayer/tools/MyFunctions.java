@@ -5,6 +5,7 @@
 package com.googlecode.flashgamesplayer.tools;
 
 import com.googlecode.flashgamesplayer.FlashGamesPlayer;
+import com.googlecode.flashgamesplayer.database.Game;
 import com.googlecode.flashgamesplayer.database.Options;
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,7 +17,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 
 /**
@@ -83,6 +88,20 @@ public class MyFunctions {
     } catch (IOException ex) {
       FlashGamesPlayer.label_internet.setIcon(FlashGamesPlayer.label_internet.getDisabledIcon());
       FlashGamesPlayer.isInternet = false;
+    }
+  }
+
+  public static int getTotalGames() {
+    int total = 0;
+    try {
+      ResultSet rs = Game.query("SELECT * FROM games");
+      while (rs.next()){
+        total++;
+      }
+      return total;
+    } catch (SQLException ex) {
+      FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
+      return 0;
     }
   }
 }
