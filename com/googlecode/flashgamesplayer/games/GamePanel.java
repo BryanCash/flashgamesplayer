@@ -61,7 +61,7 @@ public class GamePanel extends javax.swing.JPanel {
     FlashGamesPlayer.label_gameTitle.setText(this.game.getTitle());
     FlashGamesPlayer.rating.setRate(this.game.getRate());
     FlashGamesPlayer.rating.setRatingEnabled(true);
-    FlashGamesPlayer.tf_plays.setText(String.valueOf(this.game.getPlayed()));
+    FlashGamesPlayer.tf_plays.setText(String.valueOf(this.game.getPlayed()+1));
     FlashGamesPlayer.bt_savePassword.setEnabled(game != null);
     FlashGamesPlayer.tf_password.setText(this.game.getPassword());
     FlashGamesPlayer.bt_delete.setEnabled(game != null && game.getDeleted() == 0);

@@ -15,6 +15,7 @@ import com.googlecode.flashgamesplayer.database.Options;
 import com.googlecode.flashgamesplayer.games.tree.GamesTree;
 import com.googlecode.svalidators.formcomponents.ValidationGroup;
 import com.googlecode.svalidators.validators.PositiveNumberValidator;
+import com.googlecode.svalidators.validators.RangeValidator;
 import com.googlecode.svalidators.validators.RequiredValidator;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -31,9 +32,12 @@ public class OptionsForm extends MyDraggable {
     initComponents();
     cb_useProxyActionPerformed(null);
     setLocationRelativeTo(null);
-    tf_proxy.addValidator(new RequiredValidator(tf_proxy.getText()));
-    tf_port.addValidator(new PositiveNumberValidator(tf_port.getText(), false, false));
-    tf_treeRowHeight.addValidator(new PositiveNumberValidator(tf_treeRowHeight.getText(), false, false));
+    if (cb_useProxy.isSelected()) {
+      tf_proxy.addValidator(new RequiredValidator(tf_proxy.getText()));
+      tf_port.addValidator(new PositiveNumberValidator(tf_port.getText(), false, false));
+    }
+    tf_treeRowHeight.addValidator(new RangeValidator("", 10, 260, false));
+
   }
 
   /** This method is called from within the constructor to
@@ -44,20 +48,24 @@ public class OptionsForm extends MyDraggable {
   @SuppressWarnings("unchecked")
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
+    bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
     jPanel1 = new javax.swing.JPanel();
     jLabel1 = new javax.swing.JLabel();
-    cb_useProxy = new javax.swing.JCheckBox();
-    tf_proxy = new com.googlecode.svalidators.formcomponents.STextField();
-    jLabel2 = new javax.swing.JLabel();
-    jLabel3 = new javax.swing.JLabel();
-    tf_port = new com.googlecode.svalidators.formcomponents.STextField();
     button_ok = new javax.swing.JButton();
     button_cancel = new javax.swing.JButton();
-    jLabel4 = new javax.swing.JLabel();
-    tf_treeRowHeight = new com.googlecode.svalidators.formcomponents.STextField();
     cb_title = new javax.swing.JCheckBox();
     cb_screenshot = new javax.swing.JCheckBox();
+    jPanel2 = new javax.swing.JPanel();
+    tf_proxy = new com.googlecode.svalidators.formcomponents.STextField();
+    jLabel3 = new javax.swing.JLabel();
+    tf_port = new com.googlecode.svalidators.formcomponents.STextField();
+    cb_useProxy = new javax.swing.JCheckBox();
+    jLabel2 = new javax.swing.JLabel();
+    jPanel3 = new javax.swing.JPanel();
+    jLabel4 = new javax.swing.JLabel();
+    tf_treeRowHeight = new com.googlecode.svalidators.formcomponents.STextField();
+    slider = new javax.swing.JSlider();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -66,26 +74,6 @@ public class OptionsForm extends MyDraggable {
     jLabel1.setFont(jLabel1.getFont().deriveFont(jLabel1.getFont().getStyle() | java.awt.Font.BOLD, jLabel1.getFont().getSize()+2));
     jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     jLabel1.setText("Options");
-
-    cb_useProxy.setSelected((Boolean)FlashGamesPlayer.options.get(Options.USE_PROXY));
-    cb_useProxy.setText("use proxy");
-    cb_useProxy.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        cb_useProxyActionPerformed(evt);
-      }
-    });
-
-    tf_proxy.setText((String)FlashGamesPlayer.options.get(Options.PROXY));
-    tf_proxy.setName("Proxy"); // NOI18N
-
-    jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-    jLabel2.setText("Proxy:");
-
-    jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-    jLabel3.setText("Port:");
-
-    tf_port.setText(String.valueOf(FlashGamesPlayer.options.get(Options.PORT)));
-    tf_port.setName("Port"); // NOI18N
 
     button_ok.setText("Save");
     button_ok.addActionListener(new java.awt.event.ActionListener() {
@@ -101,12 +89,6 @@ public class OptionsForm extends MyDraggable {
       }
     });
 
-    jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-    jLabel4.setText("Tree row height :");
-
-    tf_treeRowHeight.setText(String.valueOf(FlashGamesPlayer.options.get(Options.TREE_ROW_HEIGHT)));
-    tf_treeRowHeight.setName("Tree row height"); // NOI18N
-
     cb_title.setSelected((Boolean)FlashGamesPlayer.options.get(Options.DISPLAY_GAME_TITLE));
     cb_title.setText("Display Game title");
     cb_title.setToolTipText("Display the game title in the tree");
@@ -117,6 +99,105 @@ public class OptionsForm extends MyDraggable {
     cb_screenshot.setToolTipText("Display the game title in the tree");
     cb_screenshot.setName("Display Game Title"); // NOI18N
 
+    tf_proxy.setText((String)FlashGamesPlayer.options.get(Options.PROXY));
+    tf_proxy.setName("Proxy"); // NOI18N
+
+    jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+    jLabel3.setText("Port:");
+
+    tf_port.setText(String.valueOf(FlashGamesPlayer.options.get(Options.PORT)));
+    tf_port.setName("Port"); // NOI18N
+
+    cb_useProxy.setSelected((Boolean)FlashGamesPlayer.options.get(Options.USE_PROXY));
+    cb_useProxy.setText("use proxy");
+    cb_useProxy.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        cb_useProxyActionPerformed(evt);
+      }
+    });
+
+    jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+    jLabel2.setText("Proxy:");
+
+    javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+    jPanel2.setLayout(jPanel2Layout);
+    jPanel2Layout.setHorizontalGroup(
+      jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(jPanel2Layout.createSequentialGroup()
+        .addContainerGap()
+        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addGroup(jPanel2Layout.createSequentialGroup()
+            .addComponent(cb_useProxy)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
+          .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+              .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+              .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+              .addComponent(tf_port, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+              .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+              .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+              .addComponent(tf_proxy, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
+        .addContainerGap(244, Short.MAX_VALUE))
+    );
+    jPanel2Layout.setVerticalGroup(
+      jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(jPanel2Layout.createSequentialGroup()
+        .addContainerGap()
+        .addComponent(cb_useProxy)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(jLabel2)
+          .addComponent(tf_proxy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(tf_port, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(jLabel3))
+        .addContainerGap(12, Short.MAX_VALUE))
+    );
+
+    jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+    jLabel4.setText("Screenshot height:");
+
+    tf_treeRowHeight.setName("Tree row height"); // NOI18N
+
+    org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, slider, org.jdesktop.beansbinding.ELProperty.create("${value}"), tf_treeRowHeight, org.jdesktop.beansbinding.BeanProperty.create("text"));
+    bindingGroup.addBinding(binding);
+
+    slider.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+    slider.setMajorTickSpacing(50);
+    slider.setMaximum(260);
+    slider.setMinimum(10);
+    slider.setMinorTickSpacing(10);
+    slider.setPaintLabels(true);
+    slider.setPaintTicks(true);
+    slider.setValue((Integer)FlashGamesPlayer.options.get(Options.TREE_ROW_HEIGHT));
+
+    javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+    jPanel3.setLayout(jPanel3Layout);
+    jPanel3Layout.setHorizontalGroup(
+      jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(jPanel3Layout.createSequentialGroup()
+        .addContainerGap()
+        .addComponent(jLabel4)
+        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addComponent(slider, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 213, Short.MAX_VALUE)
+            .addComponent(tf_treeRowHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        .addContainerGap())
+    );
+    jPanel3Layout.setVerticalGroup(
+      jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(jPanel3Layout.createSequentialGroup()
+        .addContainerGap()
+        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+          .addComponent(jLabel4)
+          .addComponent(slider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(tf_treeRowHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addContainerGap())
+    );
+
     javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
     jPanel1.setLayout(jPanel1Layout);
     jPanel1Layout.setHorizontalGroup(
@@ -124,77 +205,57 @@ public class OptionsForm extends MyDraggable {
       .addGroup(jPanel1Layout.createSequentialGroup()
         .addContainerGap()
         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
-          .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
-        .addGap(18, 18, 18)
-        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-          .addComponent(tf_treeRowHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(tf_proxy, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
-          .addComponent(tf_port, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        .addContainerGap(211, Short.MAX_VALUE))
-      .addGroup(jPanel1Layout.createSequentialGroup()
-        .addGap(10, 10, 10)
-        .addComponent(button_ok)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(button_cancel)
-        .addContainerGap(283, Short.MAX_VALUE))
-      .addGroup(jPanel1Layout.createSequentialGroup()
-        .addGap(10, 10, 10)
-        .addComponent(cb_title)
-        .addContainerGap(300, Short.MAX_VALUE))
-      .addGroup(jPanel1Layout.createSequentialGroup()
-        .addGap(10, 10, 10)
-        .addComponent(cb_screenshot)
-        .addContainerGap(266, Short.MAX_VALUE))
-      .addGroup(jPanel1Layout.createSequentialGroup()
-        .addGap(10, 10, 10)
-        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addGroup(jPanel1Layout.createSequentialGroup()
-            .addComponent(cb_useProxy)
+            .addComponent(button_ok)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(button_cancel)
             .addContainerGap())
-          .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)))
+          .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addComponent(cb_title)
+              .addComponent(cb_screenshot))
+            .addContainerGap())
+          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
+            .addGap(408, 408, 408))
+          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+              .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+              .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGap(394, 394, 394))))
     );
     jPanel1Layout.setVerticalGroup(
       jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGroup(jPanel1Layout.createSequentialGroup()
-        .addContainerGap()
+      .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+        .addContainerGap(15, Short.MAX_VALUE)
         .addComponent(jLabel1)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-        .addComponent(cb_useProxy)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-          .addComponent(jLabel2)
-          .addComponent(tf_proxy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-          .addComponent(jLabel3)
-          .addComponent(tf_port, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        .addGap(18, 18, 18)
-        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-          .addComponent(jLabel4)
-          .addComponent(tf_treeRowHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addGap(14, 14, 14)
         .addComponent(cb_title)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(cb_screenshot)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
+        .addGap(18, 18, 18)
         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(button_ok)
           .addComponent(button_cancel))
-        .addContainerGap())
+        .addGap(23, 23, 23))
     );
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+      .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 436, javax.swing.GroupLayout.PREFERRED_SIZE)
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
     );
+
+    bindingGroup.bind();
 
     pack();
   }// </editor-fold>//GEN-END:initComponents
@@ -233,6 +294,13 @@ public class OptionsForm extends MyDraggable {
     private void cb_useProxyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_useProxyActionPerformed
       tf_port.setEnabled(cb_useProxy.isSelected());
       tf_proxy.setEnabled(cb_useProxy.isSelected());
+      if (cb_useProxy.isSelected()) {
+        tf_proxy.addValidator(new RequiredValidator(tf_proxy.getText()));
+        tf_port.addValidator(new PositiveNumberValidator(tf_port.getText(), false, false));
+      } else {
+        tf_proxy.clearValidatorsList();
+        tf_port.clearValidatorsList();
+      }
     }//GEN-LAST:event_cb_useProxyActionPerformed
 
   /**
@@ -257,8 +325,12 @@ public class OptionsForm extends MyDraggable {
   private javax.swing.JLabel jLabel3;
   private javax.swing.JLabel jLabel4;
   private javax.swing.JPanel jPanel1;
+  private javax.swing.JPanel jPanel2;
+  private javax.swing.JPanel jPanel3;
+  private javax.swing.JSlider slider;
   private com.googlecode.svalidators.formcomponents.STextField tf_port;
   private com.googlecode.svalidators.formcomponents.STextField tf_proxy;
   private com.googlecode.svalidators.formcomponents.STextField tf_treeRowHeight;
+  private org.jdesktop.beansbinding.BindingGroup bindingGroup;
   // End of variables declaration//GEN-END:variables
 }

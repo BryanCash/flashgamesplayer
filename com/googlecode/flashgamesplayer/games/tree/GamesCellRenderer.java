@@ -38,8 +38,6 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
     setBackgroundSelectionColor(Color.LIGHT_GRAY);
     setBackgroundNonSelectionColor(Color.WHITE);
     setBorderSelectionColor(Color.WHITE);
-    
-
   }
 
   @Override
@@ -127,7 +125,7 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
         setFont(getFont().deriveFont(20F));
       }
     }
-    setPreferredSize(new Dimension(screenshotWidth * 3, tree.getRowHeight()));
+    setPreferredSize(new Dimension(screenshotWidth + 180, tree.getRowHeight()));
     if (!(Boolean) FlashGamesPlayer.options.get(Options.DISPLAY_GAME_TITLE)
         && obj instanceof Game) {
       setText("");
