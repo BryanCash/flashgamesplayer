@@ -32,6 +32,7 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
   private Integer screenshotHeight = 64;
   private Integer screenshotWidth = 85;
   private Boolean showScreenshot;
+  private Boolean showTitle;
 
   public GamesCellRenderer() {
     setOpaque(false);
@@ -48,6 +49,7 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
     Object obj = node.getUserObject();
     showScreenshot = (Boolean) FlashGamesPlayer.options.get(Options.DISPLAY_GAME_SCREENSHOT);
+    showTitle = (Boolean) FlashGamesPlayer.options.get(Options.DISPLAY_GAME_TITLE);
     if (!showScreenshot) {
       tree.setRowHeight(16);
       Image gameIcon = new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/gameLeaf.png")).getImage().getScaledInstance(12, 12, Image.SCALE_SMOOTH);
@@ -61,6 +63,9 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
     BufferedImage buff;
     if (selected) {
       setForeground(Color.BLACK);
+      setBorder(BorderFactory.createLineBorder(Color.RED,2));
+    } else {
+      setBorder(BorderFactory.createEmptyBorder());
     }
     ImageIcon catIcon = null;
     if (obj instanceof Game) {
@@ -125,8 +130,8 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
         setFont(getFont().deriveFont(20F));
       }
     }
-    setPreferredSize(new Dimension(screenshotWidth + 180, tree.getRowHeight()));
-    if (!(Boolean) FlashGamesPlayer.options.get(Options.DISPLAY_GAME_TITLE)
+    setPreferredSize(new Dimension(screenshotWidth + (showTitle ? 180 : 0), tree.getRowHeight()));
+    if (!showTitle
         && obj instanceof Game) {
       setText("");
     }

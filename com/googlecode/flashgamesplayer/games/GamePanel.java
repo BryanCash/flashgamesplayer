@@ -35,7 +35,7 @@ public class GamePanel extends javax.swing.JPanel {
   }
 
   public void setGame(Game game) {
-    setGame(game,true);
+    setGame(game, true);
   }
 
   public void setGame(Game game, boolean play) {
@@ -61,7 +61,7 @@ public class GamePanel extends javax.swing.JPanel {
     FlashGamesPlayer.label_gameTitle.setText(this.game.getTitle());
     FlashGamesPlayer.rating.setRate(this.game.getRate());
     FlashGamesPlayer.rating.setRatingEnabled(true);
-    FlashGamesPlayer.tf_plays.setText(String.valueOf(this.game.getPlayed()+1));
+    FlashGamesPlayer.tf_plays.setText(String.valueOf(this.game.getPlayed() + 1));
     FlashGamesPlayer.bt_savePassword.setEnabled(game != null);
     FlashGamesPlayer.tf_password.setText(this.game.getPassword());
     FlashGamesPlayer.bt_delete.setEnabled(game != null && game.getDeleted() == 0);
@@ -93,6 +93,15 @@ public class GamePanel extends javax.swing.JPanel {
 
     setLayout(new java.awt.BorderLayout());
   }// </editor-fold>//GEN-END:initComponents
+
+  public void init() {
+    FlashGamesPlayer.gamePanel.setGame(null);
+    FlashGamesPlayer.label_gameTitle.setText("");
+    FlashGamesPlayer.rating.setRate(0.0);
+    FlashGamesPlayer.rating.setRatingEnabled(false);
+    FlashGamesPlayer.tf_plays.setText("0");
+    FlashGamesPlayer.gamesTree.populateTree();
+  }
   // Variables declaration - do not modify//GEN-BEGIN:variables
   // End of variables declaration//GEN-END:variables
 }

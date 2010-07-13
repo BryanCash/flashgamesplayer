@@ -12,6 +12,7 @@ package com.googlecode.flashgamesplayer.tools;
 
 import com.googlecode.flashgamesplayer.FlashGamesPlayer;
 import com.googlecode.flashgamesplayer.database.Options;
+import com.googlecode.flashgamesplayer.games.GamesChangeListener;
 import com.googlecode.flashgamesplayer.games.tree.GamesTree;
 import com.googlecode.svalidators.formcomponents.ValidationGroup;
 import com.googlecode.svalidators.validators.PositiveNumberValidator;

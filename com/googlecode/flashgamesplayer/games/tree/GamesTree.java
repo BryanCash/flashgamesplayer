@@ -22,7 +22,8 @@ import com.googlecode.flashgamesplayer.database.Database;
 import com.googlecode.flashgamesplayer.database.Game;
 import com.googlecode.flashgamesplayer.database.Genre;
 import com.googlecode.flashgamesplayer.games.GameForm;
-import com.googlecode.flashgamesplayer.games.GamesChangeListener;
+import com.googlecode.flashgamesplayer.myEvents.MyEvent;
+import com.googlecode.flashgamesplayer.myEvents.MyEventHandler;
 import com.googlecode.flashgamesplayer.tools.MyMessages;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -54,7 +55,6 @@ public class GamesTree extends javax.swing.JPanel {
   /** Creates new form Tree */
   public GamesTree() {
     initComponents();
-    addPropertyChangeListener(new GamesChangeListener());
     setVisible(true);
 
   }
@@ -152,7 +152,9 @@ public class GamesTree extends javax.swing.JPanel {
           if (getSelectedGame().getDeleted() == 1) {
             MyMessages.error("Play Game", "This games is deleted. Undelete it first.");
           }
-          firePropertyChange(GamesChangeListener.GAME_PLAY, FlashGamesPlayer.gamePanel.getGame(), getSelectedGame());
+          MyEvent event = new MyEvent(this, MyEventHandler.LOAD_GAME);
+          event.setGame(getSelectedGame());
+          FlashGamesPlayer.evClass.fireMyEvent(event);
         } else if (node.getUserObject() instanceof Genre) {
           selectedGenre = (Genre) node.getUserObject();
         }
@@ -181,7 +183,9 @@ public class GamesTree extends javax.swing.JPanel {
         node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
         if (node.getUserObject() instanceof Game) {
           Game newGame = (Game) node.getUserObject();
-          firePropertyChange(GamesChangeListener.GAME_SELECTED, getSelectedGame(), newGame);
+          MyEvent event = new MyEvent(this, MyEventHandler.SELECT_GAME);
+          event.setGame(newGame);
+          FlashGamesPlayer.evClass.fireMyEvent(event);
         }
       }
     }
@@ -205,7 +209,9 @@ public class GamesTree extends javax.swing.JPanel {
   public void deleteGame(Game game) {
     if (MyMessages.question("Delete Game", "Really delete the game : " + game.getTitle()) == JOptionPane.OK_OPTION) {
       if (game.setDeleted(Game.DELETED)) {
-        firePropertyChange(GamesChangeListener.GAME_DELETED, game, null);
+        MyEvent event = new MyEvent(this, MyEventHandler.DELETE_GAME);
+        event.setGame(game);
+        FlashGamesPlayer.evClass.fireMyEvent(event);
       } else {
         MyMessages.error("Error", "Could not delete the game");
       }
@@ -379,7 +385,9 @@ public class GamesTree extends javax.swing.JPanel {
     if (FlashGamesPlayer.gamePanel.getGame() != null) {
       Game game = FlashGamesPlayer.gamePanel.getGame();
       if (game.setDeleted(Game.NOT_DELETED)) {
-        firePropertyChange(GamesChangeListener.GAME_RESTORED, null, FlashGamesPlayer.gamePanel.getGame());
+        MyEvent event = new MyEvent(this, MyEventHandler.RESTORE_GAME);
+        event.setGame(game);
+        FlashGamesPlayer.evClass.fireMyEvent(event);
       } else {
         MyMessages.error("Game restore", "Could not restore the game");
       }

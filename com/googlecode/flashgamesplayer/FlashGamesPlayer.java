@@ -14,7 +14,6 @@ import java.awt.AWTException;
 import java.awt.Point;
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
-import java.sql.SQLException;
 import com.googlecode.flashgamesplayer.games.GamePanel;
 import chrriis.common.UIUtils;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
@@ -27,10 +26,12 @@ import com.googlecode.flashgamesplayer.database.Database;
 import com.googlecode.flashgamesplayer.database.Game;
 import com.googlecode.flashgamesplayer.database.Options;
 import com.googlecode.flashgamesplayer.games.GameForm;
-import com.googlecode.flashgamesplayer.games.GamesChangeListener;
 import com.googlecode.flashgamesplayer.games.MySortComboRenderer;
 import com.googlecode.flashgamesplayer.games.tree.GamesCellRenderer;
 import com.googlecode.flashgamesplayer.games.tree.GamesTree;
+import com.googlecode.flashgamesplayer.myEvents.MyEvent;
+import com.googlecode.flashgamesplayer.myEvents.MyEventHandler;
+import com.googlecode.flashgamesplayer.myEvents.MyEventsClass;
 import com.googlecode.flashgamesplayer.tools.GamesLogger;
 import com.googlecode.flashgamesplayer.tools.MyFileDropListener;
 import com.googlecode.flashgamesplayer.tools.MyFunctions;
@@ -65,15 +66,8 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
   public static boolean isInternet = false;
   public static HashMap<String, Object> options;
   public static String version = "0.9";
-
-  public static void setOptions(HashMap<String, Object> op) {
-    options = op;
-    MyFunctions.checkInternetConnection("http://www.google.com");
-    gamesTree.tree.setRowHeight((Integer) options.get(Options.TREE_ROW_HEIGHT) + 8);
-    gamesTree.tree.revalidate();
-    gamesTree.tree.repaint();
-  }
   private final File tmpFile;
+  public static MyEventsClass evClass = new MyEventsClass();
 
   /** Creates new form flashplayer */
   public FlashGamesPlayer() {
@@ -104,7 +98,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     gamePanel = new GamePanel();
     initComponents();
     combo_sort.setRenderer(new MySortComboRenderer());
-    setTitle("Flash games player version " + version + " ( "+MyFunctions.getTotalGames()+" available games )");
+    setTitle("Flash games player version " + version + " ( " + MyFunctions.getTotalGames() + " available games )");
     splitpane.setDividerLocation(220);
     MyFunctions.checkInternetConnection("http://www.google.com");
     rating.addPropertyChangeListener(new PropertyChangeListener() {
@@ -125,7 +119,6 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     setSize(800, 600);
     setLocationRelativeTo(null);
     //setExtendedState(MAXIMIZED_BOTH);
-    addPropertyChangeListener(new GamesChangeListener());
     new FileDrop(splitpane, BorderFactory.createLineBorder(Color.RED, 2), new MyFileDropListener());
     setVisible(true);
   }
@@ -548,8 +541,8 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
   }//GEN-LAST:event_formWindowClosing
 
   private void bt_stopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_stopActionPerformed
-    //gamePanel.setGame(null);
-    firePropertyChange(GamesChangeListener.GAME_PLAY, FlashGamesPlayer.gamePanel.getGame(), null);
+    MyEvent event = new MyEvent(this, MyEventHandler.UNLOAD_GAME);
+    evClass.fireMyEvent(event);
   }//GEN-LAST:event_bt_stopActionPerformed
 
   private void bt_savePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_savePasswordActionPerformed
@@ -621,6 +614,15 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
   private void createLogger() {
     logger = GamesLogger.createHtmlLogger("FLASHGAMESPLAYER", Options.USER_DIR + "FlashGamesPlayer", 262144, true, 1);
     logger.setLevel(Level.ALL);
+  }
+
+  public static void setOptions(HashMap<String, Object> op) {
+    options = op;
+    MyFunctions.checkInternetConnection("http://www.google.com");
+
+    gamesTree.tree.setRowHeight((Integer) options.get(Options.TREE_ROW_HEIGHT) + 8);
+    gamesTree.tree.revalidate();
+    gamesTree.tree.repaint();
   }
 
   private void createFolder(String dirPath) {

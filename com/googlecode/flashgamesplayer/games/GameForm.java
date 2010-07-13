@@ -28,6 +28,8 @@ import com.googlecode.flashgamesplayer.FlashGamesPlayer;
 import com.googlecode.flashgamesplayer.database.Game;
 import com.googlecode.flashgamesplayer.database.Genre;
 import com.googlecode.flashgamesplayer.database.Options;
+import com.googlecode.flashgamesplayer.myEvents.MyEvent;
+import com.googlecode.flashgamesplayer.myEvents.MyEventHandler;
 import com.googlecode.flashgamesplayer.tools.MyDraggable;
 import com.googlecode.flashgamesplayer.tools.MyFunctions;
 import com.googlecode.flashgamesplayer.tools.MyMessages;
@@ -71,7 +73,6 @@ public class GameForm extends MyDraggable {
     components.add(tf_title);
     Genre genre = Genre.getGenreById(game.getGenre_id());
     combo_genre.setSelectedItem(genre);
-    addPropertyChangeListener(new GamesChangeListener());
     setLocationRelativeTo(null);
     setVisible(true);
   }
@@ -288,7 +289,8 @@ public class GameForm extends MyDraggable {
         try {
           if (game.save() > -1) {
             MyMessages.message("Game " + (game.isNewGame() ? " added " : " updated"), "The game was " + (game.isNewGame() ? " added " : " updated"));
-            firePropertyChange(GamesChangeListener.GAME_ADDED, null, null);
+            MyEvent event = new MyEvent(this, MyEventHandler.ADD_GAME);
+            FlashGamesPlayer.evClass.fireMyEvent(event);
           }
         } catch (SQLException ex) {
           new File(Options.USER_DIR + Options.GAMES_DIR + filename).delete();
