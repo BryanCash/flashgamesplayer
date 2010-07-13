@@ -2,12 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.googlecode.flashgamesplayer.database;
 
 import com.googlecode.flashgamesplayer.FlashGamesPlayer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  *
  * @author ssoldatos
  */
-public class Options extends Record{
+public class Options extends Record {
 
   public static final String USER_DIR = "./";
   public static final String GAMES_DIR = "games/";
@@ -33,7 +33,6 @@ public class Options extends Record{
   public static final String TREE_ROW_HEIGHT = "treeRowHeight";
   public static final String DISPLAY_GAME_TITLE = "displayGameTitle";
   public static final String DISPLAY_GAME_SCREENSHOT = "displayGameScreenshot";
-
   private String option;
   private String type;
   private String value;
@@ -47,25 +46,32 @@ public class Options extends Record{
   public int save() throws SQLException {
     String sql;
 
-    sql = "UPDATE options SET option = '" + this.getOption() +"', "
-        + "type = '" + this.getType() +"', "
-        + "value ='"+this.getValue() +"' WHERE option = '" + this.getOption() +"'";
+    sql = "UPDATE options SET option = '" + this.getOption() + "', "
+        + "type = '" + this.getType() + "', "
+        + "value ='" + this.getValue() + "' WHERE option = '" + this.getOption() + "'";
     return queryUpdate(sql);
   }
 
-  public static HashMap<String,Object> getOptions() {
-    HashMap<String,Object> options = new HashMap<String,Object>();
+  public static HashMap<String, Object> getOptions() {
+    HashMap<String, Object> options = new HashMap<String, Object>();
     try {
       String sql = "SELECT * FROM options";
       ResultSet rs = query(sql);
-      while (rs.next()){
+      while (rs.next()) {
         String type = rs.getString("type");
-        if(type.equals(STRING)){
+        if (type.equals(STRING)) {
           options.put(rs.getString("option"), rs.getString("value"));
-        } else if(type.equals(INTEGER)){
-          options.put(rs.getString("option"), Integer.parseInt(rs.getString("value")));
-        }else if(type.equals(BOOLEAN)){
-          options.put(rs.getString("option"), Boolean.parseBoolean(rs.getString("value")));
+        } else if (type.equals(INTEGER)) {
+          int val = 0;
+          try {
+            val = Integer.parseInt(rs.getString("value"));
+          } catch (NumberFormatException ex) {
+            val = 0;
+          }
+          options.put(rs.getString("option"), val);
+        } else if (type.equals(BOOLEAN)) {
+          boolean val = Boolean.parseBoolean(rs.getString("value"));
+          options.put(rs.getString("option"), val);
         }
       }
       return options;
@@ -74,8 +80,6 @@ public class Options extends Record{
       return options;
     }
   }
-
-  
 
   /**
    * @return the option
@@ -118,7 +122,4 @@ public class Options extends Record{
   public void setValue(String value) {
     this.value = value;
   }
-
-
-
 }

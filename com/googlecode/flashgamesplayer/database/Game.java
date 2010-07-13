@@ -70,7 +70,7 @@ public class Game extends Record {
         game.played = rs.getInt("played");
         game.rate = rs.getDouble("rate");
         game.internet = rs.getInt("internet");
-        game.password = rs.getString("password");
+        game.password = rs.getString("password") == null ? "" : rs.getString("password");
         game.deleted = rs.getInt("deleted");
         game.setNewGame(false);
         return game;
