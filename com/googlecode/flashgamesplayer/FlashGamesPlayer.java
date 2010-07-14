@@ -26,6 +26,7 @@ import com.googlecode.flashgamesplayer.database.Database;
 import com.googlecode.flashgamesplayer.database.Game;
 import com.googlecode.flashgamesplayer.database.Options;
 import com.googlecode.flashgamesplayer.games.GameForm;
+import com.googlecode.flashgamesplayer.games.internet.AddInternetGame;
 import com.googlecode.flashgamesplayer.tools.MySortComboRenderer;
 import com.googlecode.flashgamesplayer.games.tree.GamesCellRenderer;
 import com.googlecode.flashgamesplayer.games.tree.GamesTree;
@@ -37,6 +38,8 @@ import com.googlecode.flashgamesplayer.tools.MyFileDropListener;
 import com.googlecode.flashgamesplayer.tools.MyFunctions;
 import com.googlecode.flashgamesplayer.tools.MyMessages;
 import com.googlecode.flashgamesplayer.tools.OptionsForm;
+import com.googlecode.svalidators.formcomponents.ValidationGroup;
+import com.googlecode.svalidators.validators.UrlValidator;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -71,6 +74,8 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
 
   /** Creates new form flashplayer */
   public FlashGamesPlayer() {
+    setIconImage(new ImageIcon(FlashGamesPlayer.class.getResource(
+        "/com/googlecode/flashgamesplayer/images/icon.png")).getImage());
     tmpFile = new File(Options.USER_DIR + ".tmp");
     if (tmpFile.exists()) {
       MyMessages.message("Application open", "The application is already open");
@@ -97,11 +102,12 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     options = Options.getOptions();
     gamePanel = new GamePanel();
     initComponents();
+    tf_addInternetGame.addValidator(new UrlValidator("", false));
     combo_sort.setRenderer(new MySortComboRenderer());
     setTitle("Flash games player version " + version + " ( " + MyFunctions.getTotalGames() + " available games )");
     splitpane.setDividerLocation((Integer)options.get(Options.TREE_ROW_HEIGHT) +
         ((Boolean)options.get(Options.DISPLAY_GAME_TITLE) ? 180 : 0) + 120);
-    MyFunctions.checkInternetConnection("http://www.google.com");
+    bt_internetActionPerformed(null);
     rating.addPropertyChangeListener(new PropertyChangeListener() {
 
       @Override
@@ -140,9 +146,13 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     bt_restore = new javax.swing.JButton();
     bt_screenshot = new javax.swing.JButton();
     jSeparator1 = new javax.swing.JToolBar.Separator();
-    label_internet = new javax.swing.JLabel();
+    bt_internet = new javax.swing.JButton();
     bt_options = new javax.swing.JButton();
     bt_exit = new javax.swing.JButton();
+    addInternetGamePanel = new javax.swing.JPanel();
+    jLabel4 = new javax.swing.JLabel();
+    tf_addInternetGame = new com.googlecode.svalidators.formcomponents.STextField();
+    bt_addInternetGame = new javax.swing.JButton();
     splitpane = new javax.swing.JSplitPane();
     left = new javax.swing.JPanel();
     gamesTree = new com.googlecode.flashgamesplayer.games.tree.GamesTree();
@@ -240,8 +250,17 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     toolbar.add(bt_screenshot);
     toolbar.add(jSeparator1);
 
-    label_internet.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/internet.png"))); // NOI18N
-    toolbar.add(label_internet);
+    bt_internet.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/internet.png"))); // NOI18N
+    bt_internet.setToolTipText("Internet Connection");
+    bt_internet.setFocusable(false);
+    bt_internet.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    bt_internet.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    bt_internet.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        bt_internetActionPerformed(evt);
+      }
+    });
+    toolbar.add(bt_internet);
 
     bt_options.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/options.png"))); // NOI18N
     bt_options.setToolTipText("Options");
@@ -269,6 +288,43 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
 
     getContentPane().add(toolbar, java.awt.BorderLayout.NORTH);
 
+    addInternetGamePanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 102, 102)));
+    addInternetGamePanel.setPreferredSize(new java.awt.Dimension(810, 30));
+
+    jLabel4.setText("Add game from Internet :");
+
+    tf_addInternetGame.setPreferredSize(new java.awt.Dimension(360, 20));
+
+    bt_addInternetGame.setText("Add");
+    bt_addInternetGame.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        bt_addInternetGameActionPerformed(evt);
+      }
+    });
+
+    javax.swing.GroupLayout addInternetGamePanelLayout = new javax.swing.GroupLayout(addInternetGamePanel);
+    addInternetGamePanel.setLayout(addInternetGamePanelLayout);
+    addInternetGamePanelLayout.setHorizontalGroup(
+      addInternetGamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(addInternetGamePanelLayout.createSequentialGroup()
+        .addContainerGap()
+        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(tf_addInternetGame, javax.swing.GroupLayout.PREFERRED_SIZE, 413, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(bt_addInternetGame)
+        .addGap(350, 350, 350))
+    );
+    addInternetGamePanelLayout.setVerticalGroup(
+      addInternetGamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(addInternetGamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addComponent(tf_addInternetGame, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addComponent(bt_addInternetGame))
+    );
+
+    getContentPane().add(addInternetGamePanel, java.awt.BorderLayout.SOUTH);
+
     splitpane.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153), 2));
     splitpane.setDividerLocation(250);
     splitpane.setMinimumSize(new java.awt.Dimension(700, 500));
@@ -290,8 +346,8 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, leftLayout.createSequentialGroup()
         .addContainerGap()
         .addGroup(leftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-          .addComponent(gamesTree, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
-          .addComponent(combo_sort, javax.swing.GroupLayout.Alignment.LEADING, 0, 228, Short.MAX_VALUE))
+          .addComponent(gamesTree, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
+          .addComponent(combo_sort, javax.swing.GroupLayout.Alignment.LEADING, 0, 207, Short.MAX_VALUE))
         .addContainerGap())
     );
     leftLayout.setVerticalGroup(
@@ -300,7 +356,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
         .addContainerGap()
         .addComponent(combo_sort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(gamesTree, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
+        .addComponent(gamesTree, javax.swing.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE)
         .addContainerGap())
     );
 
@@ -350,7 +406,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       panel_headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(panel_headerLayout.createSequentialGroup()
         .addContainerGap()
-        .addComponent(label_gameTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .addComponent(label_gameTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(jLabel3)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -390,7 +446,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightLayout.createSequentialGroup()
         .addContainerGap()
         .addGroup(rightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-          .addComponent(panelMain, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE)
+          .addComponent(panelMain, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 717, Short.MAX_VALUE)
           .addComponent(panel_header, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         .addContainerGap())
     );
@@ -400,7 +456,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
         .addContainerGap()
         .addComponent(panel_header, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(panelMain, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
+        .addComponent(panelMain, javax.swing.GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE)
         .addContainerGap())
     );
 
@@ -557,6 +613,23 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     gamesTree.restoreGame();
   }//GEN-LAST:event_bt_restoreActionPerformed
 
+  private void bt_internetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_internetActionPerformed
+    isInternet = MyFunctions.checkInternetConnection("http://www.google.com");
+    MyEvent event = new MyEvent(this, MyEventHandler.INTERNET_CONNECTION);
+    evClass.fireMyEvent(event);
+  }//GEN-LAST:event_bt_internetActionPerformed
+
+  private void bt_addInternetGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_addInternetGameActionPerformed
+    ValidationGroup group = new ValidationGroup();
+    group.addComponent(tf_addInternetGame);
+    if(!group.validate()){
+      group.errorMessage(true);
+    } else {
+     AddInternetGame add = new AddInternetGame(tf_addInternetGame.getText().trim());
+     add.find();
+    }
+  }//GEN-LAST:event_bt_addInternetGameActionPerformed
+
   /**
    * @param args the command line arguments
    */
@@ -573,9 +646,12 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
 
   }
   // Variables declaration - do not modify//GEN-BEGIN:variables
+  public static javax.swing.JPanel addInternetGamePanel;
   public static javax.swing.JButton bt_addGame;
+  public static javax.swing.JButton bt_addInternetGame;
   public static javax.swing.JButton bt_delete;
   public static javax.swing.JButton bt_exit;
+  public static javax.swing.JButton bt_internet;
   public static javax.swing.JButton bt_options;
   public static javax.swing.JButton bt_restore;
   public static javax.swing.JButton bt_savePassword;
@@ -587,9 +663,9 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
   public static javax.swing.JLabel jLabel1;
   public static javax.swing.JLabel jLabel2;
   public static javax.swing.JLabel jLabel3;
+  public static javax.swing.JLabel jLabel4;
   public static javax.swing.JToolBar.Separator jSeparator1;
   public static javax.swing.JLabel label_gameTitle;
-  public static javax.swing.JLabel label_internet;
   public static javax.swing.JPanel left;
   public static javax.swing.JMenuBar menuBar;
   public static javax.swing.JMenuItem menuItem_addGame;
@@ -602,6 +678,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
   public static com.googlecode.starrating.StarRating rating;
   public static javax.swing.JPanel right;
   public static javax.swing.JSplitPane splitpane;
+  public static com.googlecode.svalidators.formcomponents.STextField tf_addInternetGame;
   public static javax.swing.JTextField tf_password;
   public static javax.swing.JTextField tf_plays;
   public static javax.swing.JToolBar toolbar;

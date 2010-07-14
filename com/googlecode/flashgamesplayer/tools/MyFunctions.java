@@ -77,17 +77,15 @@ public class MyFunctions {
     }
   }
 
-  public static void checkInternetConnection(final String address) {
+  public static boolean checkInternetConnection(final String address) {
     initInternetConnection();
     BufferedReader in = null;
     try {
       URL url = new URL(address);
       in = new BufferedReader(new InputStreamReader(url.openStream()));
-      FlashGamesPlayer.label_internet.setIcon(FlashGamesPlayer.label_internet.getIcon());
-      FlashGamesPlayer.isInternet = true;
+      return true;
     } catch (IOException ex) {
-      FlashGamesPlayer.label_internet.setIcon(FlashGamesPlayer.label_internet.getDisabledIcon());
-      FlashGamesPlayer.isInternet = false;
+      return false;
     }
   }
 

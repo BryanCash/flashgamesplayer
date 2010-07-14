@@ -16,9 +16,7 @@ public class MyEvent extends EventObject {
   private static final long serialVersionUID = 34536467474567L;
   private int type;
   private Game game = null;
- 
-
-
+  
   public MyEvent(Object source, int type) {
     super(source);
     this.type = type;
