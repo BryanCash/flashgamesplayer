@@ -26,7 +26,7 @@ import com.googlecode.flashgamesplayer.database.Database;
 import com.googlecode.flashgamesplayer.database.Game;
 import com.googlecode.flashgamesplayer.database.Options;
 import com.googlecode.flashgamesplayer.games.GameForm;
-import com.googlecode.flashgamesplayer.games.MySortComboRenderer;
+import com.googlecode.flashgamesplayer.tools.MySortComboRenderer;
 import com.googlecode.flashgamesplayer.games.tree.GamesCellRenderer;
 import com.googlecode.flashgamesplayer.games.tree.GamesTree;
 import com.googlecode.flashgamesplayer.myEvents.MyEvent;
@@ -99,7 +99,8 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     initComponents();
     combo_sort.setRenderer(new MySortComboRenderer());
     setTitle("Flash games player version " + version + " ( " + MyFunctions.getTotalGames() + " available games )");
-    splitpane.setDividerLocation(220);
+    splitpane.setDividerLocation((Integer)options.get(Options.TREE_ROW_HEIGHT) +
+        ((Boolean)options.get(Options.DISPLAY_GAME_TITLE) ? 180 : 0) + 120);
     MyFunctions.checkInternetConnection("http://www.google.com");
     rating.addPropertyChangeListener(new PropertyChangeListener() {
 
@@ -118,7 +119,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     gamesTree.tree.setCellRenderer(new GamesCellRenderer());
     setSize(800, 600);
     setLocationRelativeTo(null);
-    //setExtendedState(MAXIMIZED_BOTH);
+    setExtendedState(MAXIMIZED_BOTH);
     new FileDrop(splitpane, BorderFactory.createLineBorder(Color.RED, 2), new MyFileDropListener());
     setVisible(true);
   }
@@ -269,7 +270,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     getContentPane().add(toolbar, java.awt.BorderLayout.NORTH);
 
     splitpane.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153), 2));
-    splitpane.setDividerLocation(220);
+    splitpane.setDividerLocation(250);
     splitpane.setMinimumSize(new java.awt.Dimension(700, 500));
     splitpane.setPreferredSize(new java.awt.Dimension(789, 544));
 
@@ -289,8 +290,8 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, leftLayout.createSequentialGroup()
         .addContainerGap()
         .addGroup(leftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-          .addComponent(gamesTree, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
-          .addComponent(combo_sort, javax.swing.GroupLayout.Alignment.LEADING, 0, 198, Short.MAX_VALUE))
+          .addComponent(gamesTree, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
+          .addComponent(combo_sort, javax.swing.GroupLayout.Alignment.LEADING, 0, 228, Short.MAX_VALUE))
         .addContainerGap())
     );
     leftLayout.setVerticalGroup(

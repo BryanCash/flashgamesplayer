@@ -99,6 +99,7 @@ public class GamesTree extends javax.swing.JPanel {
     });
     popup.add(delete);
 
+    scrollpane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     scrollpane.setPreferredSize(new java.awt.Dimension(120, 522));
 
     tree.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 4, 4, 4));
@@ -318,6 +319,8 @@ public class GamesTree extends javax.swing.JPanel {
       DefaultMutableTreeNode root = createTree(list);
       model = new DefaultTreeModel(root);
       tree.setModel(model);
+
+      
       int row = 0;
       while (row < tree.getRowCount()) {
         tree.expandRow(row);

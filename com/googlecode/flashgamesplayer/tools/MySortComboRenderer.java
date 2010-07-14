@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.googlecode.flashgamesplayer.games;
+package com.googlecode.flashgamesplayer.tools;
 
 import java.awt.Color;
 import java.awt.Component;

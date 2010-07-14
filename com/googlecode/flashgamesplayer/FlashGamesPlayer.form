@@ -255,7 +255,7 @@
             </LineBorder>
           </Border>
         </Property>
-        <Property name="dividerLocation" type="int" value="220"/>
+        <Property name="dividerLocation" type="int" value="250"/>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[700, 500]"/>
         </Property>
@@ -284,8 +284,8 @@
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="gamesTree" alignment="0" pref="198" max="32767" attributes="0"/>
-                          <Component id="combo_sort" alignment="0" pref="198" max="32767" attributes="0"/>
+                          <Component id="gamesTree" alignment="0" pref="228" max="32767" attributes="0"/>
+                          <Component id="combo_sort" alignment="0" pref="228" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
