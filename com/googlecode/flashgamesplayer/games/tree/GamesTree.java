@@ -106,7 +106,7 @@ public class GamesTree extends javax.swing.JPanel {
     tree.setModel(model);
     tree.setMaximumSize(new java.awt.Dimension(100, 800));
     tree.setMinimumSize(new java.awt.Dimension(80, 200));
-    tree.setRowHeight(40);
+    tree.setRowHeight(0);
     tree.addMouseListener(new java.awt.event.MouseAdapter() {
       public void mouseReleased(java.awt.event.MouseEvent evt) {
         treeMouseReleased(evt);

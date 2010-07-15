@@ -78,8 +78,8 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
         "/com/googlecode/flashgamesplayer/images/icon.png")).getImage());
     tmpFile = new File(Options.USER_DIR + ".tmp");
     if (tmpFile.exists()) {
-      MyMessages.message("Application open", "The application is already open");
-      System.exit(0);
+      //MyMessages.message("Application open", "The application is already open");
+     // System.exit(0);
     } else {
       try {
         tmpFile.createNewFile();
@@ -288,7 +288,6 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
 
     getContentPane().add(toolbar, java.awt.BorderLayout.NORTH);
 
-    addInternetGamePanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 102, 102)));
     addInternetGamePanel.setPreferredSize(new java.awt.Dimension(810, 30));
 
     jLabel4.setText("Add game from Internet :");
@@ -313,7 +312,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
         .addComponent(tf_addInternetGame, javax.swing.GroupLayout.PREFERRED_SIZE, 413, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(bt_addInternetGame)
-        .addGap(350, 350, 350))
+        .addGap(352, 352, 352))
     );
     addInternetGamePanelLayout.setVerticalGroup(
       addInternetGamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -346,8 +345,8 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, leftLayout.createSequentialGroup()
         .addContainerGap()
         .addGroup(leftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-          .addComponent(gamesTree, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
-          .addComponent(combo_sort, javax.swing.GroupLayout.Alignment.LEADING, 0, 207, Short.MAX_VALUE))
+          .addComponent(gamesTree, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
+          .addComponent(combo_sort, javax.swing.GroupLayout.Alignment.LEADING, 0, 228, Short.MAX_VALUE))
         .addContainerGap())
     );
     leftLayout.setVerticalGroup(
@@ -406,7 +405,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       panel_headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(panel_headerLayout.createSequentialGroup()
         .addContainerGap()
-        .addComponent(label_gameTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+        .addComponent(label_gameTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(jLabel3)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -446,7 +445,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightLayout.createSequentialGroup()
         .addContainerGap()
         .addGroup(rightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-          .addComponent(panelMain, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 717, Short.MAX_VALUE)
+          .addComponent(panelMain, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 696, Short.MAX_VALUE)
           .addComponent(panel_header, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         .addContainerGap())
     );

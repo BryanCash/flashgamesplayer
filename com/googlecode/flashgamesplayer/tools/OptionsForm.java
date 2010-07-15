@@ -92,11 +92,21 @@ public class OptionsForm extends MyDraggable {
     cb_title.setText("Display Game title");
     cb_title.setToolTipText("Display the game title in the tree");
     cb_title.setName("Display Game Title"); // NOI18N
+    cb_title.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        cb_titleActionPerformed(evt);
+      }
+    });
 
     cb_screenshot.setSelected((Boolean)FlashGamesPlayer.options.get(Options.DISPLAY_GAME_SCREENSHOT));
     cb_screenshot.setText("Display Game screenshot");
     cb_screenshot.setToolTipText("Display the game title in the tree");
     cb_screenshot.setName("Display Game Title"); // NOI18N
+    cb_screenshot.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        cb_screenshotActionPerformed(evt);
+      }
+    });
 
     tf_proxy.setText((String)FlashGamesPlayer.options.get(Options.PROXY));
     tf_proxy.setName("Proxy"); // NOI18N
@@ -163,7 +173,7 @@ public class OptionsForm extends MyDraggable {
     org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, slider, org.jdesktop.beansbinding.ELProperty.create("${value}"), tf_treeRowHeight, org.jdesktop.beansbinding.BeanProperty.create("text"));
     bindingGroup.addBinding(binding);
 
-    slider.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+    slider.setFont(new java.awt.Font("Tahoma", 0, 8));
     slider.setMajorTickSpacing(50);
     slider.setMaximum(260);
     slider.setMinimum(10);
@@ -301,6 +311,18 @@ public class OptionsForm extends MyDraggable {
         tf_port.clearValidatorsList();
       }
     }//GEN-LAST:event_cb_useProxyActionPerformed
+
+    private void cb_titleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_titleActionPerformed
+      if(!cb_title.isSelected()){
+        cb_screenshot.setSelected(true);
+      }
+    }//GEN-LAST:event_cb_titleActionPerformed
+
+    private void cb_screenshotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_screenshotActionPerformed
+      if(!cb_screenshot.isSelected()){
+        cb_title.setSelected(true);
+      }
+    }//GEN-LAST:event_cb_screenshotActionPerformed
 
   /**
    * @param args the command line arguments

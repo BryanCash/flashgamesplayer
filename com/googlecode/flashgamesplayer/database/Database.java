@@ -121,6 +121,7 @@ public class Database {
       stmt.executeUpdate("INSERT INTO options (option, type, value ) VALUES " + "('useProxy','boolean','true')");
       stmt.executeUpdate("INSERT INTO options (option, type, value ) VALUES " + "('treeRowHeight','int','64')");
       stmt.executeUpdate("INSERT INTO options (option, type, value ) VALUES " + "('displayGameTitle','boolean','true')");
+      stmt.executeUpdate("INSERT INTO options (option, type, value ) VALUES " + "('displayGameScreenshot','boolean','true')");
     } catch (SQLException ex) {
       FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
     }
