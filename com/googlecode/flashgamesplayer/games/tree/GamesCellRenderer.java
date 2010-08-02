@@ -8,6 +8,7 @@ import com.googlecode.flashgamesplayer.FlashGamesPlayer;
 import com.googlecode.flashgamesplayer.database.Game;
 import com.googlecode.flashgamesplayer.database.Options;
 import com.googlecode.flashgamesplayer.games.tree.GamesTree.Category;
+import com.googlecode.flashgamesplayer.tools.MyFunctions;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -69,7 +70,6 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
     tree.setRowHeight(0);
     //COMMON
     rowHeight = getRowHeight(obj);
-
     // IF CATEGORY
     if (obj instanceof GamesTree.Category) {
       Category cat = (Category) obj;
@@ -85,7 +85,8 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
       // tree.setRowHeight(treeRowHeight);
       Game game = (Game) obj;
       if (selected) {
-        setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+        //setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+        setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
       } else {
         setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
       }
@@ -132,39 +133,29 @@ public class GamesCellRenderer extends DefaultTreeCellRenderer implements TreeCe
   private ImageIcon getCategoryIcon(GamesTree.Category cat, boolean expanded) {
     ImageIcon catIcon = null;
     BufferedImage buff;
-    if (cat.getType() == GamesTree.GENRE
-        || cat.getType() == GamesTree.DATE
-        || cat.getType() == GamesTree.INTERNET
-        || cat.getType() == GamesTree.DELETED) {
-      File catFile = new File(Options.USER_DIR + Options.SCREENSHOT_DIR + cat.toString() + ".png");
-      if (catFile.isFile()) {
-        catIcon = new ImageIcon(new ImageIcon(catFile.getAbsolutePath()).getImage().getScaledInstance(
-            categoryHeight / 2, categoryHeight / 2, Image.SCALE_SMOOTH));
-        ImageIcon custom;
-        if (expanded) {
-          custom = new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/expanded.png"));
-        } else {
-          custom = new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/collapsed.png"));
-        }
-        buff = new BufferedImage(categoryHeight / 2, categoryHeight / 2, BufferedImage.TYPE_INT_ARGB);
-        buff.getGraphics().drawImage(catIcon.getImage(), 0, 0, this);
-        buff.getGraphics().drawImage(custom.getImage(), categoryHeight / 4, categoryHeight / 4, categoryHeight / 4, categoryHeight / 4, this);
-        catIcon = new ImageIcon(buff);
-      } else {
-        openIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/open.png")).getImage().getScaledInstance(categoryHeight / 2, categoryHeight / 2, Image.SCALE_SMOOTH));
-        closedIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/closed.png")).getImage().getScaledInstance(categoryHeight / 2, categoryHeight / 2, Image.SCALE_SMOOTH));
 
+    File catFile = new File(Options.USER_DIR + Options.CATEGORIES_DIR + cat.getName() + ".png");
+    if (catFile.isFile()) {
+      catIcon = new ImageIcon(new ImageIcon(catFile.getAbsolutePath()).getImage().getScaledInstance(
+          categoryHeight, categoryHeight, Image.SCALE_SMOOTH));
+      ImageIcon custom;
+      if (expanded) {
+        custom = new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/expanded.png"));
+      } else {
+        custom = new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/collapsed.png"));
       }
-      return catIcon;
-    } else if (cat.getType() == GamesTree.RATE) {
-      catIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/star.png")).getImage().getScaledInstance(categoryHeight / 2, categoryHeight / 2, Image.SCALE_SMOOTH));
-      return catIcon;
-    } else if (cat.getType() == GamesTree.PLAYED) {
-      catIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/play.png")).getImage().getScaledInstance(categoryHeight / 2, categoryHeight / 2, Image.SCALE_SMOOTH));
-      return catIcon;
+      custom = new ImageIcon(custom.getImage().getScaledInstance(categoryHeight/3, categoryHeight/3, Image.SCALE_SMOOTH));
+      buff = new BufferedImage(categoryHeight, categoryHeight , BufferedImage.TYPE_INT_ARGB);
+      buff.getGraphics().drawImage(catIcon.getImage(), 0, 0, this);
+      buff.getGraphics().drawImage(custom.getImage(), categoryHeight -custom.getIconWidth(), categoryHeight - custom.getIconHeight(), custom.getIconWidth(), custom.getIconHeight(), this);
+      catIcon = new ImageIcon(buff);
     } else {
-      return catIcon;
+      openIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/open.png")).getImage().getScaledInstance(categoryHeight, categoryHeight, Image.SCALE_SMOOTH));
+      closedIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/closed.png")).getImage().getScaledInstance(categoryHeight, categoryHeight, Image.SCALE_SMOOTH));
+
     }
+    return catIcon;
+
   }
 
   private int getRowHeight(Object obj) {

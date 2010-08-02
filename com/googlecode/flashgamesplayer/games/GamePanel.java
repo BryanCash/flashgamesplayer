@@ -18,6 +18,8 @@ import com.googlecode.flashgamesplayer.FlashGamesPlayer;
 import com.googlecode.flashgamesplayer.database.Game;
 import com.googlecode.flashgamesplayer.database.Genre;
 import com.googlecode.flashgamesplayer.database.Options;
+import java.awt.Color;
+import java.awt.Font;
 
 /**
  *
@@ -28,10 +30,13 @@ public class GamePanel extends javax.swing.JPanel {
   private JFlashPlayer flashPlayer;
   private Game game;
   private int genre_id;
+  private static int dividerLocation;
 
   /** Creates new form flash */
   public GamePanel() {
     super(new BorderLayout());
+    flashPlayer = new JFlashPlayer();
+    add(flashPlayer, BorderLayout.CENTER);
   }
 
   public void setGame(Game game) {
@@ -41,21 +46,22 @@ public class GamePanel extends javax.swing.JPanel {
   public void setGame(Game game, boolean play) {
     if (game == null) {
       this.game = new Game();
+      getFlashPlayer().load(null);
     } else {
-      this.game = Game.getGameById(game.getId());
+      this.game = game;
     }
-    if (getFlashPlayer() != null) {
-      remove(getFlashPlayer());
-    }
-    flashPlayer = new JFlashPlayer();
+    //if (getFlashPlayer() != null) {
+    //  remove(getFlashPlayer());
+    //}
+
     try {
-      if (game != null && game.getDeleted() == 0 && play) {
-        getFlashPlayer().load(Options.USER_DIR + Options.GAMES_DIR + game.getFilename());
+      if (game != null && this.game.getDeleted() == 0 && play) {
+        getFlashPlayer().load(Options.USER_DIR + Options.GAMES_DIR + this.game.getFilename());
         game.setPlayed(this.game.getId());
       }
     } catch (Exception ex) {
     }
-    add(getFlashPlayer(), BorderLayout.CENTER);
+//    add(getFlashPlayer(), BorderLayout.CENTER);
     validate();
     //this.genre_id = this.game.getGenre_id();
     FlashGamesPlayer.label_gameTitle.setText(this.game.getTitle());
@@ -64,10 +70,22 @@ public class GamePanel extends javax.swing.JPanel {
     FlashGamesPlayer.tf_plays.setText(String.valueOf(this.game.getPlayed() + 1));
     FlashGamesPlayer.bt_savePassword.setEnabled(game != null);
     FlashGamesPlayer.tf_password.setText(this.game.getPassword());
+    FlashGamesPlayer.tf_password.setForeground(Color.black);
+    FlashGamesPlayer.tf_password.setFont(FlashGamesPlayer.tf_password.getFont().deriveFont(Font.PLAIN));
     FlashGamesPlayer.bt_delete.setEnabled(game != null && game.getDeleted() == 0);
+    FlashGamesPlayer.bt_editGame.setEnabled(game != null && game.getDeleted() == 0);
+    FlashGamesPlayer.bt_stop.setEnabled(game != null && game.getDeleted() == 0);
     FlashGamesPlayer.menuItem_deleteGame.setEnabled(game != null && game.getDeleted() == 0);
+    FlashGamesPlayer.menuItem_editGame.setEnabled(game != null && game.getDeleted() == 0);
+    FlashGamesPlayer.menuItem_stopGame.setEnabled(game != null && game.getDeleted() == 0);
     FlashGamesPlayer.bt_restore.setEnabled(game != null && game.getDeleted() == 1);
-
+    FlashGamesPlayer.menuItem_restoreGame.setEnabled(game != null && game.getDeleted() == 1);
+    if (game != null && play) {
+      GamePanel.dividerLocation = FlashGamesPlayer.splitpane.getDividerLocation();
+      FlashGamesPlayer.splitpane.setDividerLocation(0);
+    } else if(game==null){
+      FlashGamesPlayer.splitpane.setDividerLocation(GamePanel.dividerLocation);
+    }
   }
 
   public Game getGame() {

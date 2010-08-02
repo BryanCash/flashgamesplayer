@@ -10,12 +10,14 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.googlecode.flashgamesplayer.FlashGamesPlayer;
+import com.googlecode.flashgamesplayer.tools.MyDraggable;
 
 /**
  *
  * @author lordovol
  */
 public class Genre extends Record {
+
 
   private int id;
   private String genre;
@@ -35,6 +37,16 @@ public class Genre extends Record {
     return queryUpdate(sql);
   }
 
+  public int delete(){
+    try {
+      String sql = "DELETE FROM genres WHERE id = " + this.getId();
+      return queryUpdate(sql);
+    } catch (SQLException ex) {
+      FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
+      return -1;
+    }
+  }
+
   public static Genre getGenreById(int id) {
     try {
       String sql = "SELECT * FROM genres WHERE id =" + id;
@@ -51,6 +63,22 @@ public class Genre extends Record {
       return null;
     }
   }
+
+   public static boolean hasGames(int id) {
+    try {
+      String sql = "SELECT games.id FROM games JOIN genres ON " +
+          "games.genre_id = genres.id WHERE genres.id = " + id;
+      ResultSet rs = FlashGamesPlayer.database.getStmt().executeQuery(sql);
+      if(rs.next()){
+        return true;
+      }
+      return false;
+    } catch (SQLException ex) {
+      FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
+      return true;
+    }
+  }
+
 
   public static Vector<Genre> getAll() {
     Vector<Genre> genres = new Vector<Genre>();

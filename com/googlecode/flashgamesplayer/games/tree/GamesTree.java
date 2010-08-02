@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import com.googlecode.flashgamesplayer.FlashGamesPlayer;
@@ -24,6 +25,7 @@ import com.googlecode.flashgamesplayer.database.Genre;
 import com.googlecode.flashgamesplayer.games.GameForm;
 import com.googlecode.flashgamesplayer.myEvents.MyEvent;
 import com.googlecode.flashgamesplayer.myEvents.MyEventHandler;
+import com.googlecode.flashgamesplayer.tools.MyFunctions;
 import com.googlecode.flashgamesplayer.tools.MyMessages;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -43,7 +45,8 @@ public class GamesTree extends javax.swing.JPanel {
   public static final int INTERNET = 3;
   public static final int DATE = 4;
   public static final int DELETED = 5;
-  public static final String[] SORTS = {"Genre", "Played", "Rate", "Internet", "Date Added", "Deleted"};
+  public static final int SCREENSHOT = 6;
+  public static final String[] SORTS = {"Genre", "Played", "Rate", "Internet", "Date Added", "Deleted", "No Screenshot"};
   private static final long serialVersionUID = 345345636456L;
   DefaultTreeModel model = new GamesTreeModel(null);
   private boolean isSelected;
@@ -73,6 +76,7 @@ public class GamesTree extends javax.swing.JPanel {
     delete = new javax.swing.JMenuItem();
     scrollpane = new javax.swing.JScrollPane();
     tree = new javax.swing.JTree();
+    pr_tree = new javax.swing.JProgressBar();
 
     popup.setComponentPopupMenu(popup);
     popup.setInvoker(scrollpane);
@@ -124,15 +128,21 @@ public class GamesTree extends javax.swing.JPanel {
     });
     scrollpane.setViewportView(tree);
 
+    pr_tree.setStringPainted(true);
+
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
     this.setLayout(layout);
     layout.setHorizontalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addComponent(scrollpane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
+      .addComponent(scrollpane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
+      .addComponent(pr_tree, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addComponent(scrollpane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+      .addGroup(layout.createSequentialGroup()
+        .addComponent(scrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
+        .addGap(9, 9, 9)
+        .addComponent(pr_tree, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
     );
   }// </editor-fold>//GEN-END:initComponents
 
@@ -208,6 +218,14 @@ public class GamesTree extends javax.swing.JPanel {
   }//GEN-LAST:event_deleteActionPerformed
 
   public void deleteGame(Game game) {
+    if (game == null) {
+      TreePath path = tree.getSelectionPath();
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+      Object obj = node.getUserObject();
+      if (obj instanceof Game) {
+        game = (Game) obj;
+      }
+    }
     if (MyMessages.question("Delete Game", "Really delete the game : " + game.getTitle()) == JOptionPane.OK_OPTION) {
       if (game.setDeleted(Game.DELETED)) {
         MyEvent event = new MyEvent(this, MyEventHandler.DELETE_GAME);
@@ -236,6 +254,7 @@ public class GamesTree extends javax.swing.JPanel {
   private javax.swing.JMenuItem addGame;
   private javax.swing.JMenuItem delete;
   private javax.swing.JPopupMenu popup;
+  public static javax.swing.JProgressBar pr_tree;
   private javax.swing.JScrollPane scrollpane;
   public javax.swing.JTree tree;
   // End of variables declaration//GEN-END:variables
@@ -263,10 +282,14 @@ public class GamesTree extends javax.swing.JPanel {
       case DELETED:
         groupAndOrder = "WHERE deleted = " + Game.DELETED + " ORDER BY g.title";
         break;
+      case SCREENSHOT:
+        groupAndOrder = "WHERE deleted = " + Game.NOT_DELETED + " AND screenshot = "
+            + Game.NO_SCREENSHOT + " ORDER BY g.title";
+        break;
     }
     String sql = "SELECT g.id AS id FROM games  g "
         + "INNER JOIN genres gen ON g.genre_id = gen.id "
-        + (sort != DELETED ? "WHERE g.deleted = " + Game.NOT_DELETED + " " : "")
+        + (sort != DELETED && sort != SCREENSHOT ? "WHERE g.deleted = " + Game.NOT_DELETED + " " : "")
         + groupAndOrder;
     try {
       ResultSet rs = new Database().getStmt().executeQuery(sql);
@@ -275,22 +298,25 @@ public class GamesTree extends javax.swing.JPanel {
         Category category = null;
         switch (sort) {
           case GENRE:
-            category = new Category(GENRE, Genre.getGenreById(game.getGenre_id()).getGenre());
+            category = new Category(GENRE, null, Genre.getGenreById(game.getGenre_id()).getGenre());
             break;
           case PLAYED:
-            category = new Category(PLAYED, game.getPlayed());
+            category = new Category(PLAYED, "Played", game.getPlayed());
             break;
           case RATE:
-            category = new Category(RATE, game.getRate());
+            category = new Category(RATE, "Rate", game.getRate());
             break;
           case INTERNET:
-            category = new Category(INTERNET, game.isInternet() == Game.INTERNET ? "Internet" : "No Internet");
+            category = new Category(INTERNET, null, game.isInternet() == Game.INTERNET ? "Internet" : "No Internet");
             break;
           case DATE:
-            category = new Category(DATE, "Date");
+            category = new Category(DATE, null, "Date");
             break;
           case DELETED:
-            category = new Category(DELETED, game.getDeleted() == Game.DELETED ? "Deleted" : "Not Deleted");
+            category = new Category(DELETED, null, game.getDeleted() == Game.DELETED ? "Deleted" : "Not Deleted");
+            break;
+          case SCREENSHOT:
+            category = new Category(SCREENSHOT, null, "No Screenshot");
             break;
         }
 
@@ -316,24 +342,32 @@ public class GamesTree extends javax.swing.JPanel {
 
     @Override
     public void run() {
+      pr_tree.setValue(0);
       DefaultMutableTreeNode root = createTree(list);
       model = new DefaultTreeModel(root);
       tree.setModel(model);
-
-      
       int row = 0;
       while (row < tree.getRowCount()) {
         tree.expandRow(row);
         row++;
       }
+      pr_tree.setValue(0);
     }
 
     private DefaultMutableTreeNode createTree(ArrayList<GameNode> list) {
-      DefaultMutableTreeNode root = new DefaultMutableTreeNode(new Category(GENRE, "Games"));
+      DefaultMutableTreeNode root = new DefaultMutableTreeNode(new Category(GENRE, null, "Games"));
       Object prevNodeCategory = "";
       DefaultMutableTreeNode curNode = null;
+      int i = 0;
+      int total = MyFunctions.getTotalGames();
       for (Iterator<GameNode> it = list.iterator(); it.hasNext();) {
         GameNode gameNode = it.next();
+        pr_tree.setValue(++i * 100 / total);
+        try {
+          Thread.sleep(10);
+        } catch (InterruptedException ex) {
+          Logger.getLogger(GamesTree.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if (!gameNode.category.value.equals(prevNodeCategory)) {
           curNode = new DefaultMutableTreeNode(gameNode.category);
           root.add(curNode);
@@ -343,6 +377,7 @@ public class GamesTree extends javax.swing.JPanel {
           curNode.add(new DefaultMutableTreeNode(gameNode.game));
         }
       }
+
       return root;
 
     }
@@ -411,12 +446,13 @@ public class GamesTree extends javax.swing.JPanel {
   class Category {
 
     private int type;
+    private String name;
     private Object value;
 
-    public Category(int type, Object value) {
+    public Category(int type, String name, Object value) {
       this.type = type;
       this.value = value;
-
+      this.name = name == null ? value.toString() : name;
     }
 
     @Override
@@ -436,6 +472,20 @@ public class GamesTree extends javax.swing.JPanel {
      */
     public Object getValue() {
       return value;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+      return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+      this.name = name;
     }
   }
 }

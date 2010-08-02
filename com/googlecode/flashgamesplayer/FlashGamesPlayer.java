@@ -30,6 +30,7 @@ import com.googlecode.flashgamesplayer.games.internet.AddInternetGame;
 import com.googlecode.flashgamesplayer.tools.MySortComboRenderer;
 import com.googlecode.flashgamesplayer.games.tree.GamesCellRenderer;
 import com.googlecode.flashgamesplayer.games.tree.GamesTree;
+import com.googlecode.flashgamesplayer.genres.GenresForm;
 import com.googlecode.flashgamesplayer.myEvents.MyEvent;
 import com.googlecode.flashgamesplayer.myEvents.MyEventHandler;
 import com.googlecode.flashgamesplayer.myEvents.MyEventsClass;
@@ -42,10 +43,12 @@ import com.googlecode.svalidators.formcomponents.ValidationGroup;
 import com.googlecode.svalidators.validators.UrlValidator;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
+import java.beans.EventHandler;
 import java.util.HashMap;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -78,8 +81,8 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
         "/com/googlecode/flashgamesplayer/images/icon.png")).getImage());
     tmpFile = new File(Options.USER_DIR + ".tmp");
     if (tmpFile.exists()) {
-      //MyMessages.message("Application open", "The application is already open");
-     // System.exit(0);
+      MyMessages.message("Application open", "The application is already open");
+      System.exit(0);
     } else {
       try {
         tmpFile.createNewFile();
@@ -98,15 +101,21 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     createDatabase();
     createFolder(Options.USER_DIR + Options.GAMES_DIR);
     createFolder(Options.USER_DIR + Options.SCREENSHOT_DIR);
+    createFolder(Options.USER_DIR + Options.CATEGORIES_DIR);
     logger.log(Level.INFO, "Creating the GUI");
     options = Options.getOptions();
     gamePanel = new GamePanel();
     initComponents();
+    //setSize(800, 600);
+    setLocationRelativeTo(null);
+    setExtendedState(MAXIMIZED_BOTH);
+    setVisible(true);
+    gamesTree.populateTree();
     tf_addInternetGame.addValidator(new UrlValidator("", false));
     combo_sort.setRenderer(new MySortComboRenderer());
     setTitle("Flash games player version " + version + " ( " + MyFunctions.getTotalGames() + " available games )");
-    splitpane.setDividerLocation((Integer)options.get(Options.TREE_ROW_HEIGHT) +
-        ((Boolean)options.get(Options.DISPLAY_GAME_TITLE) ? 180 : 0) + 120);
+    splitpane.setDividerLocation((Integer) options.get(Options.TREE_ROW_HEIGHT)
+        + ((Boolean) options.get(Options.DISPLAY_GAME_TITLE) ? 180 : 0) + 120);
     bt_internetActionPerformed(null);
     rating.addPropertyChangeListener(new PropertyChangeListener() {
 
@@ -123,11 +132,9 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     panelMain.add(gamePanel);
     gamesTree.tree.setRowHeight((Integer) options.get(Options.TREE_ROW_HEIGHT) + 8);
     gamesTree.tree.setCellRenderer(new GamesCellRenderer());
-    setSize(800, 600);
-    setLocationRelativeTo(null);
-    setExtendedState(MAXIMIZED_BOTH);
+
     new FileDrop(splitpane, BorderFactory.createLineBorder(Color.RED, 2), new MyFileDropListener());
-    setVisible(true);
+
   }
 
   /** This method is called from within the constructor to
@@ -141,6 +148,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
 
     toolbar = new javax.swing.JToolBar();
     bt_addGame = new javax.swing.JButton();
+    bt_editGame = new javax.swing.JButton();
     bt_stop = new javax.swing.JButton();
     bt_delete = new javax.swing.JButton();
     bt_restore = new javax.swing.JButton();
@@ -171,10 +179,18 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     menuBar = new javax.swing.JMenuBar();
     gamesMenu = new javax.swing.JMenu();
     menuItem_addGame = new javax.swing.JMenuItem();
+    menuItem_editGame = new javax.swing.JMenuItem();
+    menuItem_stopGame = new javax.swing.JMenuItem();
     menuItem_deleteGame = new javax.swing.JMenuItem();
+    menuItem_restoreGame = new javax.swing.JMenuItem();
+    jSeparator3 = new javax.swing.JPopupMenu.Separator();
     menuItem_exit = new javax.swing.JMenuItem();
     toolsMenu = new javax.swing.JMenu();
     menuItem_screenshot = new javax.swing.JMenuItem();
+    menuItem_clearGames = new javax.swing.JMenuItem();
+    menuItem_checkScreenshots = new javax.swing.JMenuItem();
+    menuItem_editGenres = new javax.swing.JMenuItem();
+    jSeparator2 = new javax.swing.JPopupMenu.Separator();
     menuItem_options = new javax.swing.JMenuItem();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -200,7 +216,21 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     });
     toolbar.add(bt_addGame);
 
+    bt_editGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/edit.png"))); // NOI18N
+    bt_editGame.setToolTipText("Edit game");
+    bt_editGame.setEnabled(false);
+    bt_editGame.setFocusable(false);
+    bt_editGame.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    bt_editGame.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    bt_editGame.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        bt_editGameActionPerformed(evt);
+      }
+    });
+    toolbar.add(bt_editGame);
+
     bt_stop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/stop.png"))); // NOI18N
+    bt_stop.setEnabled(false);
     bt_stop.setFocusable(false);
     bt_stop.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     bt_stop.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -312,7 +342,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
         .addComponent(tf_addInternetGame, javax.swing.GroupLayout.PREFERRED_SIZE, 413, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(bt_addInternetGame)
-        .addGap(352, 352, 352))
+        .addContainerGap(352, Short.MAX_VALUE))
     );
     addInternetGamePanelLayout.setVerticalGroup(
       addInternetGamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -327,6 +357,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     splitpane.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153), 2));
     splitpane.setDividerLocation(250);
     splitpane.setMinimumSize(new java.awt.Dimension(700, 500));
+    splitpane.setOneTouchExpandable(true);
     splitpane.setPreferredSize(new java.awt.Dimension(789, 544));
 
     gamesTree.setPreferredSize(new java.awt.Dimension(179, 489));
@@ -358,8 +389,6 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
         .addComponent(gamesTree, javax.swing.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE)
         .addContainerGap())
     );
-
-    gamesTree.populateTree();
 
     splitpane.setLeftComponent(left);
 
@@ -465,7 +494,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
 
     gamesMenu.setText("Games");
 
-    menuItem_addGame.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
+    menuItem_addGame.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
     menuItem_addGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/addGame.png"))); // NOI18N
     menuItem_addGame.setText("Add Game");
     menuItem_addGame.addActionListener(new java.awt.event.ActionListener() {
@@ -475,7 +504,22 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     });
     gamesMenu.add(menuItem_addGame);
 
-    menuItem_deleteGame.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_MASK));
+    menuItem_editGame.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
+    menuItem_editGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/edit.png"))); // NOI18N
+    menuItem_editGame.setText("Edit Game");
+    menuItem_editGame.setEnabled(false);
+    gamesMenu.add(menuItem_editGame);
+
+    menuItem_stopGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/stop.png"))); // NOI18N
+    menuItem_stopGame.setText("Unload Game");
+    menuItem_stopGame.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        menuItem_stopGameActionPerformed(evt);
+      }
+    });
+    gamesMenu.add(menuItem_stopGame);
+
+    menuItem_deleteGame.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
     menuItem_deleteGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/delete.png"))); // NOI18N
     menuItem_deleteGame.setText("Delete Game");
     menuItem_deleteGame.setEnabled(false);
@@ -486,6 +530,19 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
     });
     gamesMenu.add(menuItem_deleteGame);
 
+    menuItem_restoreGame.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
+    menuItem_restoreGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/restore.png"))); // NOI18N
+    menuItem_restoreGame.setText("Restore Game");
+    menuItem_restoreGame.setEnabled(false);
+    menuItem_restoreGame.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        menuItem_restoreGameActionPerformed(evt);
+      }
+    });
+    gamesMenu.add(menuItem_restoreGame);
+    gamesMenu.add(jSeparator3);
+
+    menuItem_exit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_MASK));
     menuItem_exit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/exit.png"))); // NOI18N
     menuItem_exit.setText("Exit");
     menuItem_exit.addActionListener(new java.awt.event.ActionListener() {
@@ -499,7 +556,6 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
 
     toolsMenu.setText("Tools");
 
-    menuItem_screenshot.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F12, 0));
     menuItem_screenshot.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/screenshot.png"))); // NOI18N
     menuItem_screenshot.setText("Take Screenshot");
     menuItem_screenshot.setEnabled(false);
@@ -509,6 +565,35 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       }
     });
     toolsMenu.add(menuItem_screenshot);
+
+    menuItem_clearGames.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/clear.png"))); // NOI18N
+    menuItem_clearGames.setText("Clear Games");
+    menuItem_clearGames.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        menuItem_clearGamesActionPerformed(evt);
+      }
+    });
+    toolsMenu.add(menuItem_clearGames);
+
+    menuItem_checkScreenshots.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/checkScreenshots.png"))); // NOI18N
+    menuItem_checkScreenshots.setText("Check Screenshots");
+    menuItem_checkScreenshots.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        menuItem_checkScreenshotsActionPerformed(evt);
+      }
+    });
+    toolsMenu.add(menuItem_checkScreenshots);
+
+    menuItem_editGenres.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_MASK));
+    menuItem_editGenres.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/editGenres.png"))); // NOI18N
+    menuItem_editGenres.setText("Edit Genres");
+    menuItem_editGenres.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        menuItem_editGenresActionPerformed(evt);
+      }
+    });
+    toolsMenu.add(menuItem_editGenres);
+    toolsMenu.add(jSeparator2);
 
     menuItem_options.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/flashgamesplayer/images/options.png"))); // NOI18N
     menuItem_options.setText("Options");
@@ -559,6 +644,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
 
   private void menuItem_screenshotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItem_screenshotActionPerformed
     try {
+      Game game = gamesTree.getSelectedGame();
       JComponent component = gamePanel.getFlashPlayer();
       Robot robot = new Robot();
       Point point = component.getLocationOnScreen();
@@ -567,11 +653,11 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
       BufferedImage image = robot.createScreenCapture(captureSize);
       Image icon = image.getScaledInstance(Options.SCREENSHOT_WIDTH, Options.SCREENSHOT_HEIGHT, Image.SCALE_SMOOTH);
       File file = new File(Options.USER_DIR + Options.SCREENSHOT_DIR
-          + gamesTree.getSelectedGame().getId() + ".png");
+          + game.getId() + ".png");
       BufferedImage bimg = new BufferedImage(Options.SCREENSHOT_WIDTH, Options.SCREENSHOT_HEIGHT, BufferedImage.TYPE_INT_ARGB);
       bimg.getGraphics().drawImage(icon, 0, 0, this);
       ImageIO.write(bimg, "png", file);
-
+      game.setScreenshot(1);
     } catch (AWTException ex) {
       logger.log(Level.SEVERE, null, ex);
     } catch (IOException ex) {
@@ -604,7 +690,13 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
   private void bt_savePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_savePasswordActionPerformed
     if (gamePanel.getGame() != null) {
       Game game = gamePanel.getGame();
-      game.setPassword(tf_password.getText().trim());
+      if (game.setPassword(tf_password.getText().trim())) {
+        tf_password.setForeground(Color.green);
+        tf_password.setFont(FlashGamesPlayer.tf_password.getFont().deriveFont(Font.BOLD));
+      } else {
+        tf_password.setForeground(Color.red);
+        tf_password.setFont(FlashGamesPlayer.tf_password.getFont().deriveFont(Font.BOLD));
+      }
     }
   }//GEN-LAST:event_bt_savePasswordActionPerformed
 
@@ -621,13 +713,40 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
   private void bt_addInternetGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_addInternetGameActionPerformed
     ValidationGroup group = new ValidationGroup();
     group.addComponent(tf_addInternetGame);
-    if(!group.validate()){
+    if (!group.validate()) {
       group.errorMessage(true);
     } else {
-     AddInternetGame add = new AddInternetGame(tf_addInternetGame.getText().trim());
-     add.find();
+      AddInternetGame add = new AddInternetGame(tf_addInternetGame.getText().trim());
+      add.find();
     }
   }//GEN-LAST:event_bt_addInternetGameActionPerformed
+
+  private void bt_editGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_editGameActionPerformed
+    new GameForm(gamePanel.getGame(), null);
+  }//GEN-LAST:event_bt_editGameActionPerformed
+
+  private void menuItem_clearGamesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItem_clearGamesActionPerformed
+    MyEvent event = new MyEvent(this, MyEventHandler.CLEAR_GAMES);
+    evClass.fireMyEvent(event);
+  }//GEN-LAST:event_menuItem_clearGamesActionPerformed
+
+  private void menuItem_checkScreenshotsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItem_checkScreenshotsActionPerformed
+    MyEvent event = new MyEvent(this, MyEventHandler.CHECK_SCREENSHOTS);
+    evClass.fireMyEvent(event);
+  }//GEN-LAST:event_menuItem_checkScreenshotsActionPerformed
+
+  private void menuItem_stopGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItem_stopGameActionPerformed
+    MyEvent event = new MyEvent(this, MyEventHandler.UNLOAD_GAME);
+    evClass.fireMyEvent(event);
+  }//GEN-LAST:event_menuItem_stopGameActionPerformed
+
+  private void menuItem_restoreGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItem_restoreGameActionPerformed
+    gamesTree.restoreGame();
+  }//GEN-LAST:event_menuItem_restoreGameActionPerformed
+
+  private void menuItem_editGenresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItem_editGenresActionPerformed
+    new GenresForm().main(null);
+  }//GEN-LAST:event_menuItem_editGenresActionPerformed
 
   /**
    * @param args the command line arguments
@@ -649,6 +768,7 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
   public static javax.swing.JButton bt_addGame;
   public static javax.swing.JButton bt_addInternetGame;
   public static javax.swing.JButton bt_delete;
+  public static javax.swing.JButton bt_editGame;
   public static javax.swing.JButton bt_exit;
   public static javax.swing.JButton bt_internet;
   public static javax.swing.JButton bt_options;
@@ -664,14 +784,22 @@ public class FlashGamesPlayer extends javax.swing.JFrame {
   public static javax.swing.JLabel jLabel3;
   public static javax.swing.JLabel jLabel4;
   public static javax.swing.JToolBar.Separator jSeparator1;
+  public static javax.swing.JPopupMenu.Separator jSeparator2;
+  public static javax.swing.JPopupMenu.Separator jSeparator3;
   public static javax.swing.JLabel label_gameTitle;
   public static javax.swing.JPanel left;
   public static javax.swing.JMenuBar menuBar;
   public static javax.swing.JMenuItem menuItem_addGame;
+  public static javax.swing.JMenuItem menuItem_checkScreenshots;
+  public static javax.swing.JMenuItem menuItem_clearGames;
   public static javax.swing.JMenuItem menuItem_deleteGame;
+  public static javax.swing.JMenuItem menuItem_editGame;
+  public static javax.swing.JMenuItem menuItem_editGenres;
   public static javax.swing.JMenuItem menuItem_exit;
   public static javax.swing.JMenuItem menuItem_options;
+  public static javax.swing.JMenuItem menuItem_restoreGame;
   public static javax.swing.JMenuItem menuItem_screenshot;
+  public static javax.swing.JMenuItem menuItem_stopGame;
   public static javax.swing.JPanel panelMain;
   public static javax.swing.JPanel panel_header;
   public static com.googlecode.starrating.StarRating rating;

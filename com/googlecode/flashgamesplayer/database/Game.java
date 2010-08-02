@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import com.googlecode.flashgamesplayer.FlashGamesPlayer;
 import com.googlecode.flashgamesplayer.tools.MyMessages;
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  *
@@ -28,10 +29,13 @@ public class Game extends Record {
   private boolean newGame;
   private String password;
   private int deleted;
+  private int screenshot;
   public static int NO_INTERNET = 0;
   public static int INTERNET = 1;
   public static int NOT_DELETED = 0;
   public static int DELETED = 1;
+  public static int NO_SCREENSHOT = 0;
+  public static int SCREENSHOT = 1;
 
   public Game() {
     super();
@@ -47,12 +51,14 @@ public class Game extends Record {
           + "', password = '" + this.getPassword()
           + "', internet = " + this.isInternet()
           + ", deleted = " + this.getDeleted()
+          + ", screenshot = " + this.getScreenshot()
           + " WHERE id = " + this.getId();
     } else {
-      sql = "INSERT INTO games (genre_id, title, filename, internet, password, deleted ) "
+      sql = "INSERT INTO games (genre_id, title, filename, internet, password, deleted, screenshot ) "
           + "VALUES(" + this.getGenre_id() + ", '" + this.getTitle()
           + "', '" + this.getFilename() + "'," + this.isInternet()
-          + ", '" + this.getPassword() + "', " + this.getDeleted() + " )";
+          + ", '" + this.getPassword() + "', " + this.getDeleted() 
+          + ",'" + this.getScreenshot() +"' )";
     }
     return queryUpdate(sql);
   }
@@ -70,8 +76,9 @@ public class Game extends Record {
         game.played = rs.getInt("played");
         game.rate = rs.getDouble("rate");
         game.internet = rs.getInt("internet");
-        game.password = rs.getString("password") == null ? "" : rs.getString("password");
+        game.password = (rs.getString("password") == null ||rs.getString("password").equals("null"))? "" : rs.getString("password");
         game.deleted = rs.getInt("deleted");
+        game.screenshot = rs.getInt("screenshot");
         game.setNewGame(false);
         return game;
       }
@@ -83,11 +90,22 @@ public class Game extends Record {
   }
 
   private int updatePlayed(int id) {
-    int result;
-    String sql = "UPDATE games SET played = played + 1";
+    int result = 0;
     try {
-      result = queryUpdate(sql);
       this.played++;
+      result = save();
+    } catch (SQLException ex) {
+      FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
+      return -1;
+    }
+    return result;
+
+  }
+  private int updateScreenshot(int scr) {
+    int result;
+    try {
+      this.screenshot = scr;
+      result = save();
     } catch (SQLException ex) {
       FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
       return -1;
@@ -96,25 +114,24 @@ public class Game extends Record {
 
   }
 
-  private int updatePassword(String password) {
-    int result;
-    String sql = "UPDATE games SET password = '" + password + "'";
+  private boolean updatePassword(String password) {
+    boolean result;
+    
     try {
-      result = queryUpdate(sql);
       this.password = password;
+      result = save()!=-1;
     } catch (SQLException ex) {
       FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
-      return -1;
+      return false;
     }
     return result;
   }
 
   private int updateRate(double rate) {
     int result;
-    String sql = "UPDATE games SET rate = " + rate + " WHERE id = " + id;
     try {
-      result = queryUpdate(sql);
       this.rate = rate;
+      result = save();
     } catch (SQLException ex) {
       FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
       return -1;
@@ -165,6 +182,33 @@ public class Game extends Record {
     } catch (SQLException ex) {
       FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
       return null;
+    }
+  }
+
+  public static ArrayList<Game> getAllGames(){
+    ArrayList<Game> games = new ArrayList<Game>();
+    try {
+      String sql = "SELECT * FROM games";
+      ResultSet rs = query(sql);
+      while (rs.next()) {
+        Game game = new Game();
+        game.filename = rs.getString("filename");
+        game.genre_id = rs.getInt("genre_id");
+        game.id = rs.getInt("id");
+        game.title = rs.getString("title");
+        game.played = rs.getInt("played");
+        game.rate = rs.getDouble("rate");
+        game.internet = rs.getInt("internet");
+        game.password = (rs.getString("password") == null ||rs.getString("password").equals("null"))? "" : rs.getString("password");
+        game.deleted = rs.getInt("deleted");
+        game.screenshot = rs.getInt("screenshot");
+        game.setNewGame(false);
+        games.add(game);
+      }
+      return games;
+    } catch (SQLException ex) {
+      FlashGamesPlayer.logger.log(Level.SEVERE, null, ex);
+      return games;
     }
   }
 
@@ -295,8 +339,8 @@ public class Game extends Record {
   /**
    * @param password the password to set
    */
-  public void setPassword(String password) {
-    updatePassword(password);
+  public boolean setPassword(String password) {
+   return updatePassword(password);
   }
 
   /**
@@ -316,5 +360,19 @@ public class Game extends Record {
       return delete();
     }
     return false;
+  }
+
+  /**
+   * @return the screenshot
+   */
+  public int getScreenshot() {
+    return screenshot;
+  }
+
+  /**
+   * @param screenshot the screenshot to set
+   */
+  public void setScreenshot(int screenshot) {
+    updateScreenshot(screenshot);
   }
 }

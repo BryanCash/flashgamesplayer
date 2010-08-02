@@ -33,6 +33,7 @@ import com.googlecode.flashgamesplayer.myEvents.MyEventHandler;
 import com.googlecode.flashgamesplayer.tools.MyDraggable;
 import com.googlecode.flashgamesplayer.tools.MyFunctions;
 import com.googlecode.flashgamesplayer.tools.MyMessages;
+import com.googlecode.flashgamesplayer.tools.MyGenreComboRenderer;
 
 /**
  *
@@ -68,6 +69,7 @@ public class GameForm extends MyDraggable {
     tf_file.addValidator(new FileValidator(newFileName, FileValidator.Type.FILE, false));
     tf_title.addValidator(new RequiredValidator());
     combo_genre.addValidator(new RequiredValidator());
+    combo_genre.setRenderer(new MyGenreComboRenderer());
     components.add(tf_file);
     components.add(combo_genre);
     components.add(tf_title);
@@ -275,7 +277,12 @@ public class GameForm extends MyDraggable {
         game.setGenre_id(genreId);
         game.setTitle(title);
         if (game.isNewGame()) {
+          if(!new File(Options.USER_DIR + Options.GAMES_DIR +filename).isFile()){
           game.setFilename(filename);
+          } else{
+            MyMessages.error("Add game", "The file " + filename + " already exists");
+            return;
+          }
         }
         game.setInternet(cb_internet.isSelected() ? 1 : 0);
         game.setDeleted(cb_deleted.isSelected() ? 1 : 0);

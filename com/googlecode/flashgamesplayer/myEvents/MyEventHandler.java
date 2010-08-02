@@ -6,6 +6,8 @@ package com.googlecode.flashgamesplayer.myEvents;
 
 import com.googlecode.flashgamesplayer.FlashGamesPlayer;
 import com.googlecode.flashgamesplayer.database.Game;
+import com.googlecode.flashgamesplayer.tools.CheckGamesScreenshots;
+import com.googlecode.flashgamesplayer.tools.ClearGames;
 
 /**
  *
@@ -20,6 +22,8 @@ public class MyEventHandler implements MyEventListener {
   public static final int DELETE_GAME = 4;
   public static final int RESTORE_GAME = 5;
   public static final int INTERNET_CONNECTION = 6;
+  public static final int CLEAR_GAMES = 7;
+  public static final int CHECK_SCREENSHOTS = 8;
 
   @Override
   public void myEventOccured(MyEvent evt) {
@@ -54,6 +58,13 @@ public class MyEventHandler implements MyEventListener {
           FlashGamesPlayer.bt_internet.setIcon(FlashGamesPlayer.bt_internet.getDisabledIcon());
         }
         break;
+      case CLEAR_GAMES:
+        new ClearGames();
+        break;
+      case CHECK_SCREENSHOTS:
+        new CheckGamesScreenshots();
+        break;
+
     }
   }
 }

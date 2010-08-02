@@ -60,7 +60,8 @@ public class Database {
           + "`password` VARCHAR, "
           + "`rate` DOUBLE DEFAULT 0, "
           + "`internet` INTEGER DEFAULT 0, "
-          + "`deleted` INTEGER DEFAULT 0 )");
+          + "`deleted` INTEGER DEFAULT 0, "
+          + "`screenshot` INTEGER DEFAULT 0 )");
       FlashGamesPlayer.logger.log(Level.INFO, "Creating table genres");
       getStmt().executeUpdate("CREATE TABLE `genres` "
           + "(`id` INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , "
