@@ -1,0 +1,1 @@
+An application in which you can import flash games files (swf) and then choose the game you wish to play, order them depending on the category etc
